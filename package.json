@@ -2,6 +2,7 @@
   "name": "portside",
   "version": "1.0.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "author": "pact (https://github.com/letsmakepact, t.me/pactwithdevil)",
   "scripts": {
     "dev": "next dev -p 80",

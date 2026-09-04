@@ -137,6 +137,15 @@ Created by **pact**
 - GitHub: [@letsmakepact](https://github.com/letsmakepact)
 - Telegram: [@pactwithdevil](https://t.me/pactwithdevil)
 
-## License
+## License & Terms of Use
 
-MIT
+PortSide is licensed under the **Portside Non-Commercial Public License (PNC-1.0)**:
+
+- **100% Free Forever for Single Users:** PortSide is completely free for individual developers, hobbyists, and personal development workflows. It will **never** be paid or monetized for single users.
+- **No Reselling or Profiting:** Anyone is free to use and modify PortSide, but you may **NOT** sell, rent, sublicense, or distribute PortSide or its derivatives for a fee.
+- **No Rebranding:** You may **NOT** rebrand, white-label, or remove creator attribution (`pact`) to generate profit.
+- **Commercial & Company Inquiries:** Companies, corporations, and enterprise entities seeking commercial integration, deployment, or custom licensing must contact the creator:
+  - Telegram: [@pactwithdevil](https://t.me/pactwithdevil)
+  - GitHub: [@letsmakepact](https://github.com/letsmakepact)
+
+See the full [LICENSE](LICENSE) file for complete terms.
