@@ -13,7 +13,7 @@ import type { ActivityDTO } from "@/lib/types";
 import { cn, colorFor, formatRelative, serviceUrl } from "@/lib/utils";
 
 export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO[] }) {
-  const { user, services, projects, appPort, runCheck, checking, lastCheckedAt } = useDashboard();
+  const { user, services, projects, appPort, runCheck, checking, lastCheckedAt, openTutorial } = useDashboard();
   const [formOpen, setFormOpen] = useState(false);
   const [activity, setActivity] = useState(initialActivity);
 
@@ -47,6 +47,9 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Your localhost, at a glance</h1>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="secondary" onClick={openTutorial}>
+            ✨ Feature Tour
+          </Button>
           <Button variant="secondary" onClick={runCheck} loading={checking}>
             {!checking && <RefreshIcon />} Check now
           </Button>

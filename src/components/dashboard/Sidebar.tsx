@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDashboard } from "./DashboardProvider";
+import { TutorialModal } from "./TutorialModal";
+import { UpdateModal } from "./UpdateModal";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -17,7 +19,7 @@ const nav = [
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, services, checking, lastCheckedAt, autoCheck } = useDashboard();
+  const { user, services, checking, lastCheckedAt, autoCheck, tutorialOpen, openTutorial, closeTutorial } = useDashboard();
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -68,6 +70,18 @@ export function Sidebar() {
             </Link>
           );
         })}
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            openTutorial();
+          }}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-amber-300 transition hover:bg-amber-400/10 hover:text-amber-200"
+        >
+          <span className="flex h-[18px] w-[18px] items-center justify-center text-sm">✨</span>
+          Feature Tour
+          <span className="ml-auto rounded-md bg-amber-400/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300">Guide</span>
+        </button>
       </nav>
 
       <div className="mx-3 mb-3 rounded-xl border border-white/10 bg-white/5 p-3">
@@ -145,6 +159,8 @@ export function Sidebar() {
       )}
 
       <aside className="fixed inset-y-0 left-0 hidden w-64 bg-slate-950 lg:block">{content}</aside>
+      <TutorialModal forceOpen={tutorialOpen} onClose={closeTutorial} />
+      <UpdateModal />
     </>
   );
 }

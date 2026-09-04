@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   createContext,
@@ -34,6 +34,9 @@ interface DashboardContextValue {
   createProject: (input: ProjectInput) => Promise<ProjectDTO | null>;
   updateProject: (id: number, patch: Partial<ProjectInput>) => Promise<boolean>;
   deleteProject: (id: number) => Promise<boolean>;
+  tutorialOpen: boolean;
+  openTutorial: () => void;
+  closeTutorial: () => void;
 }
 
 const Ctx = createContext<DashboardContextValue | null>(null);
@@ -72,7 +75,11 @@ export function DashboardProvider({
   const appPort = useSyncExternalStore(subscribe, getClientPort, () => "3000");
   const storedAutoCheck = useSyncExternalStore(subscribe, getAutoCheckSnapshot, () => true);
   const [autoCheck, setAutoCheckState] = useState(storedAutoCheck);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
   const inFlight = useRef(false);
+
+  const openTutorial = useCallback(() => setTutorialOpen(true), []);
+  const closeTutorial = useCallback(() => setTutorialOpen(false), []);
 
   const setAutoCheck = useCallback((v: boolean) => {
     setAutoCheckState(v);
@@ -331,8 +338,30 @@ export function DashboardProvider({
       createProject,
       updateProject,
       deleteProject,
+      tutorialOpen,
+      openTutorial,
+      closeTutorial,
     }),
-    [user, services, projects, appPort, checking, lastCheckedAt, autoCheck, setAutoCheck, runCheck, createService, updateService, deleteService, createProject, updateProject, deleteProject],
+    [
+      user,
+      services,
+      projects,
+      appPort,
+      checking,
+      lastCheckedAt,
+      autoCheck,
+      setAutoCheck,
+      runCheck,
+      createService,
+      updateService,
+      deleteService,
+      createProject,
+      updateProject,
+      deleteProject,
+      tutorialOpen,
+      openTutorial,
+      closeTutorial,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

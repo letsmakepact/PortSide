@@ -1,9 +1,10 @@
 {
   "name": "portside",
+  "version": "1.0.0",
   "private": true,
   "author": "pact (https://github.com/letsmakepact, t.me/pactwithdevil)",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 80",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

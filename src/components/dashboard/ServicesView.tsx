@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 type StatusFilter = "all" | "online" | "offline" | "paused";
 
 export function ServicesView({ initialProject = "all" }: { initialProject?: string }) {
-  const { services, projects, deleteService, runCheck, checking } = useDashboard();
+  const { services, projects, deleteService, runCheck, checking, openTutorial } = useDashboard();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [projectId, setProjectId] = useState<string>(initialProject);
@@ -102,9 +102,14 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
           title="No services yet"
           description="Register your first local process and it instantly gets a memorable hostname — no more hunting for the right port."
           action={
-            <Button onClick={() => setFormOpen(true)}>
-              <PlusIcon /> Add your first service
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button onClick={() => setFormOpen(true)}>
+                <PlusIcon /> Add your first service
+              </Button>
+              <Button variant="secondary" onClick={openTutorial}>
+                ✨ Take Feature Tour
+              </Button>
+            </div>
           }
         />
       ) : filtered.length === 0 ? (

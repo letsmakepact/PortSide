@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 .next/
 out/
 build/
@@ -11,3 +11,4 @@ dist/
 .DS_Store
 *.pem
 drizzle/.temp/
+*.exe

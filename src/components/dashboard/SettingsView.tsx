@@ -15,6 +15,29 @@ export function SettingsView() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [savingPw, setSavingPw] = useState(false);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState<string | null>(null);
+
+  async function checkForUpdates() {
+    setCheckingUpdate(true);
+    setUpdateStatus(null);
+    try {
+      const res = await fetch("/api/updates/check");
+      const data = await res.json();
+      if (data.updateAvailable) {
+        setUpdateStatus(`Update available: v${data.latestVersion}! Click below to view.`);
+        toast({ tone: "info", title: `New version v${data.latestVersion} available!` });
+      } else {
+        setUpdateStatus(`You are on the latest version (v${data.currentVersion}).`);
+        toast({ tone: "success", title: "Portside is up to date." });
+      }
+    } catch {
+      setUpdateStatus("Could not reach update server.");
+      toast({ tone: "error", title: "Error checking for updates" });
+    } finally {
+      setCheckingUpdate(false);
+    }
+  }
 
   async function saveName(e: FormEvent) {
     e.preventDefault();
@@ -140,6 +163,32 @@ export function SettingsView() {
           </form>
         </Card>
       </div>
+
+      <Card className="p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">Version & Updates</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Current version: <span className="font-mono font-medium text-indigo-600">v1.0.0</span>
+            </p>
+            {updateStatus && <p className="mt-2 text-xs font-medium text-slate-700">{updateStatus}</p>}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" onClick={checkForUpdates} loading={checkingUpdate}>
+              Check for updates
+            </Button>
+            <a
+              href="https://github.com/letsmakepact/PortSide/releases/latest/download/Portside-Launcher.exe"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button>
+                Get Auto-Update Launcher (.exe)
+              </Button>
+            </a>
+          </div>
+        </div>
+      </Card>
 
       <Card className="p-6">
         <h2 className="text-base font-semibold text-slate-900">About & Credits</h2>
