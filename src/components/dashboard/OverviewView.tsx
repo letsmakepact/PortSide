@@ -47,9 +47,11 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Your localhost, at a glance</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" onClick={openTutorial}>
-            ✨ Feature Tour
-          </Button>
+          {services.length === 0 && (
+            <Button variant="secondary" onClick={openTutorial}>
+              ✨ Feature Tour
+            </Button>
+          )}
           <Button variant="secondary" onClick={runCheck} loading={checking}>
             {!checking && <RefreshIcon />} Check now
           </Button>
@@ -72,7 +74,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-900">Pinned</h2>
-          <Link href="/dashboard/services" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+          <Link href="/dashboard/services" className="text-sm font-medium text-sky-600 hover:text-sky-500">
             View all →
           </Link>
         </div>
@@ -112,7 +114,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
                   <li key={s.id} className="flex items-center gap-3 px-5 py-2.5 text-sm transition hover:bg-slate-50">
                     <StatusDot status={s.enabled ? s.lastStatus : "unknown"} />
                     <span className="w-6 text-center">{s.icon}</span>
-                    <a href={serviceUrl(s.hostname, appPort)} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate font-mono text-[13px] text-indigo-600 hover:underline">
+                    <a href={serviceUrl(s.hostname, appPort)} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate font-mono text-[13px] text-sky-600 hover:underline">
                       {s.hostname}.localhost
                     </a>
                     <span className="hidden text-slate-300 sm:inline">→</span>

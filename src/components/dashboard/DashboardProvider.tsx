@@ -161,6 +161,10 @@ export function DashboardProvider({
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Failed to create service");
         setServices((prev) => sortServices(prev.map((s) => (s.id === tempId ? data.service : s))));
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("portside_tutorial_seen", "true");
+        }
+        setTutorialOpen(false);
         toast({ tone: "success", title: `${input.hostname}.localhost is live`, description: `Routing to port ${input.port}` });
         void runCheck();
         return data.service as ServiceDTO;
