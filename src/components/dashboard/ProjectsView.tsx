@@ -1,0 +1,213 @@
+﻿"use client";
+
+import Link from "next/link";
+import { useState, type FormEvent } from "react";
+import { useDashboard } from "./DashboardProvider";
+import { PlusIcon } from "./ServicesView";
+import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Modal } from "@/components/ui/Modal";
+import { EmptyState, Input, Label, PageHeader, StatusDot, Textarea } from "@/components/ui/Primitives";
+import type { ProjectDTO } from "@/lib/types";
+import { PROJECT_COLORS, cn, colorFor } from "@/lib/utils";
+
+export function ProjectsView() {
+  const { projects, services, createProject, updateProject, deleteProject } = useDashboard();
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<ProjectDTO | null>(null);
+  const [deleting, setDeleting] = useState<ProjectDTO | null>(null);
+
+  const ungrouped = services.filter((s) => s.projectId === null).length;
+
+  return (
+    <div>
+      <PageHeader
+        title="Projects"
+        subtitle="Group related services so your sidebar of ports reads like a map of your work."
+        actions={
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setOpen(true);
+            }}
+          >
+            <PlusIcon /> New project
+          </Button>
+        }
+      />
+
+      {projects.length === 0 ? (
+        <EmptyState
+          icon="🗂️"
+          title="No projects yet"
+          description="Create a project like “Storefront” or “Data Platform” and assign services to it."
+          action={
+            <Button onClick={() => setOpen(true)}>
+              <PlusIcon /> Create a project
+            </Button>
+          }
+        />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {projects.map((p) => {
+            const c = colorFor(p.color);
+            const members = services.filter((s) => s.projectId === p.id);
+            const online = members.filter((s) => s.enabled && s.lastStatus === "online").length;
+            return (
+              <div
+                key={p.id}
+                className={cn("group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-px hover:shadow-md", p.id < 0 && "animate-pulse")}
+              >
+                <div className={cn("absolute inset-x-5 top-0 h-1 rounded-b-full", c.dot)} />
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="truncate text-[15px] font-semibold text-slate-900">{p.name}</h3>
+                    <p className="mt-0.5 font-mono text-[11px] text-slate-400">{p.slug}</p>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100">
+                    <IconButton
+                      label="Edit"
+                      onClick={() => {
+                        setEditing(p);
+                        setOpen(true);
+                      }}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 3l3 3-9 9H5v-3l9-9z" /></svg>
+                    </IconButton>
+                    <IconButton label="Delete" onClick={() => setDeleting(p)} danger>
+                      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10" /></svg>
+                    </IconButton>
+                  </div>
+                </div>
+                <p className="mt-3 line-clamp-2 min-h-[2.5rem] text-[13px] leading-relaxed text-slate-500">{p.description || "No description."}</p>
+
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {members.slice(0, 5).map((s) => (
+                    <span key={s.id} className="inline-flex items-center gap-1.5 rounded-md bg-slate-50 px-2 py-1 font-mono text-[11px] text-slate-700 ring-1 ring-slate-200">
+                      <StatusDot status={s.enabled ? s.lastStatus : "unknown"} className="h-1.5 w-1.5" />
+                      {s.hostname}
+                    </span>
+                  ))}
+                  {members.length > 5 && <span className="px-1 py-1 text-[11px] text-slate-400">+{members.length - 5} more</span>}
+                  {members.length === 0 && <span className="text-[11px] text-slate-400">No services assigned</span>}
+                </div>
+
+                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                  <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", c.bg, c.text)}>
+                    {online}/{members.length} online
+                  </span>
+                  <Link href={`/dashboard/services?project=${p.id}`} className="text-xs font-medium text-indigo-600 hover:text-indigo-500">
+                    Open services →
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+
+          {ungrouped > 0 && (
+            <Link
+              href="/dashboard/services?project=none"
+              className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 p-5 text-center transition hover:border-indigo-300 hover:bg-indigo-50/40"
+            >
+              <span className="text-2xl">🧺</span>
+              <p className="mt-2 text-sm font-medium text-slate-700">{ungrouped} ungrouped service{ungrouped === 1 ? "" : "s"}</p>
+              <p className="text-xs text-slate-400">Click to review and assign</p>
+            </Link>
+          )}
+        </div>
+      )}
+
+      <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Edit project" : "New project"} size="sm">
+        {open && (
+          <ProjectForm
+            key={editing?.id ?? "new"}
+            editing={editing}
+            onClose={() => setOpen(false)}
+            onSave={async (payload) => {
+              setOpen(false);
+              if (editing) await updateProject(editing.id, payload);
+              else await createProject(payload);
+            }}
+          />
+        )}
+      </Modal>
+
+      <ConfirmDialog
+        open={Boolean(deleting)}
+        onClose={() => setDeleting(null)}
+        onConfirm={() => deleting && deleteProject(deleting.id)}
+        title={`Delete "${deleting?.name}"?`}
+        description="Services in this project will be kept but become ungrouped."
+      />
+    </div>
+  );
+}
+
+function ProjectForm({
+  editing,
+  onClose,
+  onSave,
+}: {
+  editing: ProjectDTO | null;
+  onClose: () => void;
+  onSave: (data: { name: string; description: string; color: string }) => Promise<void>;
+}) {
+  const [name, setName] = useState(editing?.name ?? "");
+  const [description, setDescription] = useState(editing?.description ?? "");
+  const [color, setColor] = useState<string>(editing?.color ?? "indigo");
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) return setError("Project name is required.");
+    await onSave({ name: name.trim(), description: description.trim(), color });
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div>
+        <Label htmlFor="p-name">Name</Label>
+        <Input id="p-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Storefront" autoFocus required />
+      </div>
+      <div>
+        <Label htmlFor="p-desc">Description</Label>
+        <Textarea id="p-desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What lives in this project?" />
+      </div>
+      <div>
+        <Label>Color</Label>
+        <div className="flex flex-wrap gap-2">
+          {PROJECT_COLORS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setColor(c)}
+              className={cn("h-7 w-7 rounded-full transition", colorFor(c).dot, color === c ? "ring-2 ring-slate-900 ring-offset-2" : "hover:scale-110")}
+              aria-label={c}
+            />
+          ))}
+        </div>
+      </div>
+      {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700 ring-1 ring-rose-200">{error}</p>}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button type="button" variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button type="submit">{editing ? "Save" : "Create project"}</Button>
+      </div>
+    </form>
+  );
+}
+
+function IconButton({ children, onClick, label, danger }: { children: React.ReactNode; onClick: () => void; label: string; danger?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className={cn("rounded-lg p-1.5 text-slate-400 transition", danger ? "hover:bg-rose-50 hover:text-rose-600" : "hover:bg-slate-100 hover:text-slate-700")}
+    >
+      {children}
+    </button>
+  );
+}
