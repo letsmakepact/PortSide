@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { activityLogs, projects, services, users } from "@/db/schema";
 import { hashPassword } from "@/lib/auth";
 import { eq } from "drizzle-orm";
+import { ensureUserPortsideDirectory } from "@/lib/userDir";
 
 export const DEMO_EMAIL = "demo@portside.dev";
 export const DEMO_PASSWORD = "demo1234";
@@ -9,6 +10,7 @@ export const DEMO_PASSWORD = "demo1234";
 let seedPromise: Promise<void> | null = null;
 
 export function ensureSeeded(): Promise<void> {
+  ensureUserPortsideDirectory();
   if (!seedPromise) {
     seedPromise = seed().catch((err) => {
       seedPromise = null;

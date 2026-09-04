@@ -12,3 +12,4 @@ dist/
 *.pem
 drizzle/.temp/
 *.exe
+Portside-Launcher*

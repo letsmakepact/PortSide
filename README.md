@@ -7,7 +7,8 @@ Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, 
 ## Features
 
 - **Clean `*.localhost` Routing on Port 80:** Maps subdomains (like `api.localhost` or `shop.localhost`) directly to your internal local ports (e.g., `:8081`, `:3001`) with zero port numbers in your browser address bar.
-- **Standalone Windows Launcher (.exe):** Automated setup tool that starts PostgreSQL, verifies dependencies, and automatically checks GitHub releases for updates every time it runs.
+- **Cross-Platform Standalone Launcher (Windows, macOS & Linux):** Automated zero-dependency setup tool that starts PostgreSQL, verifies dependencies, and automatically checks GitHub releases for updates on every run.
+- **Auto-Provisioned User Directory:** Automatically creates `~/Portside/updates` inside your user directory across Windows, macOS, and Linux to store downloads and launcher executables.
 - **Interactive First-Time Tutorial:** Built-in guided walkthrough demonstrating all features, routing mechanics, and shortcuts directly inside the dashboard.
 - **Update Tracking & Web Notifications:** Automatically detects new releases from GitHub and notifies users running on localhost with 1-click update options and changelogs.
 - **Live Background Monitor:** Periodically probes all active ports, checks latency, and logs online/offline state changes.
@@ -23,20 +24,38 @@ Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, 
 - Tailwind CSS v4
 - PostgreSQL + Drizzle ORM
 - TypeScript
-- Go (Native Windows Launcher)
+- Go (Native Multi-Platform Launcher for Windows, macOS, and Linux)
 
 ## Quick Start
 
-### Option A: Standalone Windows Launcher (Automatic Updates)
+### Option A: Standalone Launcher (Recommended)
 
-Download `Portside-Launcher.exe` from [GitHub Releases](https://github.com/letsmakepact/PortSide/releases/latest).
+Download the pre-compiled launcher for your operating system from [GitHub Releases](https://github.com/letsmakepact/PortSide/releases/latest):
 
-Double-click to launch:
-- Automatically checks GitHub for new updates on every run.
-- Starts PostgreSQL container and initializes the database.
-- Launches Portside directly on Port 80 and opens `http://localhost`.
+| Operating System | Binary Asset |
+|---|---|
+| **Windows** (x64) | `Portside-Launcher.exe` |
+| **macOS** (Apple Silicon M1/M2/M3/M4) | `Portside-Launcher-darwin-arm64` |
+| **macOS** (Intel) | `Portside-Launcher-darwin-amd64` |
+| **Linux** (x86_64) | `Portside-Launcher-linux-amd64` |
+| **Linux** (arm64) | `Portside-Launcher-linux-arm64` |
 
-### Option B: Manual Localhost Setup
+#### One-Line Terminal Setup (macOS & Linux):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/letsmakepact/PortSide/main/install.sh | bash
+```
+
+**What the Launcher Does:**
+- Creates `~/Portside/updates` in your user home directory.
+- Checks GitHub for new releases and downloads updates automatically.
+- Starts the PostgreSQL Docker container if not already running.
+- Syncs schema tables and launches Portside on Port 80.
+- Opens `http://localhost` directly in your default browser.
+
+---
+
+### Option B: Manual Localhost Setup (All Platforms)
 
 #### 1. Clone & Install
 
@@ -83,9 +102,11 @@ npm run db:push
 npm run dev
 ```
 
+*(On macOS or Linux, binding port 80 may require `sudo npm run dev` or configuring capabilities, otherwise set `PORT=3000` in `.env`).*
+
 Open [http://localhost](http://localhost) in your browser.
 
-A default demo account is ready:
+**Default Login:**
 - **Email:** `demo@portside.dev`
 - **Password:** `demo1234`
 

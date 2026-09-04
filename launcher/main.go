@@ -30,12 +30,28 @@ type GitHubRelease struct {
 	Assets      []struct {
 		Name               string `json:"name"`
 		BrowserDownloadUrl string `json:"browser_download_url"`
+		Size               int64  `json:"size"`
 	} `json:"assets"`
+}
+
+func getPortsideHome() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		home = "."
+	}
+	dir := filepath.Join(home, "Portside")
+	_ = os.MkdirAll(dir, 0755)
+	_ = os.MkdirAll(filepath.Join(dir, "updates"), 0755)
+	return dir
 }
 
 func main() {
 	printBanner()
-	checkUpdates()
+	userDir := getPortsideHome()
+	fmt.Printf("Workspace Directory: %s\n", userDir)
+	fmt.Printf("Detected Platform:   %s/%s\n\n", runtime.GOOS, runtime.GOARCH)
+
+	checkAndDownloadUpdates(userDir)
 	setupDatabase()
 	setupDependencies()
 	startServer()
@@ -50,11 +66,19 @@ func printBanner() {
 	fmt.Println()
 }
 
-func checkUpdates() {
+func getPlatformBinaryName(version string) string {
+	ext := ""
+	if runtime.GOOS == "windows" {
+		ext = ".exe"
+	}
+	return fmt.Sprintf("Portside-Launcher-%s-%s-v%s%s", runtime.GOOS, runtime.GOARCH, version, ext)
+}
+
+func checkAndDownloadUpdates(userDir string) {
 	fmt.Print("[1/4] Checking GitHub for updates... ")
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", RepoOwner, RepoName)
 
-	client := http.Client{Timeout: 5 * time.Second}
+	client := http.Client{Timeout: 6 * time.Second}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Println("skipped (network error)")
@@ -86,21 +110,89 @@ func checkUpdates() {
 	if isNewerVersion(latest, CurrentVersion) {
 		fmt.Println()
 		fmt.Println("******************************************************************")
-		fmt.Printf("  ✨ NEW UPDATE AVAILABLE: v%s (You have v%s)\n", latest, CurrentVersion)
-		fmt.Printf("  Release URL: %s\n", rel.HtmlUrl)
-		if len(rel.Assets) > 0 {
-			for _, a := range rel.Assets {
-				if strings.HasSuffix(strings.ToLower(a.Name), ".exe") {
-					fmt.Printf("  Direct download: %s\n", a.BrowserDownloadUrl)
-					break
-				}
+		fmt.Printf("  ✨ NEW UPDATE AVAILABLE: v%s (Currently on v%s)\n", latest, CurrentVersion)
+		fmt.Printf("  Changelog: %s\n", rel.HtmlUrl)
+
+		var downloadUrl string
+		var assetName string
+		targetSub := runtime.GOOS
+		targetArch := runtime.GOARCH
+
+		for _, a := range rel.Assets {
+			lower := strings.ToLower(a.Name)
+			if strings.Contains(lower, targetSub) && (strings.Contains(lower, targetArch) || runtime.GOOS == "windows") {
+				downloadUrl = a.BrowserDownloadUrl
+				assetName = a.Name
+				break
 			}
+		}
+
+		if downloadUrl == "" {
+			assetName = getPlatformBinaryName(latest)
+			downloadUrl = fmt.Sprintf("https://github.com/%s/%s/releases/download/%s/%s", RepoOwner, RepoName, rel.TagName, assetName)
+		}
+
+		destPath := filepath.Join(userDir, "updates", assetName)
+		fmt.Printf("  Auto-downloading update to: %s\n", destPath)
+
+		err := downloadFile(destPath, downloadUrl)
+		if err != nil {
+			fmt.Printf("  Download failed: %v. You can update manually at: %s\n", err, rel.HtmlUrl)
+		} else {
+			_ = os.Chmod(destPath, 0755)
+			fmt.Printf("  ✓ Successfully downloaded update to: %s\n", destPath)
+			mainExeName := "Portside"
+			if runtime.GOOS == "windows" {
+				mainExeName = "Portside.exe"
+			}
+			mainExe := filepath.Join(userDir, mainExeName)
+			_ = copyFile(destPath, mainExe)
+			_ = os.Chmod(mainExe, 0755)
 		}
 		fmt.Println("******************************************************************")
 		fmt.Println()
 	} else {
 		fmt.Println("✓ You are on the latest version!")
 	}
+}
+
+func downloadFile(filepath string, url string) error {
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	client := http.Client{Timeout: 60 * time.Second}
+	resp, err := client.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad status: %s", resp.Status)
+	}
+
+	_, err = io.Copy(out, resp.Body)
+	return err
+}
+
+func copyFile(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+	return err
 }
 
 func isNewerVersion(latest, current string) bool {
@@ -159,6 +251,9 @@ func startServer() {
 	fmt.Println("==================================================================")
 	fmt.Printf("Dashboard: %s\n", AppUrl)
 	fmt.Println("Any service you add will route automatically without ports!")
+	if runtime.GOOS != "windows" && os.Geteuid() != 0 {
+		fmt.Println("Note: If port 80 fails to bind on macOS/Linux, run launcher with sudo or PORT=3000.")
+	}
 	fmt.Println("Press Ctrl+C to stop.")
 	fmt.Println("==================================================================")
 
