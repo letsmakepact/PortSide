@@ -37,7 +37,6 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
         }
       }
     } catch {
-      // offline or network issue
     } finally {
       setChecking(false);
     }
@@ -77,7 +76,7 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
         </div>
 
         <div className="mt-4 flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-2xl text-white shadow-lg shadow-indigo-500/20">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-2xl text-white shadow-lg shadow-sky-500/25">
             🚀
           </div>
           <div>

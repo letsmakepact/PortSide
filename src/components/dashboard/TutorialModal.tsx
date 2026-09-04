@@ -124,8 +124,8 @@ export function TutorialModal({ forceOpen, onClose, onAddService }: TutorialModa
     <Modal open={isOpen} onClose={closeTutorial} title="" size="lg">
       <div className="relative pt-2">
         <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
             {current.badge} · Step {current.stepNumber} of {STEPS.length}
           </span>
           <div className="flex gap-1">
@@ -133,7 +133,7 @@ export function TutorialModal({ forceOpen, onClose, onAddService }: TutorialModa
               <button
                 key={i}
                 onClick={() => setStep(i)}
-                className={`h-2 rounded-full transition-all ${i === step ? "w-6 bg-indigo-600" : "w-2 bg-slate-200 hover:bg-slate-300"}`}
+                className={`h-2 rounded-full transition-all ${i === step ? "w-6 bg-sky-600" : "w-2 bg-slate-200 hover:bg-slate-300"}`}
                 aria-label={`Go to step ${i + 1}`}
               />
             ))}
@@ -141,12 +141,12 @@ export function TutorialModal({ forceOpen, onClose, onAddService }: TutorialModa
         </div>
 
         <div className="mt-4 flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-2xl shadow-lg shadow-indigo-500/20">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-2xl shadow-lg shadow-sky-500/25 text-white">
             {current.icon}
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900">{current.title}</h2>
-            <p className="text-xs font-medium text-indigo-600">{current.subtitle}</p>
+            <p className="text-xs font-medium text-sky-600">{current.subtitle}</p>
           </div>
         </div>
 
