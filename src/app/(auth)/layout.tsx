@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { ensureSeeded } from "@/lib/seed";
+import { AnchorIconBox } from "@/components/ui/AnchorLogo";
 
 export const dynamic = "force-dynamic";
 
@@ -13,8 +14,8 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
   return (
     <div className="grid min-h-screen lg:grid-cols-[1.1fr_1fr]">
       <aside className="relative hidden overflow-hidden bg-slate-950 p-12 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-indigo-600/30 blur-3xl" />
-        <div className="absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-violet-600/20 blur-3xl" />
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
+        <div className="absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-cyan-600/15 blur-3xl" />
         <div className="relative flex items-center gap-2.5">
           <Logo />
           <span className="text-lg font-semibold tracking-tight">Portside</span>
@@ -23,7 +24,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
           <h2 className="text-4xl font-semibold leading-tight tracking-tight">
             Stop remembering ports.
             <br />
-            <span className="bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
               Start naming them.
             </span>
           </h2>
@@ -52,7 +53,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
               href="https://github.com/letsmakepact"
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline"
+              className="font-medium text-sky-400 hover:text-sky-300 hover:underline"
             >
               pact (letsmakepact)
             </a>{" "}
@@ -61,7 +62,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
               href="https://t.me/pactwithdevil"
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline"
+              className="font-medium text-sky-400 hover:text-sky-300 hover:underline"
             >
               telegram @pactwithdevil
             </a>
@@ -92,12 +93,5 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
 }
 
 function Logo() {
-  return (
-    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-600/30">
-      <svg viewBox="0 0 24 24" className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 12h16M12 4v16" />
-        <circle cx="12" cy="12" r="9" />
-      </svg>
-    </span>
-  );
+  return <AnchorIconBox size="md" />;
 }
