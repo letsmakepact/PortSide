@@ -8,6 +8,7 @@ interface TutorialModalProps {
   forceOpen?: boolean;
   onClose?: () => void;
   onAddService?: () => void;
+  servicesCount?: number;
 }
 
 const STEPS = [
@@ -91,11 +92,16 @@ const STEPS = [
   },
 ];
 
-export function TutorialModal({ forceOpen, onClose, onAddService }: TutorialModalProps) {
+export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount = 0 }: TutorialModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    if (servicesCount > 0) {
+      setIsOpen(false);
+      localStorage.setItem("portside_tutorial_seen", "true");
+      return;
+    }
     if (forceOpen !== undefined) {
       setIsOpen(forceOpen);
     } else {
@@ -104,7 +110,7 @@ export function TutorialModal({ forceOpen, onClose, onAddService }: TutorialModa
         setIsOpen(true);
       }
     }
-  }, [forceOpen]);
+  }, [forceOpen, servicesCount]);
 
   function closeTutorial() {
     localStorage.setItem("portside_tutorial_seen", "true");
