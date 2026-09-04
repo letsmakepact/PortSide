@@ -140,6 +140,31 @@ export function SettingsView() {
           </form>
         </Card>
       </div>
+
+      <Card className="p-6">
+        <h2 className="text-base font-semibold text-slate-900">About & Credits</h2>
+        <p className="mt-1 text-sm text-slate-500">Portside was conceived and created by pact.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+          <a
+            href="https://github.com/letsmakepact"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 font-medium text-slate-800 transition hover:bg-slate-100"
+          >
+            <span>GitHub:</span>
+            <span className="text-indigo-600">letsmakepact</span>
+          </a>
+          <a
+            href="https://t.me/pactwithdevil"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 font-medium text-slate-800 transition hover:bg-slate-100"
+          >
+            <span>Telegram:</span>
+            <span className="text-indigo-600">@pactwithdevil</span>
+          </a>
+        </div>
+      </Card>
     </div>
   );
 }

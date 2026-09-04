@@ -1,6 +1,7 @@
 {
   "name": "portside",
   "private": true,
+  "author": "pact (https://github.com/letsmakepact, t.me/pactwithdevil)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

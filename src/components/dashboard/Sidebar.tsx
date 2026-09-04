@@ -99,6 +99,26 @@ export function Sidebar() {
             </svg>
           </button>
         </div>
+        <div className="mt-2 rounded-lg bg-white/[0.04] px-2.5 py-1.5 text-[11px] text-slate-400">
+          <span>Created by </span>
+          <a
+            href="https://github.com/letsmakepact"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline"
+          >
+            pact
+          </a>
+          <span className="text-slate-600"> · </span>
+          <a
+            href="https://t.me/pactwithdevil"
+            target="_blank"
+            rel="noreferrer"
+            className="text-slate-400 hover:text-white hover:underline"
+          >
+            @pactwithdevil
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -44,7 +44,29 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
             ))}
           </div>
         </div>
-        <p className="relative text-xs text-slate-500">Built for developers juggling a dozen localhost processes.</p>
+        <div className="relative flex flex-col gap-1 text-xs text-slate-400">
+          <p>Built for developers juggling a dozen localhost processes.</p>
+          <p className="text-slate-500">
+            Created by{" "}
+            <a
+              href="https://github.com/letsmakepact"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline"
+            >
+              pact (letsmakepact)
+            </a>{" "}
+            ·{" "}
+            <a
+              href="https://t.me/pactwithdevil"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline"
+            >
+              telegram @pactwithdevil
+            </a>
+          </p>
+        </div>
       </aside>
       <main className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
@@ -53,6 +75,16 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
             <span className="text-lg font-semibold tracking-tight text-slate-900">Portside</span>
           </div>
           {children}
+          <div className="mt-8 text-center text-xs text-slate-400">
+            Created by{" "}
+            <a href="https://github.com/letsmakepact" target="_blank" rel="noreferrer" className="font-medium text-slate-600 hover:underline">
+              pact
+            </a>{" "}
+            ·{" "}
+            <a href="https://t.me/pactwithdevil" target="_blank" rel="noreferrer" className="font-medium text-slate-600 hover:underline">
+              @pactwithdevil
+            </a>
+          </div>
         </div>
       </main>
     </div>

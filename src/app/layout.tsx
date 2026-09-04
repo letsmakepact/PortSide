@@ -5,7 +5,9 @@ import { ToastProvider } from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
   title: { default: "Portside — name your localhost", template: "%s · Portside" },
-  description: "Give every local dev server a memorable *.localhost hostname. No more remembering ports.",
+  description: "Give every local dev server a memorable *.localhost hostname. No more remembering ports. Created by pact.",
+  authors: [{ name: "pact", url: "https://github.com/letsmakepact" }],
+  creator: "pact (@pactwithdevil)",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

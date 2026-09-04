@@ -1,4 +1,4 @@
-﻿# Portside
+# Portside
 
 Portside is a local development reverse proxy and management dashboard that gives every local service its own `*.localhost` domain without editing `/etc/hosts`.
 
@@ -83,6 +83,12 @@ PORT=80 npm start
 - `npm run db:generate`: Generate migration files from schema changes.
 - `npm run db:push`: Push schema definitions directly to PostgreSQL.
 - `npm run db:studio`: Launch Drizzle Studio database viewer.
+
+## Author & Credits
+
+Created by **pact**
+- GitHub: [@letsmakepact](https://github.com/letsmakepact)
+- Telegram: [@pactwithdevil](https://t.me/pactwithdevil)
 
 ## License
 

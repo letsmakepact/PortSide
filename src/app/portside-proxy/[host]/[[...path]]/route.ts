@@ -1,4 +1,4 @@
-﻿import { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { services } from "@/db/schema";
@@ -123,8 +123,10 @@ a{display:inline-block;margin-top:24px;color:#fff;background:#4f46e5;padding:10p
 </style></head><body><div class="card">
 <span class="badge"><i></i> Portside · ${status}</span>
 <h1>${title}</h1><p>${body}</p>
-<p style="margin-top:12px;font-size:13px">Route: <code>${label}.localhost</code></p>
-<a href="${dashboard}">Open dashboard</a>
+<div style="margin-top:20px;padding-top:16px;border-top:1px solid #1f2a4d;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#64748b">
+  <span>Created by <a href="https://github.com/letsmakepact" target="_blank" style="margin:0;padding:0;background:none;color:#818cf8;text-decoration:underline">pact (letsmakepact)</a></span>
+  <a href="https://t.me/pactwithdevil" target="_blank" style="margin:0;padding:0;background:none;color:#94a3b8;text-decoration:none">telegram @pactwithdevil</a>
+</div>
 </div></body></html>`;
   return new Response(html, {
     status,
