@@ -111,6 +111,15 @@ export function Sidebar() {
             </svg>
           </button>
         </div>
+        {user.email === "demo@portside.dev" && (
+          <Link
+            href="/register"
+            onClick={signOut}
+            className="mt-2 block rounded-lg bg-sky-500/10 border border-sky-400/20 px-2.5 py-1.5 text-center text-xs font-medium text-sky-300 hover:bg-sky-500/20 hover:text-sky-200 transition"
+          >
+            Create Your Free Account →
+          </Link>
+        )}
         <div className="mt-2 rounded-lg bg-white/[0.04] px-2.5 py-1.5 text-[11px] text-slate-400">
           <span>Created by </span>
           <a
