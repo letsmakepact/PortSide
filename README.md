@@ -1,4 +1,4 @@
-# Portside
+# ⚓ Portside
 
 Portside is a local development reverse proxy and management dashboard that gives every local service its own `*.localhost` domain without editing `/etc/hosts`.
 
