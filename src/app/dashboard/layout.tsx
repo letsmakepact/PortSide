@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { listProjects, listServices } from "@/lib/queries";
 import { DashboardProvider } from "@/components/dashboard/DashboardProvider";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { DemoBanner } from "@/components/dashboard/DemoBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       <div className="min-h-screen">
         <Sidebar />
         <main className="lg:pl-64">
+          <DemoBanner email={user.email} />
           <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">{children}</div>
         </main>
       </div>
