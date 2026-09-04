@@ -13,3 +13,4 @@ dist/
 drizzle/.temp/
 *.exe
 Portside-Launcher*
+launcher/
