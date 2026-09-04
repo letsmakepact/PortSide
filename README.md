@@ -4,6 +4,8 @@ Portside is a local development reverse proxy and management dashboard that give
 
 Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, [@pactwithdevil](https://t.me/pactwithdevil) on Telegram).
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-pacts-5F7FFF?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/pacts)
+
 ## Features
 
 - **Clean `*.localhost` Routing on Port 80:** Maps subdomains (like `api.localhost` or `shop.localhost`) directly to your internal local ports (e.g., `:8081`, `:3001`) with zero port numbers in your browser address bar.
@@ -130,18 +132,6 @@ No `/etc/hosts` modifications, port suffixes, or reverse proxy certificates requ
 - `npm run db:generate`: Generate migration files from schema changes.
 - `npm run db:push`: Push schema definitions directly to PostgreSQL.
 - `npm run db:studio`: Launch Drizzle Studio database viewer.
-
-## Support
-
-If you find Portside helpful, consider buying me a coffee:
-
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-pacts-5F7FFF?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/pacts)
-
-## Author & Credits
-
-Created by **pact**
-- GitHub: [@letsmakepact](https://github.com/letsmakepact)
-- Telegram: [@pactwithdevil](https://t.me/pactwithdevil)
 
 ## License & Terms of Use
 
