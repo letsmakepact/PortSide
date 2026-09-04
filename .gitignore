@@ -14,3 +14,4 @@ drizzle/.temp/
 *.exe
 Portside-Launcher*
 launcher/
+release_binaries/
