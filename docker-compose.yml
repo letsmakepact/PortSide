@@ -1,4 +1,6 @@
-﻿services:
+name: portside
+
+services:
   postgres:
     image: postgres:16-alpine
     container_name: portside-postgres
