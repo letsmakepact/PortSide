@@ -11,6 +11,7 @@ interface DetectedUser {
   email: string;
   name: string;
   tier: string;
+  isPremium?: boolean;
 }
 
 export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { email: string; password: string } }) {
@@ -25,6 +26,11 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
   const [detectedUser, setDetectedUser] = useState<DetectedUser | null>(null);
   const [isChoiceScreen, setIsChoiceScreen] = useState(false);
   const [hasDismissedChoice, setHasDismissedChoice] = useState(false);
+
+  const isPremiumAccount = Boolean(
+    detectedUser?.isPremium || detectedUser?.tier === "supporter" || email.toLowerCase().startsWith("pact@")
+  );
+  const isPasswordMandatory = currentMode !== "link" || isPremiumAccount;
 
   useEffect(() => {
     // Detect if an account already exists locally on this machine
@@ -146,10 +152,19 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
             <div>
               <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 Use Current Account
-                <span className="text-xs bg-sky-600 text-white px-2 py-0.5 rounded-full font-normal">Recommended</span>
+                {isPremiumAccount && (
+                  <span className="text-xs bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full font-bold">
+                    Supporter
+                  </span>
+                )}
+                <span className="text-xs bg-sky-600 text-white px-2 py-0.5 rounded-full font-normal">
+                  Recommended
+                </span>
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Sign in with your password to link this device and sync your hosts.
+                {isPremiumAccount
+                  ? "Enter your password to verify on server and unlock supporter perks."
+                  : "Sign in with your password to link this device and sync your hosts."}
               </p>
             </div>
             <span className="text-sky-600 dark:text-sky-400 font-bold group-hover:translate-x-1 transition-transform">→</span>
@@ -233,7 +248,11 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
         </div>
         <div>
           <Label htmlFor="password">
-            {currentMode === "link" ? "Password (Optional)" : "Password"}
+            {currentMode === "link"
+              ? isPremiumAccount
+                ? "Password (Required to verify Supporter Account on server)"
+                : "Password (Optional)"
+              : "Password"}
           </Label>
           <Input
             id="password"
@@ -242,13 +261,15 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
             onChange={(e) => setPassword(e.target.value)}
             placeholder={
               currentMode === "link"
-                ? "Enter password or leave blank to link"
+                ? isPremiumAccount
+                  ? "Enter your password to verify on server"
+                  : "Enter password or leave blank to link"
                 : currentMode === "register"
                 ? "At least 8 characters"
                 : "••••••••"
             }
             autoComplete={currentMode === "login" ? "current-password" : "new-password"}
-            required={currentMode !== "link"}
+            required={isPasswordMandatory}
             minLength={currentMode === "register" ? 8 : undefined}
           />
         </div>
@@ -259,7 +280,9 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
         )}
         <Button type="submit" size="lg" className="w-full" loading={loading}>
           {currentMode === "link"
-            ? "Confirm & Link Account"
+            ? isPremiumAccount
+              ? "Verify on Server & Link Account"
+              : "Confirm & Link Account"
             : currentMode === "login"
             ? "Sign in"
             : "Create account"}

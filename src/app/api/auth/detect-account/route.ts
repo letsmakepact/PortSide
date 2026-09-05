@@ -23,22 +23,22 @@ export async function GET() {
 
     if (list.length > 0) {
       const user = list[0];
+      const machineId = getHardwareMachineId();
+      let isPremium = user.tier === "supporter" || user.email.startsWith("pact@");
 
-      // Proactively sync account to central Portside-Web dashboard
+      // Verify authoritative status on sovereign server
       try {
         const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
-        fetch(`${webPortalUrl}/api/account/confirm`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: user.email,
-            name: user.name,
-            machineId: getHardwareMachineId(),
-            tier: user.tier,
-            isSupporter: user.tier === "supporter" || user.email.startsWith("pact@"),
-            action: "sync",
-          }),
-        }).catch(() => {});
+        const checkRes = await fetch(
+          `${webPortalUrl}/api/device/instructions?email=${encodeURIComponent(user.email)}&machineId=${machineId}`,
+          { signal: AbortSignal.timeout(3000) }
+        );
+        if (checkRes.ok) {
+          const inst = await checkRes.json();
+          if (inst.authorized && (inst.tier === "supporter" || inst.tier === "premium")) {
+            isPremium = true;
+          }
+        }
       } catch {}
 
       return NextResponse.json({
@@ -46,7 +46,8 @@ export async function GET() {
         user: {
           email: user.email,
           name: user.name,
-          tier: user.tier,
+          tier: isPremium ? "supporter" : user.tier,
+          isPremium,
         },
       });
     }
