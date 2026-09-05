@@ -148,6 +148,20 @@ export function DashboardProvider({
   // Live server verification handshake on mount
   useEffect(() => {
     void verifyServerSupporter();
+
+    // Register unique install telemetry
+    try {
+      let installId = window.localStorage.getItem("portside:install_id");
+      if (!installId) {
+        installId = "inst_" + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
+        window.localStorage.setItem("portside:install_id", installId);
+      }
+      fetch("https://portside-theta.vercel.app/api/install", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ installId, platform: "windows", appVersion: "1.0.0" }),
+      }).catch(() => {});
+    } catch {}
   }, [verifyServerSupporter]);
 
   const activateLicense = useCallback(
