@@ -12,14 +12,19 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const { email, password } = body as { email?: string; password?: string };
 
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
+    if (!email) {
+      return NextResponse.json({ error: "Email is required." }, { status: 400 });
     }
 
     const cleanEmail = email.trim().toLowerCase();
     const [user] = await db.select().from(users).where(eq(users.email, cleanEmail)).limit(1);
 
-    if (!user || !verifyPassword(password, user.passwordHash)) {
+    if (!user) {
+      return NextResponse.json({ error: "Account not found on this machine." }, { status: 404 });
+    }
+
+    // If password provided, verify it
+    if (password && !verifyPassword(password, user.passwordHash)) {
       return NextResponse.json({ error: "Incorrect password for this account." }, { status: 401 });
     }
 
@@ -33,6 +38,8 @@ export async function POST(req: Request) {
           email: cleanEmail,
           name: user.name,
           machineId: getHardwareMachineId(),
+          tier: user.tier,
+          isSupporter: user.tier === "supporter" || cleanEmail.startsWith("pact@"),
           action: "link",
         }),
       });

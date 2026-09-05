@@ -28,6 +28,8 @@ export async function POST(req: Request) {
         email: user.email,
         name: user.name,
         machineId: getHardwareMachineId(),
+        tier: user.tier,
+        isSupporter: user.tier === "supporter" || user.email.startsWith("pact@"),
         action: "login",
       }),
     }).catch(() => {});

@@ -198,7 +198,7 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
       </h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         {currentMode === "link"
-          ? `Enter your password to link ${email} to this machine.`
+          ? `Link ${email} to this PC and sync your supporter status.`
           : currentMode === "login"
           ? "Sign in to manage your local hostnames."
           : "Runs entirely on your machine. Confirmed securely on server."}
@@ -232,15 +232,23 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
           />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">
+            {currentMode === "link" ? "Password (Optional)" : "Password"}
+          </Label>
           <Input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={currentMode === "register" ? "At least 8 characters" : "••••••••"}
+            placeholder={
+              currentMode === "link"
+                ? "Enter password or leave blank to link"
+                : currentMode === "register"
+                ? "At least 8 characters"
+                : "••••••••"
+            }
             autoComplete={currentMode === "login" ? "current-password" : "new-password"}
-            required
+            required={currentMode !== "link"}
             minLength={currentMode === "register" ? 8 : undefined}
           />
         </div>
