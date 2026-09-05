@@ -32,3 +32,12 @@ export async function listActivity(userId: number, limit = 50) {
     .limit(limit);
   return rows.map(toActivityDTO);
 }
+
+export async function listLanServices() {
+  const rows = await db
+    .select()
+    .from(services)
+    .where(eq(services.enabled, true))
+    .orderBy(desc(services.favorite), services.name);
+  return rows.map(toServiceDTO);
+}

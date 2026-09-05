@@ -17,6 +17,8 @@ import type { SafeUser } from "@/lib/auth";
 
 export type ClientUser = Omit<SafeUser, "createdAt"> & { createdAt: string };
 
+export type ThemeMode = "dark" | "light";
+
 interface DashboardContextValue {
   user: ClientUser;
   setUser: (u: ClientUser) => void;
@@ -27,6 +29,8 @@ interface DashboardContextValue {
   lastCheckedAt: string | null;
   autoCheck: boolean;
   setAutoCheck: (v: boolean) => void;
+  theme: ThemeMode;
+  setTheme: (t: ThemeMode) => void;
   runCheck: () => Promise<void>;
   createService: (input: ServiceInput) => Promise<ServiceDTO | null>;
   updateService: (id: number, patch: Partial<ServiceInput>) => Promise<boolean>;
@@ -37,6 +41,12 @@ interface DashboardContextValue {
   tutorialOpen: boolean;
   openTutorial: () => void;
   closeTutorial: () => void;
+  lanOpen: boolean;
+  openLan: () => void;
+  closeLan: () => void;
+  supportOpen: boolean;
+  openSupport: () => void;
+  closeSupport: () => void;
 }
 
 const Ctx = createContext<DashboardContextValue | null>(null);
@@ -53,6 +63,13 @@ function getClientPort() {
 function getAutoCheckSnapshot() {
   if (typeof window === "undefined") return true;
   return window.localStorage.getItem("portside:autoCheck") !== "0";
+}
+
+function getThemeSnapshot(): ThemeMode {
+  if (typeof window === "undefined") return "light";
+  const stored = window.localStorage.getItem("portside:theme");
+  if (stored === "light" || stored === "dark") return stored;
+  return "light";
 }
 
 export function DashboardProvider({
@@ -75,16 +92,46 @@ export function DashboardProvider({
   const appPort = useSyncExternalStore(subscribe, getClientPort, () => "3000");
   const storedAutoCheck = useSyncExternalStore(subscribe, getAutoCheckSnapshot, () => true);
   const [autoCheck, setAutoCheckState] = useState(storedAutoCheck);
+  const storedTheme = useSyncExternalStore(subscribe, getThemeSnapshot, () => "light" as ThemeMode);
+  const [theme, setThemeState] = useState<ThemeMode>(storedTheme);
   const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [lanOpen, setLanOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   const inFlight = useRef(false);
 
   const openTutorial = useCallback(() => setTutorialOpen(true), []);
   const closeTutorial = useCallback(() => setTutorialOpen(false), []);
+  const openLan = useCallback(() => setLanOpen(true), []);
+  const closeLan = useCallback(() => setLanOpen(false), []);
+  const openSupport = useCallback(() => setSupportOpen(true), []);
+  const closeSupport = useCallback(() => setSupportOpen(false), []);
 
   const setAutoCheck = useCallback((v: boolean) => {
     setAutoCheckState(v);
     window.localStorage.setItem("portside:autoCheck", v ? "1" : "0");
   }, []);
+
+  const setTheme = useCallback((t: ThemeMode) => {
+    setThemeState(t);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("portside:theme", t);
+      if (t === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  }, [theme]);
 
   const runCheck = useCallback(async () => {
     if (inFlight.current) return;
@@ -335,6 +382,8 @@ export function DashboardProvider({
       lastCheckedAt,
       autoCheck,
       setAutoCheck,
+      theme,
+      setTheme,
       runCheck,
       createService,
       updateService,
@@ -345,6 +394,12 @@ export function DashboardProvider({
       tutorialOpen,
       openTutorial,
       closeTutorial,
+      lanOpen,
+      openLan,
+      closeLan,
+      supportOpen,
+      openSupport,
+      closeSupport,
     }),
     [
       user,
@@ -355,6 +410,8 @@ export function DashboardProvider({
       lastCheckedAt,
       autoCheck,
       setAutoCheck,
+      theme,
+      setTheme,
       runCheck,
       createService,
       updateService,
@@ -365,6 +422,12 @@ export function DashboardProvider({
       tutorialOpen,
       openTutorial,
       closeTutorial,
+      lanOpen,
+      openLan,
+      closeLan,
+      supportOpen,
+      openSupport,
+      closeSupport,
     ],
   );
 

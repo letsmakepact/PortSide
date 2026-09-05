@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useDashboard } from "./DashboardProvider";
 import { TutorialModal } from "./TutorialModal";
 import { UpdateModal } from "./UpdateModal";
+import { LanModal } from "./LanModal";
+import { BecomeSupporterModal } from "./BecomeSupporterModal";
 import { AnchorIconBox } from "@/components/ui/AnchorLogo";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +22,7 @@ const nav = [
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, services, checking, lastCheckedAt, autoCheck, tutorialOpen, openTutorial, closeTutorial } = useDashboard();
+  const { user, services, checking, lastCheckedAt, autoCheck, tutorialOpen, openTutorial, closeTutorial, lanOpen, openLan, closeLan, supportOpen, openSupport, closeSupport } = useDashboard();
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -34,16 +36,16 @@ export function Sidebar() {
   }
 
   const content = (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2.5 px-5 pt-5">
+    <div className="flex h-full flex-col bg-white dark:bg-[#0b0f19] border-r border-slate-200 dark:border-slate-800/80">
+      <div className="flex items-center gap-2.5 px-4 pt-4 pb-2">
         <AnchorIconBox size="md" />
         <div>
-          <p className="text-[15px] font-semibold leading-tight text-white">Portside</p>
-          <p className="text-[11px] text-sky-400/80">name your localhost</p>
+          <p className="text-[14px] font-bold tracking-tight text-slate-900 dark:text-white">Portside</p>
+          <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400">*.localhost proxy</p>
         </div>
       </div>
 
-      <nav className="mt-7 flex-1 space-y-1 px-3">
+      <nav className="mt-5 flex-1 space-y-0.5 px-2.5">
         {nav.map((item) => {
           const active = item.href === "/dashboard" ? pathname === item.href : pathname.startsWith(item.href);
           return (
@@ -52,20 +54,54 @@ export function Sidebar() {
               href={item.href}
               onClick={() => setOpen(false)}
               className={cn(
-                "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
-                active ? "bg-white/10 text-white shadow-inner" : "text-slate-400 hover:bg-white/5 hover:text-white",
+                "group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors",
+                active
+                  ? "bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/50"
+                  : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200",
               )}
             >
-              <svg viewBox="0 0 24 24" className={cn("h-[18px] w-[18px]", active ? "text-indigo-300" : "text-slate-500 group-hover:text-slate-300")} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 24 24" className={cn("h-4 w-4 shrink-0 transition-colors", active ? "text-sky-500 dark:text-sky-400" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300")} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d={item.icon} />
               </svg>
               {item.label}
               {item.label === "Services" && (
-                <span className="ml-auto rounded-md bg-white/10 px-1.5 py-0.5 text-[11px] font-semibold text-slate-300">{services.length}</span>
+                <span className="ml-auto rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-600 dark:text-slate-300">{services.length}</span>
               )}
             </Link>
           );
         })}
+
+        <div className="my-3 border-t border-slate-200 dark:border-slate-800/80 pt-2" />
+
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            openSupport();
+          }}
+          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-amber-600 dark:text-amber-400/90 transition-colors hover:bg-amber-50 dark:hover:bg-slate-800/60 hover:text-amber-700 dark:hover:text-amber-300"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
+          </svg>
+          Become a Supporter
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            openLan();
+          }}
+          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-sky-500 dark:text-sky-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" />
+          </svg>
+          Mobile / TV LAN
+          <span className="ml-auto rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 px-1.5 py-0.5 text-[9px] font-mono text-slate-500 dark:text-slate-300 uppercase">Wi-Fi</span>
+        </button>
+
         {services.length === 0 && (
           <button
             type="button"
@@ -73,40 +109,41 @@ export function Sidebar() {
               setOpen(false);
               openTutorial();
             }}
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-amber-300 transition hover:bg-amber-400/10 hover:text-amber-200"
+            className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
           >
-            <span className="flex h-[18px] w-[18px] items-center justify-center text-sm">✨</span>
+            <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
             Feature Tour
-            <span className="ml-auto rounded-md bg-amber-400/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300">Guide</span>
           </button>
         )}
       </nav>
 
-      <div className="mx-3 mb-3 rounded-xl border border-white/10 bg-white/5 p-3">
+      <div className="mx-2.5 mb-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 p-2.5">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Background monitor</span>
-          <span className={cn("h-2 w-2 rounded-full", autoCheck ? (checking ? "animate-pulse bg-amber-400" : "bg-emerald-400") : "bg-slate-500")} />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Background Monitor</span>
+          <span className={cn("h-1.5 w-1.5 rounded-full", autoCheck ? (checking ? "bg-amber-400 animate-pulse" : "bg-emerald-400") : "bg-slate-300 dark:bg-slate-600")} />
         </div>
-        <p className="mt-1.5 text-sm text-white">
-          <span className="font-semibold text-emerald-300">{online}</span>
-          <span className="text-slate-400"> / {services.length} online</span>
+        <p className="mt-1 text-xs text-slate-900 dark:text-white">
+          <span className="font-semibold font-mono text-emerald-600 dark:text-emerald-400">{online}</span>
+          <span className="text-slate-500 dark:text-slate-400"> / {services.length} online</span>
         </p>
-        <p className="mt-0.5 text-[11px] text-slate-500">
-          {autoCheck ? (checking ? "Probing ports…" : lastCheckedAt ? `Checked ${new Date(lastCheckedAt).toLocaleTimeString()}` : "Starting…") : "Paused in settings"}
+        <p className="mt-0.5 text-[10px] text-slate-500">
+          {autoCheck ? (checking ? "Probing ports…" : lastCheckedAt ? `Checked ${new Date(lastCheckedAt).toLocaleTimeString()}` : "Starting…") : "Paused"}
         </p>
       </div>
 
-      <div className="border-t border-white/10 p-3">
-        <div className="flex items-center gap-3 rounded-xl px-2 py-1.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-slate-600 to-slate-800 text-xs font-bold text-white ring-2 ring-white/10">
+      <div className="border-t border-slate-200 dark:border-slate-800 p-2.5">
+        <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200">
             {user.name.slice(0, 1).toUpperCase()}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-white">{user.name}</p>
-            <p className="truncate text-[11px] text-slate-500">{user.email}</p>
+            <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">{user.name}</p>
+            <p className="truncate text-[10px] text-slate-500">{user.email}</p>
           </div>
-          <button onClick={signOut} disabled={signingOut} title="Sign out" className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white disabled:opacity-50">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button onClick={signOut} disabled={signingOut} title="Sign out" className="rounded p-1 text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300 disabled:opacity-50">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
             </svg>
           </button>
@@ -115,27 +152,27 @@ export function Sidebar() {
           <Link
             href="/register"
             onClick={signOut}
-            className="mt-2 block rounded-lg bg-sky-500/10 border border-sky-400/20 px-2.5 py-1.5 text-center text-xs font-medium text-sky-300 hover:bg-sky-500/20 hover:text-sky-200 transition"
+            className="mt-2 block rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 px-2 py-1.5 text-center text-[11px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700/80 transition"
           >
             Create Your Free Account →
           </Link>
         )}
-        <div className="mt-2 rounded-lg bg-white/[0.04] px-2.5 py-1.5 text-[11px] text-slate-400">
+        <div className="mt-2 rounded-md bg-slate-50 dark:bg-slate-950/60 px-2 py-1.5 text-[10px] text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-800/50">
           <span>Created by </span>
           <a
             href="https://github.com/letsmakepact"
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-sky-400 hover:text-sky-300 hover:underline"
+            className="font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:underline"
           >
             pact
           </a>
-          <span className="text-slate-600"> · </span>
+          <span className="text-slate-300 dark:text-slate-600"> · </span>
           <a
             href="https://t.me/pactwithdevil"
             target="_blank"
             rel="noreferrer"
-            className="text-slate-400 hover:text-white hover:underline"
+            className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:underline"
           >
             @pactwithdevil
           </a>
@@ -146,25 +183,27 @@ export function Sidebar() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#0b0f19]/90 px-4 py-3 backdrop-blur lg:hidden">
         <div className="flex items-center gap-2">
           <AnchorIconBox size="sm" />
-          <span className="font-semibold text-slate-900">Portside</span>
+          <span className="font-semibold text-slate-900 dark:text-white">Portside</span>
         </div>
-        <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-slate-600 hover:bg-slate-100" aria-label="Open menu">
+        <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white" aria-label="Open menu">
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
       </header>
 
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-slate-900/60" onClick={() => setOpen(false)} />
-          <aside className="animate-fade-up absolute inset-y-0 left-0 w-72 bg-slate-950">{content}</aside>
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs" onClick={() => setOpen(false)} />
+          <aside className="animate-fade-up absolute inset-y-0 left-0 w-64 bg-white dark:bg-[#0b0f19]">{content}</aside>
         </div>
       )}
 
-      <aside className="fixed inset-y-0 left-0 hidden w-64 bg-slate-950 lg:block">{content}</aside>
+      <aside className="fixed inset-y-0 left-0 hidden w-60 bg-white dark:bg-[#0b0f19] lg:block">{content}</aside>
       <TutorialModal forceOpen={tutorialOpen} onClose={closeTutorial} servicesCount={services.length} />
+      <LanModal open={lanOpen} onClose={closeLan} />
+      <BecomeSupporterModal open={supportOpen} onClose={closeSupport} />
       <UpdateModal />
     </>
   );

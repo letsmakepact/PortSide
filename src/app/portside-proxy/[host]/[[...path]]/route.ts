@@ -79,9 +79,10 @@ async function handle(req: NextRequest, ctx: Ctx) {
       if (k === "location") {
         const appPort = process.env.PORT ?? "3000";
         const portSuffix = appPort === "80" ? "" : `:${appPort}`;
+        const clientHost = req.headers.get("x-portside-client-host") || `${label}.localhost${portSuffix}`;
         const rewritten = value.replace(
           new RegExp(`^https?://(?:localhost|127\\.0\\.0\\.1):${svc.port}(/.*)?$`),
-          `http://${label}.localhost${portSuffix}$1`,
+          `http://${clientHost}$1`,
         );
         outHeaders.set(key, rewritten);
         return;

@@ -1,4 +1,4 @@
-export function AnchorLogo({ className = "h-6 w-6" }: { className?: string }) {
+export function AnchorLogo({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 32 32"
@@ -8,46 +8,47 @@ export function AnchorLogo({ className = "h-6 w-6" }: { className?: string }) {
     >
       <circle
         cx="16"
-        cy="5.5"
-        r="2.6"
-        stroke="#38bdf8"
+        cy="6"
+        r="2.5"
+        stroke="currentColor"
         strokeWidth="2.2"
         fill="none"
       />
 
       <rect
         x="8.5"
-        y="9.5"
+        y="10.5"
         width="15"
-        height="3.2"
-        rx="1.6"
-        fill="#7dd3fc"
+        height="3"
+        rx="1.5"
+        fill="currentColor"
+        opacity="0.9"
       />
 
       <rect
-        x="14.4"
-        y="7"
-        width="3.2"
-        height="17.5"
-        rx="1.6"
-        fill="#0ea5e9"
+        x="14.5"
+        y="8"
+        width="3"
+        height="16"
+        rx="1.5"
+        fill="currentColor"
       />
 
       <path
-        d="M6 16.5C6 22 10.2 26 16 26C21.8 26 26 22 26 16.5"
-        stroke="#38bdf8"
-        strokeWidth="3.2"
+        d="M7 16C7 21 10.5 25 16 25C21.5 25 25 21 25 16"
+        stroke="currentColor"
+        strokeWidth="2.8"
         strokeLinecap="round"
         fill="none"
       />
 
       <polygon
-        points="2.8,17 7.2,12 9.5,17.5"
-        fill="#7dd3fc"
+        points="3.5,16.5 7.5,12 9.5,17"
+        fill="currentColor"
       />
       <polygon
-        points="29.2,17 24.8,12 22.5,17.5"
-        fill="#7dd3fc"
+        points="28.5,16.5 24.5,12 22.5,17"
+        fill="currentColor"
       />
     </svg>
   );
@@ -55,20 +56,20 @@ export function AnchorLogo({ className = "h-6 w-6" }: { className?: string }) {
 
 export function AnchorIconBox({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const boxClasses = {
-    sm: "h-8 w-8 rounded-lg",
-    md: "h-9 w-9 rounded-xl",
-    lg: "h-12 w-12 rounded-2xl",
+    sm: "h-7 w-7 rounded-lg text-sky-400 bg-slate-800 border border-slate-700/60 shadow-xs",
+    md: "h-8 w-8 rounded-lg text-sky-400 bg-slate-800 border border-slate-700/70 shadow-xs",
+    lg: "h-10 w-10 rounded-xl text-sky-400 bg-slate-800 border border-slate-700/80 shadow-sm",
   }[size];
 
   const iconClasses = {
-    sm: "h-5 w-5",
-    md: "h-6 w-6",
-    lg: "h-8 w-8",
+    sm: "h-4 w-4",
+    md: "h-4.5 w-4.5",
+    lg: "h-6 w-6",
   }[size];
 
   return (
     <span
-      className={`flex items-center justify-center bg-sky-950/80 border border-sky-400/40 shadow-lg shadow-sky-500/25 ${boxClasses}`}
+      className={`inline-flex shrink-0 items-center justify-center ${boxClasses}`}
     >
       <AnchorLogo className={iconClasses} />
     </span>

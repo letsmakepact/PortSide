@@ -1,26 +1,62 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase();
   const hostname = host.split(":")[0];
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/_next")) return NextResponse.next();
   if (pathname.startsWith("/portside-proxy")) {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const match = hostname.match(/^([a-z0-9-]+)\.localhost$/);
-  if (!match) return NextResponse.next();
+  let label: string | null = null;
+  let targetPath = pathname;
 
-  const label = match[1];
-  if (label === "www" || label === "app") return NextResponse.next();
+  if (pathname.startsWith("/s/")) {
+    const segments = pathname.slice(3).split("/");
+    label = segments[0]?.toLowerCase() || null;
+    const rest = segments.slice(1).join("/");
+    targetPath = rest ? `/${rest}` : "/";
+  }
+
+  if (!label) {
+    const localhostMatch = hostname.match(/^([a-z0-9-]+)\.localhost$/);
+    if (localhostMatch) {
+      label = localhostMatch[1];
+    }
+  }
+
+  if (!label) {
+    const wildcardMatch = hostname.match(/^([a-z0-9-]+)\.(?:[0-9.-]+\.)?(?:nip\.io|sslip\.io)$/);
+    if (wildcardMatch) {
+      label = wildcardMatch[1];
+    }
+  }
+
+  if (!label) {
+    const localDomainMatch = hostname.match(/^([a-z0-9-]+)(?:\.[^.]+)?\.local$/);
+    if (localDomainMatch) {
+      label = localDomainMatch[1];
+    }
+  }
+
+  const isRawIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+  if (!label && isRawIp && pathname === "/") {
+    const lanUrl = request.nextUrl.clone();
+    lanUrl.pathname = "/lan";
+    return NextResponse.redirect(lanUrl);
+  }
+
+  if (!label || label === "www" || label === "app") {
+    return NextResponse.next();
+  }
 
   const url = request.nextUrl.clone();
-  url.pathname = `/portside-proxy/${label}${pathname === "/" ? "" : pathname}`;
+  url.pathname = `/portside-proxy/${label}${targetPath === "/" ? "" : targetPath}`;
 
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-portside-original-path", pathname);
+  requestHeaders.set("x-portside-original-path", targetPath);
+  requestHeaders.set("x-portside-client-host", host);
 
   return NextResponse.rewrite(url, {
     request: {
@@ -30,5 +66,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!favicon.ico).*)"],
 };

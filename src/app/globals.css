@@ -1,28 +1,33 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 :root {
   color-scheme: light;
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-slate-50/70 text-slate-900 antialiased selection:bg-slate-900 selection:text-white transition-colors duration-150;
+}
+
+html.dark body {
+  @apply bg-[#0b0f19] text-slate-100 selection:bg-sky-500 selection:text-white;
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
-  100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-}
-.animate-fade-up { animation: fade-up 0.25s ease-out both; }
-.status-online { animation: pulse-ring 1.8s ease-out infinite; }
 
-.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(148 163 184 / 0.4); border-radius: 99px; }
+.animate-fade-up { animation: fade-up 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(148 163 184 / 0.3); border-radius: 99px; }
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(30 41 59 / 0.8); }

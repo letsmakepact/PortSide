@@ -70,17 +70,19 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, hostname, port or tag…" className="pl-9" />
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 shadow-sm">
+          <div className="flex rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0f172a]/60 p-0.5 shadow-xs">
             {(["all", "online", "offline", "paused"] as StatusFilter[]).map((f) => (
               <button
                 key={f}
                 onClick={() => setStatus(f)}
                 className={cn(
-                  "rounded-md px-2.5 py-1.5 text-xs font-medium capitalize transition",
-                  status === f ? "bg-slate-900 text-white shadow" : "text-slate-600 hover:bg-slate-100",
+                  "rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors",
+                  status === f
+                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/60 shadow-xs"
+                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-700 dark:hover:text-slate-200",
                 )}
               >
-                {f} <span className={cn("ml-1 tabular-nums", status === f ? "text-slate-300" : "text-slate-400")}>{counts[f]}</span>
+                {f} <span className={cn("ml-1 font-mono text-[11px] tabular-nums", status === f ? "text-slate-500 dark:text-slate-300" : "text-slate-400 dark:text-slate-500")}>{counts[f]}</span>
               </button>
             ))}
           </div>
@@ -98,25 +100,25 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
 
       {services.length === 0 ? (
         <EmptyState
-          icon="🔌"
-          title="No services yet"
-          description="Register your first local process and it instantly gets a memorable hostname — no more hunting for the right port."
+          icon={<svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2" /><rect x="2" y="14" width="20" height="8" rx="2" ry="2" /><line x1="6" y1="6" x2="6.01" y2="6" /><line x1="6" y1="18" x2="6.01" y2="18" /></svg>}
+          title="No services registered"
+          description="Register your local development processes with hostname routing to access them effortlessly."
           action={
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <Button onClick={() => setFormOpen(true)}>
                 <PlusIcon /> Add your first service
               </Button>
               <Button variant="secondary" onClick={openTutorial}>
-                ✨ Take Feature Tour
+                Feature Tour
               </Button>
             </div>
           }
         />
       ) : filtered.length === 0 ? (
         <EmptyState
-          icon="🔍"
-          title="Nothing matches"
-          description="Try a different search term or clear the filters."
+          icon={<svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>}
+          title="No matching services"
+          description="Try modifying your search term or adjusting status and project filters."
           action={
             <Button
               variant="secondary"
@@ -131,7 +133,7 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
           }
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((s) => (
             <ServiceCard
               key={s.id}
