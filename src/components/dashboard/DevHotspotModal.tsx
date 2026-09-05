@@ -7,7 +7,7 @@ import { useDashboard } from "./DashboardProvider";
 import { SupporterBadge } from "@/components/ui/SupporterBadge";
 
 export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { isSupporter, openSupport } = useDashboard();
+  const { openSupport } = useDashboard();
   const [active, setActive] = useState(false);
   const [ssid, setSsid] = useState("PortSide-DevNet");
   const [key, setKey] = useState("portside123");
@@ -15,6 +15,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
   const [copiedKey, setCopiedKey] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [savedMsg, setSavedMsg] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
 
   async function toggleHotspot() {
     setSaving(true);
+    setSavedMsg("");
     try {
       const res = await fetch("/api/hotspot", {
         method: "POST",
@@ -53,6 +55,33 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
       } else {
         setActive(data.active);
         setServerConfirmed(true);
+        setSavedMsg(data.active ? "Hotspot broadcasting live!" : "Hotspot stopped.");
+        setTimeout(() => setSavedMsg(""), 3000);
+      }
+    } catch {
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveSettings(e: React.FormEvent) {
+    e.preventDefault();
+    if (key.length < 8) {
+      alert("Wi-Fi password must be at least 8 characters long.");
+      return;
+    }
+    setSaving(true);
+    setSavedMsg("");
+    try {
+      const res = await fetch("/api/hotspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active, ssid, key }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSavedMsg("✓ Settings saved to machine!");
+        setTimeout(() => setSavedMsg(""), 3000);
       }
     } catch {
     } finally {
@@ -76,11 +105,11 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Dev Wi-Fi Hotspot</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Multi-Device Connectivity</h2>
                 <SupporterBadge size="xs" />
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Broadcast a dedicated Wi-Fi network from your PC for device testing
+                Zero-config network routing or private isolated Wi-Fi
               </p>
             </div>
           </div>
@@ -91,7 +120,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
                 : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 ring-slate-200 dark:ring-slate-700"
             }`}
           >
-            {active ? "● Broadcasting" : "○ Inactive"}
+            {active ? "● Hotspot Active" : "○ Hotspot Off"}
           </span>
         </div>
 
@@ -101,10 +130,10 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
               🔒
             </span>
             <h3 className="mt-3 text-base font-bold text-slate-900 dark:text-white">
-              Unlock Dev Wi-Fi Hotspot
+              Unlock Multi-Device & Hotspot Perks
             </h3>
             <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300 max-w-md mx-auto">
-              Dev Hotspot creates an isolated wireless access point directly from your development machine. Connected phones and TVs resolve your custom <code className="font-mono text-amber-600 dark:text-amber-400">*.localhost</code> domains with zero configuration, even with no local router.
+              Supporters get zero-configuration <code className="font-mono text-amber-600 dark:text-amber-400">*.local</code> LAN broadcast out of the box, plus the ability to spawn an isolated, hardware-encrypted Wi-Fi access point right from your PC.
             </p>
 
             <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -121,64 +150,120 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
           </div>
         ) : (
           <div className="mt-6 space-y-4">
+            {/* Mode 1: Zero-Config LAN (Active by Default) */}
+            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xl">🌐</span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">Zero-Config LAN (mDNS)</p>
+                      <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
+                        ACTIVE · NO SETUP
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Nearby phones and PCs on your Wi-Fi automatically resolve <code className="font-mono text-emerald-700 dark:text-emerald-400">http://portside.local</code>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mode 2: Dedicated Secure Wi-Fi Hotspot */}
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white">Broadcast State</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {active ? "Hotspot is active on 192.168.x.x" : "Turn on to allow nearby devices to connect"}
-                  </p>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xl">🛡️</span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">Secure Dev Wi-Fi Hotspot</p>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                          active
+                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300"
+                            : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                        }`}
+                      >
+                        {active ? "ACTIVE" : "OFF"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Broadcast an isolated, encrypted network when you need private testing or don&apos;t have a local router.
+                    </p>
+                  </div>
                 </div>
                 <Button
                   variant={active ? "secondary" : "primary"}
                   onClick={toggleHotspot}
                   loading={saving}
+                  size="sm"
                 >
                   {active ? "Stop Hotspot" : "Start Hotspot"}
                 </Button>
               </div>
-            </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-sm">
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Network Name (SSID)
-                </label>
-                <p className="mt-1 font-mono text-sm font-bold text-slate-900 dark:text-white">{ssid}</p>
-                <p className="mt-1 text-[11px] text-slate-400">Search for this Wi-Fi network on your phone or Smart TV.</p>
-              </div>
-
-              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-sm">
-                <div className="flex items-center justify-between">
+              {/* Wi-Fi Credentials Configuration Form */}
+              <form onSubmit={saveSettings} className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 grid gap-3 sm:grid-cols-2">
+                <div>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Wi-Fi Password
+                    Network Name (SSID)
                   </label>
-                  <button
-                    type="button"
-                    onClick={copyPassword}
-                    className="text-xs text-sky-600 dark:text-sky-400 hover:text-sky-700 font-medium"
-                  >
-                    {copiedKey ? "Copied!" : "Copy"}
-                  </button>
+                  <input
+                    type="text"
+                    value={ssid}
+                    onChange={(e) => setSsid(e.target.value)}
+                    maxLength={32}
+                    className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    placeholder="e.g. PortSide-DevNet"
+                  />
+                  <p className="mt-1 text-[10px] text-slate-400">Search for this SSID on your mobile device.</p>
                 </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <p className="font-mono text-sm font-bold text-slate-900 dark:text-white">
-                    {showKey ? key : "••••••••••••"}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setShowKey(!showKey)}
-                    className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  >
-                    {showKey ? "Hide" : "Show"}
-                  </button>
+
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      WPA2 Password
+                    </label>
+                    <button
+                      type="button"
+                      onClick={copyPassword}
+                      className="text-[11px] text-sky-600 dark:text-sky-400 hover:underline font-medium"
+                    >
+                      {copiedKey ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <div className="mt-1 relative flex items-center">
+                    <input
+                      type={showKey ? "text" : "password"}
+                      value={key}
+                      onChange={(e) => setKey(e.target.value)}
+                      minLength={8}
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 pr-12"
+                      placeholder="Min 8 characters"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowKey(!showKey)}
+                      className="absolute right-2.5 text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    >
+                      {showKey ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                  <p className="mt-1 text-[10px] text-slate-400">Must be at least 8 characters.</p>
                 </div>
-                <p className="mt-1 text-[11px] text-slate-400">WPA2 Personal encryption key.</p>
-              </div>
+
+                <div className="sm:col-span-2 flex items-center justify-between pt-1">
+                  <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">{savedMsg}</span>
+                  <Button type="submit" size="sm" variant="secondary" loading={saving}>
+                    Save Wi-Fi Config
+                  </Button>
+                </div>
+              </form>
             </div>
 
             <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 dark:border-amber-900/30 dark:bg-amber-950/20 p-3 text-xs text-amber-950 dark:text-amber-200">
-              <span className="font-semibold">💡 Instant Access:</span> Once connected to the hotspot, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1 font-mono text-[11px] font-bold">http://portside.local</code> or your service subdomains.
+              <span className="font-semibold">💡 Instant Access:</span> Once connected, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1 font-mono text-[11px] font-bold">http://portside.local</code> or any of your custom project subdomains.
             </div>
           </div>
         )}

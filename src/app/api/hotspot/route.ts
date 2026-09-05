@@ -6,10 +6,58 @@ let hotspotActive = false;
 let hotspotSsid = "PortSide-DevNet";
 let hotspotKey = "portside123";
 
+async function queryLauncherState() {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 400);
+    const res = await fetch("http://127.0.0.1:4242/api/pro/status", {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = await res.json();
+      if (typeof data.hotspotActive === "boolean") {
+        hotspotActive = data.hotspotActive;
+      }
+      if (data.hotspotSsid) {
+        hotspotSsid = data.hotspotSsid;
+      }
+      return data;
+    }
+  } catch {}
+  return null;
+}
+
+async function syncWithLauncher(enable?: boolean, ssid?: string, key?: string) {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1200);
+    const res = await fetch("http://127.0.0.1:4242/api/pro/hotspot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enable, ssid, key }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = await res.json();
+      if (typeof data.active === "boolean") {
+        hotspotActive = data.active;
+      }
+      return data;
+    }
+  } catch {}
+  return null;
+}
+
 export async function GET() {
   try {
     const user = await requireUser();
     const isSupporter = await isServerSupporter(user);
+
+    if (isSupporter) {
+      await queryLauncherState();
+    }
 
     return Response.json({
       active: isSupporter ? hotspotActive : false,
@@ -19,6 +67,7 @@ export async function GET() {
       connectedDevices: isSupporter && hotspotActive ? 1 : 0,
       isSupporter,
       serverConfirmed: true,
+      mdnsActive: isSupporter, // Zero-config LAN active by default
     });
   } catch (e: any) {
     if (e?.message === "Unauthorized") {
@@ -49,6 +98,8 @@ export async function POST(req: Request) {
       hotspotActive = body.active;
     }
 
+    await syncWithLauncher(body.active, body.ssid, body.key);
+
     return Response.json({
       ok: true,
       active: hotspotActive,
@@ -56,6 +107,7 @@ export async function POST(req: Request) {
       key: hotspotKey,
       ip: "192.168.x.x",
       connectedDevices: hotspotActive ? 1 : 0,
+      serverConfirmed: true,
     });
   } catch (e: any) {
     if (e?.message === "Unauthorized") {
