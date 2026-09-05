@@ -24,10 +24,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             className={cn(
-              "animate-fade-up pointer-events-auto rounded-xl border bg-white/95 p-3.5 shadow-lg shadow-slate-900/10 backdrop-blur",
-              t.tone === "success" && "border-emerald-200",
-              t.tone === "error" && "border-rose-200",
-              t.tone === "info" && "border-slate-200",
+              "animate-fade-up pointer-events-auto rounded-xl border bg-white/95 dark:bg-[#0f172a]/95 dark:border-slate-800 p-3.5 shadow-lg shadow-slate-900/10 backdrop-blur",
+              t.tone === "success" && "border-emerald-200 dark:border-emerald-800/60",
+              t.tone === "error" && "border-rose-200 dark:border-rose-800/60",
+              t.tone === "info" && "border-slate-200 dark:border-slate-800",
             )}
           >
             <div className="flex items-start gap-3">
@@ -42,8 +42,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 {t.tone === "success" ? "✓" : t.tone === "error" ? "!" : "i"}
               </span>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-slate-900">{t.title}</p>
-                {t.description && <p className="mt-0.5 text-xs text-slate-600">{t.description}</p>}
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{t.title}</p>
+                {t.description && <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">{t.description}</p>}
               </div>
             </div>
           </div>

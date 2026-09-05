@@ -9,16 +9,16 @@ import type { ActivityDTO } from "@/lib/types";
 import { cn, formatRelative } from "@/lib/utils";
 
 const iconFor: Record<string, { bg: string; glyph: string }> = {
-  created: { bg: "bg-emerald-100 text-emerald-700", glyph: "+" },
-  updated: { bg: "bg-sky-100 text-sky-700", glyph: "✎" },
-  deleted: { bg: "bg-rose-100 text-rose-700", glyph: "–" },
-  status: { bg: "bg-amber-100 text-amber-700", glyph: "⇅" },
-  project: { bg: "bg-violet-100 text-violet-700", glyph: "▣" },
-  account: { bg: "bg-indigo-100 text-indigo-700", glyph: "★" },
+  created: { bg: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400", glyph: "+" },
+  updated: { bg: "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-400", glyph: "✎" },
+  deleted: { bg: "bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400", glyph: "–" },
+  status: { bg: "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400", glyph: "⇅" },
+  project: { bg: "bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400", glyph: "▣" },
+  account: { bg: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-400", glyph: "★" },
 };
 
 export function ActivityIcon({ action }: { action: string }) {
-  const i = iconFor[action] ?? { bg: "bg-slate-100 text-slate-600", glyph: "•" };
+  const i = iconFor[action] ?? { bg: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400", glyph: "•" };
   return <span className={cn("flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold", i.bg)}>{i.glyph}</span>;
 }
 

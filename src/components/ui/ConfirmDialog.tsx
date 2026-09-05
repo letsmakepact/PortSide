@@ -20,7 +20,7 @@ export function ConfirmDialog({
 }) {
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
-      <p className="text-sm text-slate-600">{description}</p>
+      <p className="text-sm text-slate-600 dark:text-slate-300">{description}</p>
       <div className="mt-5 flex justify-end gap-2">
         <Button variant="secondary" onClick={onClose}>
           Cancel

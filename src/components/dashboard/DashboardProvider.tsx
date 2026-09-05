@@ -213,6 +213,15 @@ export function DashboardProvider({
   }, []);
 
   useEffect(() => {
+    const t = getThemeSnapshot();
+    if (t === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  useEffect(() => {
     void isDesktopApp().then(setIsDesktop);
   }, []);
 
