@@ -70,7 +70,7 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, hostname, port or tag…" className="pl-9" />
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0f172a]/60 p-0.5 shadow-xs">
+          <div className="flex rounded-lg border border-slate-200 dark:border-slate-800 bg-brand-bg dark:bg-[#0f172a]/60 p-0.5 shadow-xs">
             {(["all", "online", "offline", "paused"] as StatusFilter[]).map((f) => (
               <button
                 key={f}
@@ -78,8 +78,8 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
                 className={cn(
                   "rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors",
                   status === f
-                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/60 shadow-xs"
-                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-700 dark:hover:text-slate-200",
+                    ? "bg-brand-surface dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/60 shadow-xs"
+                    : "text-slate-500 dark:text-slate-400 hover:bg-brand-bg dark:hover:bg-slate-800/40 hover:text-slate-700 dark:hover:text-slate-200",
                 )}
               >
                 {f} <span className={cn("ml-1 font-mono text-[11px] tabular-nums", status === f ? "text-slate-500 dark:text-slate-300" : "text-slate-400 dark:text-slate-500")}>{counts[f]}</span>

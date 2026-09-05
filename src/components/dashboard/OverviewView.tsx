@@ -16,6 +16,12 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
   const { user, services, projects, appPort, runCheck, checking, lastCheckedAt, openTutorial, openLan, openSupport } = useDashboard();
   const [formOpen, setFormOpen] = useState(false);
   const [activity, setActivity] = useState(initialActivity);
+  const [greeting, setGreeting] = useState("");
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    setGreeting(hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening");
+  }, []);
 
   useEffect(() => {
     if (!lastCheckedAt) return;
@@ -29,8 +35,6 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
   const online = enabled.filter((s) => s.lastStatus === "online");
   const offline = enabled.filter((s) => s.lastStatus === "offline");
   const pinned = services.filter((s) => s.favorite);
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   const stats = [
     { label: "Services", value: services.length, hint: `${projects.length} project${projects.length === 1 ? "" : "s"}`, tone: "text-slate-900" },
@@ -56,15 +60,6 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
               Feature Tour
             </Button>
           )}
-          <Button
-            variant="secondary"
-            onClick={openSupport}
-          >
-            Become a Supporter
-          </Button>
-          <Button variant="secondary" onClick={openLan}>
-            Mobile / LAN
-          </Button>
           <Button variant="secondary" onClick={runCheck} loading={checking}>
             {!checking && <RefreshIcon />} Check now
           </Button>
@@ -76,7 +71,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label} className="p-3.5 sm:p-4">
+          <Card key={s.label} className="p-3.5 sm:p-4 bg-brand-surface dark:bg-brand-surface-dark border-brand-bg dark:border-slate-800">
             <p className="text-xs font-medium text-slate-400">{s.label}</p>
             <p className={cn("mt-1 text-2xl font-bold tabular-nums", s.tone === "text-slate-900" ? "text-slate-900 dark:text-slate-100" : s.tone === "text-emerald-600" ? "text-emerald-600 dark:text-emerald-400" : s.tone === "text-rose-600" ? "text-rose-600 dark:text-rose-400" : s.tone)}>{s.value}</p>
             <p className="mt-0.5 text-xs text-slate-500">{s.hint}</p>
@@ -113,7 +108,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
 
       <div className="grid gap-5 lg:grid-cols-5">
         <Card className="lg:col-span-3 overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 bg-slate-50/50 dark:bg-[#0f172a]/50">
+          <div className="flex items-center justify-between border-b border-brand-bg dark:border-slate-800/80 px-4 py-3 bg-brand-bg dark:bg-[#0f172a]/50">
             <h2 className="text-xs font-semibold text-slate-700 dark:text-slate-300">Port routing map</h2>
             <span className="font-mono text-xs text-slate-400 dark:text-slate-500">{services.length} route{services.length === 1 ? "" : "s"}</span>
           </div>
@@ -143,7 +138,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
         </Card>
 
         <Card className="lg:col-span-2 overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 bg-slate-50/50 dark:bg-[#0f172a]/50">
+          <div className="flex items-center justify-between border-b border-brand-bg dark:border-slate-800/80 px-4 py-3 bg-brand-bg dark:bg-[#0f172a]/50">
             <h2 className="text-xs font-semibold text-slate-700 dark:text-slate-300">Recent activity</h2>
             <Link href="/dashboard/activity" className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               See all

@@ -56,6 +56,8 @@ export async function getCurrentUser(): Promise<SafeUser | null> {
       id: users.id,
       email: users.email,
       name: users.name,
+      tier: users.tier,
+      supporterSince: users.supporterSince,
       createdAt: users.createdAt,
     })
     .from(sessions)

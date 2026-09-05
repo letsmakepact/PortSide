@@ -63,7 +63,7 @@ export function ServiceCard({
   return (
     <div
       className={cn(
-        "group relative flex flex-col rounded-xl border bg-white dark:bg-[#0f172a]/70 p-4 shadow-xs transition hover:border-slate-300 dark:hover:border-slate-700/80 hover:bg-slate-50 dark:hover:bg-[#0f172a] backdrop-blur-xs",
+        "group relative flex flex-col rounded-xl border bg-brand-surface dark:bg-brand-surface-dark p-4 shadow-xs transition hover:border-slate-300 dark:hover:border-slate-700/80 hover:bg-brand-bg dark:hover:bg-[#0f172a] backdrop-blur-xs",
         service.enabled ? "border-slate-200/80 dark:border-slate-800/80" : "border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 opacity-75",
         pending && "animate-pulse",
       )}
@@ -102,7 +102,7 @@ export function ServiceCard({
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor"><path d="M10 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" /></svg>
               </button>
               {menuOpen && (
-                <div className="animate-fade-up absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] py-1 text-xs shadow-xl">
+                <div className="animate-fade-up absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 bg-brand-surface dark:bg-brand-surface-dark py-1 text-xs shadow-xl">
                   <MenuItem onClick={() => window.open(url, "_blank")}>Open in new tab</MenuItem>
                   <MenuItem onClick={copy}>Copy URL</MenuItem>
                   <MenuItem onClick={copyLocal}>Copy .local domain</MenuItem>
@@ -131,7 +131,7 @@ export function ServiceCard({
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <span className="inline-flex items-center rounded border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-600 dark:text-slate-300">
+        <span className="inline-flex items-center rounded border border-slate-200 dark:border-slate-800 bg-brand-surface dark:bg-slate-900 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-600 dark:text-slate-300">
           :{service.port}
         </span>
         {project && (
@@ -141,13 +141,13 @@ export function ServiceCard({
           </span>
         )}
         {!compact && service.tags.map((t) => (
-          <span key={t} className="rounded border border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/60 px-1.5 py-0.5 text-[10px] text-slate-500 dark:text-slate-400">
+          <span key={t} className="rounded border border-slate-200 dark:border-slate-800 bg-brand-bg dark:bg-slate-900/60 px-1.5 py-0.5 text-[10px] text-slate-500 dark:text-slate-400">
             {t}
           </span>
         ))}
       </div>
 
-      <div className="mt-3 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-2.5 text-[10px] text-slate-400 dark:text-slate-500">
+      <div className="mt-3 flex items-center justify-between border-t border-brand-bg dark:border-slate-800/80 pt-2.5 text-[10px] text-slate-400 dark:text-slate-500">
         <span>
           {service.enabled
             ? service.lastCheckedAt
@@ -168,7 +168,7 @@ function MenuItem({ onClick, children, className }: { onClick: () => void; child
     <button
       onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
-      className={cn("block w-full px-3 py-1.5 text-left text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white", className)}
+      className={cn("block w-full px-3 py-1.5 text-left text-slate-700 dark:text-slate-300 transition hover:bg-brand-bg dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white", className)}
     >
       {children}
     </button>

@@ -8,7 +8,9 @@ import { TutorialModal } from "./TutorialModal";
 import { UpdateModal } from "./UpdateModal";
 import { LanModal } from "./LanModal";
 import { BecomeSupporterModal } from "./BecomeSupporterModal";
+import { DevHotspotModal } from "./DevHotspotModal";
 import { AnchorIconBox } from "@/components/ui/AnchorLogo";
+import { SupporterBadge } from "@/components/ui/SupporterBadge";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -22,7 +24,26 @@ const nav = [
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, services, checking, lastCheckedAt, autoCheck, tutorialOpen, openTutorial, closeTutorial, lanOpen, openLan, closeLan, supportOpen, openSupport, closeSupport } = useDashboard();
+  const {
+    user,
+    services,
+    checking,
+    lastCheckedAt,
+    autoCheck,
+    isSupporter,
+    tutorialOpen,
+    openTutorial,
+    closeTutorial,
+    lanOpen,
+    openLan,
+    closeLan,
+    supportOpen,
+    openSupport,
+    closeSupport,
+    hotspotOpen,
+    openHotspot,
+    closeHotspot,
+  } = useDashboard();
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -36,7 +57,7 @@ export function Sidebar() {
   }
 
   const content = (
-    <div className="flex h-full flex-col bg-white dark:bg-[#0b0f19] border-r border-slate-200 dark:border-slate-800/80">
+    <div className="flex h-full flex-col bg-brand-surface dark:bg-brand-bg-dark border-r border-slate-200 dark:border-slate-800/80">
       <div className="flex items-center gap-2.5 px-4 pt-4 pb-2">
         <AnchorIconBox size="md" />
         <div>
@@ -79,12 +100,37 @@ export function Sidebar() {
             setOpen(false);
             openSupport();
           }}
-          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-amber-600 dark:text-amber-400/90 transition-colors hover:bg-amber-50 dark:hover:bg-slate-800/60 hover:text-amber-700 dark:hover:text-amber-300"
+          className={cn(
+            "group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors",
+            isSupporter
+              ? "text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20"
+              : "text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-slate-800/60 hover:text-amber-700 dark:hover:text-amber-300"
+          )}
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
           </svg>
-          Become a Supporter
+          {isSupporter ? "Supporter Active" : "Become a Supporter"}
+          {isSupporter && (
+            <span className="ml-auto rounded-full bg-amber-100 dark:bg-amber-900/40 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 dark:text-amber-300">
+              PRO
+            </span>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            openHotspot();
+          }}
+          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" />
+          </svg>
+          Dev Wi-Fi Hotspot
+          <SupporterBadge size="xs" className="ml-auto" />
         </button>
 
         <button
@@ -93,9 +139,9 @@ export function Sidebar() {
             setOpen(false);
             openLan();
           }}
-          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
+          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
         >
-          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-sky-500 dark:text-sky-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-brand-primary" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" />
           </svg>
           Mobile / TV LAN
@@ -119,7 +165,7 @@ export function Sidebar() {
         )}
       </nav>
 
-      <div className="mx-2.5 mb-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 p-2.5">
+      <div className="mx-2.5 mb-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-brand-bg dark:bg-slate-950/40 p-2.5">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Background Monitor</span>
           <span className={cn("h-1.5 w-1.5 rounded-full", autoCheck ? (checking ? "bg-amber-400 animate-pulse" : "bg-emerald-400") : "bg-slate-300 dark:bg-slate-600")} />
@@ -157,7 +203,7 @@ export function Sidebar() {
             Create Your Free Account →
           </Link>
         )}
-        <div className="mt-2 rounded-md bg-slate-50 dark:bg-slate-950/60 px-2 py-1.5 text-[10px] text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-800/50">
+        <div className="mt-2 rounded-md bg-brand-bg dark:bg-slate-950/60 px-2 py-1.5 text-[10px] text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-800/50">
           <span>Created by </span>
           <a
             href="https://github.com/letsmakepact"
@@ -203,6 +249,7 @@ export function Sidebar() {
       <aside className="fixed inset-y-0 left-0 hidden w-60 bg-white dark:bg-[#0b0f19] lg:block">{content}</aside>
       <TutorialModal forceOpen={tutorialOpen} onClose={closeTutorial} servicesCount={services.length} />
       <LanModal open={lanOpen} onClose={closeLan} />
+      <DevHotspotModal open={hotspotOpen} onClose={closeHotspot} />
       <BecomeSupporterModal open={supportOpen} onClose={closeSupport} />
       <UpdateModal />
     </>
