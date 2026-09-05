@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { createSession, verifyPassword } from "@/lib/auth";
 import { ensureSeeded } from "@/lib/seed";
+import { getHardwareMachineId } from "@/lib/supporter-session";
 
 export async function POST(req: Request) {
   await ensureSeeded();
@@ -16,6 +17,22 @@ export async function POST(req: Request) {
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return Response.json({ error: "Invalid email or password." }, { status: 401 });
   }
+
+  // Sync to central Portside-Web server
+  try {
+    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+    fetch(`${webPortalUrl}/api/account/confirm`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: user.email,
+        name: user.name,
+        machineId: getHardwareMachineId(),
+        action: "login",
+      }),
+    }).catch(() => {});
+  } catch {}
+
   await createSession(user.id);
   return Response.json({ ok: true, user: { id: user.id, email: user.email, name: user.name } });
 }

@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users, activityLogs } from "@/db/schema";
 import { createSession, hashPassword } from "@/lib/auth";
+import { getHardwareMachineId } from "@/lib/supporter-session";
 
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { email?: string; password?: string; name?: string };
@@ -29,6 +30,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         email,
         name,
+        machineId: getHardwareMachineId(),
         action: "register",
       }),
     });

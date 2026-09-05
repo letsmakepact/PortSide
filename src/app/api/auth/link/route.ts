@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { users, activityLogs } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createSession, verifyPassword } from "@/lib/auth";
+import { getHardwareMachineId } from "@/lib/supporter-session";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           email: cleanEmail,
           name: user.name,
+          machineId: getHardwareMachineId(),
           action: "link",
         }),
       });

@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { ne, desc } from "drizzle-orm";
 import { DEMO_EMAIL } from "@/lib/seed";
+import { getHardwareMachineId } from "@/lib/supporter-session";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,22 @@ export async function GET() {
 
     if (list.length > 0) {
       const user = list[0];
+
+      // Proactively sync account to central Portside-Web dashboard
+      try {
+        const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+        fetch(`${webPortalUrl}/api/account/confirm`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: user.email,
+            name: user.name,
+            machineId: getHardwareMachineId(),
+            action: "sync",
+          }),
+        }).catch(() => {});
+      } catch {}
+
       return NextResponse.json({
         detected: true,
         user: {
