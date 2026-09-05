@@ -16,8 +16,14 @@ export async function GET() {
       .from(services)
       .where(eq(services.enabled, true));
 
+    const legacyPlaceholders = new Set(["webhooks", "mail", "airflow", "storybook", "metabase", "flags", "chat", "checkout", "notebooks", "pgadmin"]);
+
     const hostnames = Array.from(
-      new Set(list.map((s) => s.hostname.toLowerCase().trim()).filter(Boolean))
+      new Set(
+        list
+          .map((s) => s.hostname.toLowerCase().trim())
+          .filter((h) => Boolean(h) && !legacyPlaceholders.has(h))
+      )
     );
 
     return NextResponse.json({ hostnames });
