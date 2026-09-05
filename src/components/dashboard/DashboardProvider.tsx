@@ -183,7 +183,7 @@ export function DashboardProvider({
 
         toast({
           tone: "success",
-          title: "Supporter Perks Unlocked! ⭐",
+          title: "Supporter Perks Unlocked!",
           description: "Server confirmed: all Pro features, zero-config LAN & Wi-Fi hotspot are active.",
         });
         return { ok: true };
@@ -270,7 +270,7 @@ export function DashboardProvider({
         port: input.port,
         protocol: input.protocol ?? "http",
         description: input.description ?? "",
-        icon: input.icon ?? "🚀",
+        icon: input.icon ?? "⌘",
         tags: input.tags ?? [],
         favorite: input.favorite ?? false,
         enabled: input.enabled ?? true,

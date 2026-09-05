@@ -64,7 +64,7 @@ export const services = pgTable(
     port: integer("port").notNull(),
     protocol: varchar("protocol", { length: 8 }).default("http").notNull(),
     description: text("description").default("").notNull(),
-    icon: varchar("icon", { length: 16 }).default("🚀").notNull(),
+    icon: varchar("icon", { length: 16 }).default("⌘").notNull(),
     tags: text("tags").array().default([]).notNull(),
     favorite: boolean("favorite").default(false).notNull(),
     enabled: boolean("enabled").default(true).notNull(),

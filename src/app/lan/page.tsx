@@ -15,8 +15,8 @@ export default async function LanPortalPage() {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center">
         <div className="max-w-md w-full rounded-2xl border border-amber-500/30 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-md">
-          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-3xl text-white shadow-lg shadow-orange-500/25 mb-4">
-            🔒
+          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white shadow-lg shadow-orange-500/25 mb-4">
+            <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
           </span>
           <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
             Supporter Perk Required
@@ -34,7 +34,7 @@ export default async function LanPortalPage() {
               rel="noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 transition"
             >
-              ☕ Support PortSide on Buy Me a Coffee
+              Support PortSide on Buy Me a Coffee
             </a>
           </div>
         </div>
@@ -83,11 +83,13 @@ export default async function LanPortalPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 text-xs text-slate-300">
-              <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-2">
-                📱 Phones & Tablets
+              <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-2 flex items-center gap-1.5">
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" /></svg>
+                Phones & Tablets
               </span>
-              <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-2">
-                📺 Smart TVs
+              <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-2 flex items-center gap-1.5">
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2" /><polyline points="17 2 12 7 7 2" /></svg>
+                Smart TVs
               </span>
             </div>
           </div>
@@ -104,7 +106,9 @@ export default async function LanPortalPage() {
 
         {allServices.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-12 text-center">
-            <p className="text-4xl mb-3">⚓</p>
+            <div className="flex justify-center mb-3">
+              <AnchorLogo className="h-10 w-10 text-slate-400" />
+            </div>
             <h4 className="text-lg font-semibold text-white">No services active yet</h4>
             <p className="text-sm text-slate-400 mt-1">
               Add services in your Portside desktop dashboard to access them here.

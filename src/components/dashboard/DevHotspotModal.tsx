@@ -80,7 +80,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
       });
       const data = await res.json();
       if (res.ok) {
-        setSavedMsg("✓ Settings saved to machine!");
+        setSavedMsg("Settings saved to machine.");
         setTimeout(() => setSavedMsg(""), 3000);
       }
     } catch {
@@ -100,8 +100,8 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
       <div className="relative pt-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 font-bold text-lg">
-              📶
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 font-bold">
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12.55a11 11 0 0 1 14.08 0" /><path d="M1.42 9a16 16 0 0 1 21.16 0" /><path d="M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></svg>
             </span>
             <div>
               <div className="flex items-center gap-2">
@@ -126,8 +126,8 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
 
         {!serverConfirmed ? (
           <div className="mt-6 rounded-2xl border border-amber-200/80 bg-gradient-to-b from-amber-50/70 via-orange-50/30 to-white dark:from-amber-950/30 dark:via-orange-950/20 dark:to-slate-900 p-6 text-center shadow-xs">
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-2xl text-white shadow-md shadow-orange-500/20">
-              🔒
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white shadow-md shadow-orange-500/20">
+              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
             </span>
             <h3 className="mt-3 text-base font-bold text-slate-900 dark:text-white">
               Unlock Multi-Device & Hotspot Perks
@@ -144,7 +144,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
                 }}
                 className="bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/20"
               >
-                ☕ Unlock with Supporter
+                Unlock with Supporter
               </Button>
             </div>
           </div>
@@ -154,7 +154,9 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
             <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-xl">🌐</span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                  </span>
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">Zero-Config LAN (mDNS)</p>
@@ -174,7 +176,9 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-xl">🛡️</span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                  </span>
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">Secure Dev Wi-Fi Hotspot</p>
@@ -263,7 +267,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
             </div>
 
             <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 dark:border-amber-900/30 dark:bg-amber-950/20 p-3 text-xs text-amber-950 dark:text-amber-200">
-              <span className="font-semibold">💡 Instant Access:</span> Once connected, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1 font-mono text-[11px] font-bold">http://portside.local</code> or any of your custom project subdomains.
+              <span className="font-semibold">Instant Access:</span> Once connected, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1 font-mono text-[11px] font-bold">http://portside.local</code> or any of your custom project subdomains.
             </div>
           </div>
         )}

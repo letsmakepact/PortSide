@@ -67,7 +67,16 @@ export function ActivityFeed({ initialActivity }: { initialActivity: ActivityDTO
         }
       />
       {activity.length === 0 ? (
-        <EmptyState icon="🕒" title="No activity yet" description="Create, edit or check services and everything will show up here." />
+        <EmptyState
+          icon={
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          }
+          title="No activity yet"
+          description="Create, edit or check services and everything will show up here."
+        />
       ) : (
         <div className="space-y-6">
           {groupByDay(activity).map((g) => (

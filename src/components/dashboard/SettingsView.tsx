@@ -114,7 +114,7 @@ export function SettingsView() {
       });
       const data = await res.json();
       if (res.ok) {
-        setSavedHotspotMsg("✓ Settings saved to machine!");
+        setSavedHotspotMsg("Settings saved to machine.");
         toast({ tone: "success", title: "Wi-Fi Hotspot configuration saved" });
         setTimeout(() => setSavedHotspotMsg(""), 3000);
       } else {
@@ -216,8 +216,8 @@ export function SettingsView() {
 
   const tabs = [
     { id: "general", label: "Preferences & Health" },
-    { id: "supporter", label: "Supporter & Perks ⭐" },
-    { id: "hotspot", label: "Dev Wi-Fi Hotspot 📶" },
+    { id: "supporter", label: "Supporter & Perks" },
+    { id: "hotspot", label: "Dev Wi-Fi Hotspot" },
     { id: "account", label: "Account & Profile" },
     { id: "routing", label: "Proxy & How Routing Works" },
     { id: "about", label: "Updates & About" },
@@ -334,7 +334,7 @@ export function SettingsView() {
               <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-4">
                 <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                   {isSupporter
-                    ? "⭐ Supporter tier is active on this instance."
+                    ? "Supporter tier is active on this instance."
                     : "You are currently on the Free tier."}
                 </p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
@@ -349,7 +349,7 @@ export function SettingsView() {
                       onClick={openSupport}
                       className="inline-flex items-center gap-2 rounded-lg bg-amber-500 hover:bg-amber-600 px-3 py-2 text-xs font-semibold text-white shadow-xs transition"
                     >
-                      ☕ Become a Supporter on Buy Me a Coffee
+                      Become a Supporter on Buy Me a Coffee
                     </button>
                   ) : null}
                   <Button
@@ -394,35 +394,41 @@ export function SettingsView() {
             <h2 className="text-sm font-bold text-slate-900 dark:text-white">Supporter Perks & Features</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
-                <span className="text-2xl">📡</span>
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" /></svg>
+                </span>
                 <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Mobile & Smart TV LAN</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Instant QR code launchpad and wildcard .local routing for testing on phones, tablets, and TV browsers.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  {isSupporter ? "✓ Unlocked" : "Locked for Free tier"}
+                  {isSupporter ? "Unlocked" : "Locked for Free tier"}
                 </span>
               </div>
 
               <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
-                <span className="text-2xl">📶</span>
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12.55a11 11 0 0 1 14.08 0" /><path d="M1.42 9a16 16 0 0 1 21.16 0" /><path d="M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></svg>
+                </span>
                 <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Dev Wi-Fi Hotspot</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Broadcast an isolated private wireless network straight from your development PC with zero router setup.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  {isSupporter ? "✓ Unlocked" : "Locked for Free tier"}
+                  {isSupporter ? "Unlocked" : "Locked for Free tier"}
                 </span>
               </div>
 
               <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
-                <span className="text-2xl">🖥️</span>
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+                </span>
                 <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Official Desktop App</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Standalone multi-OS launcher for Windows, macOS, and Linux that auto-activates all supporter capabilities.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  {isSupporter ? "✓ Unlocked" : "Included with monthly support"}
+                  {isSupporter ? "Unlocked" : "Included with monthly support"}
                 </span>
               </div>
             </div>
@@ -436,8 +442,8 @@ export function SettingsView() {
           <Card className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 font-bold text-xl">
-                  📶
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 font-bold">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12.55a11 11 0 0 1 14.08 0" /><path d="M1.42 9a16 16 0 0 1 21.16 0" /><path d="M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></svg>
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
@@ -462,8 +468,8 @@ export function SettingsView() {
 
             {!isSupporter ? (
               <div className="mt-6 rounded-2xl border border-amber-200/80 bg-gradient-to-b from-amber-50/70 via-orange-50/30 to-white dark:from-amber-950/30 dark:via-orange-950/20 dark:to-slate-900 p-6 text-center shadow-xs">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-2xl text-white shadow-md shadow-orange-500/20">
-                  🔒
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white shadow-md shadow-orange-500/20">
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
                 </span>
                 <h3 className="mt-3 text-base font-bold text-slate-900 dark:text-white">
                   Supporter Feature
@@ -477,7 +483,7 @@ export function SettingsView() {
                     onClick={openSupport}
                     className="inline-flex items-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition"
                   >
-                    ☕ Become a Supporter to Unlock
+                    Become a Supporter to Unlock
                   </button>
                 </div>
               </div>
@@ -486,7 +492,9 @@ export function SettingsView() {
                 {/* Zero-Config LAN info */}
                 <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">🌐</span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                    </span>
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white">Zero-Config LAN (mDNS)</p>
@@ -588,7 +596,7 @@ export function SettingsView() {
                 </div>
 
                 <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 dark:border-amber-900/30 dark:bg-amber-950/20 p-3.5 text-xs text-amber-950 dark:text-amber-200">
-                  <span className="font-semibold">💡 Instant Access:</span> Once connected to this network, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1.5 py-0.5 font-mono text-[11px] font-bold">http://portside.local</code> or any configured local subdomain.
+                  <span className="font-semibold">Instant Access:</span> Once connected to this network, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1.5 py-0.5 font-mono text-[11px] font-bold">http://portside.local</code> or any configured local subdomain.
                 </div>
               </div>
             )}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Primitives";
+import { AnchorLogo } from "@/components/ui/AnchorLogo";
 
 interface DetectedUser {
   email: string;
@@ -107,7 +108,7 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
       <div className="animate-fade-up">
         <div className="text-center mb-6">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shadow-xs mb-3">
-            <span className="text-2xl">⚓</span>
+            <AnchorLogo className="h-7 w-7 text-sky-600 dark:text-sky-400" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             Existing Account Found

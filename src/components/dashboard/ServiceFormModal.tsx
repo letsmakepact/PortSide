@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, type FormEvent } from "react";
 import { Modal } from "@/components/ui/Modal";
@@ -61,7 +61,7 @@ function ServiceFormContent({
   const [projectId, setProjectId] = useState<string>(
     service?.projectId ? String(service.projectId) : defaultProjectId ? String(defaultProjectId) : "",
   );
-  const [icon, setIcon] = useState(service?.icon ?? "🚀");
+  const [icon, setIcon] = useState(service?.icon ?? "⌘");
   const [tags, setTags] = useState(service?.tags.join(", ") ?? "");
   const [description, setDescription] = useState(service?.description ?? "");
   const [favorite, setFavorite] = useState(service?.favorite ?? false);

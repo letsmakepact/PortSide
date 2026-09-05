@@ -30,7 +30,7 @@ export function colorFor(color: string) {
   return colorClasses[color] ?? colorClasses.indigo;
 }
 
-export const SERVICE_ICONS = ["🚀", "⚡", "🧩", "🗄️", "🛰️", "🧪", "📦", "🔐", "📊", "🎨", "🤖", "🌐", "📬", "🧠", "🛒", "📝"];
+export const SERVICE_ICONS = ["⌘", "◈", "◉", "⚙", "⌗", "✦", "◫", "▤", "⌥", "▣", "▲", "◆", "●", "⬡", "❖", "★"];
 
 export function slugify(input: string): string {
   return input

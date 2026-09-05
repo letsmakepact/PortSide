@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         port: d.port!,
         protocol: d.protocol ?? "http",
         description: d.description ?? "",
-        icon: d.icon ?? "🚀",
+        icon: d.icon ?? "⌘",
         tags: d.tags ?? [],
         favorite: d.favorite ?? false,
         enabled: d.enabled ?? true,

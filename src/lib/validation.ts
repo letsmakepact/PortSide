@@ -47,7 +47,7 @@ export async function validateService(
     out.protocol = protocol;
   }
   if (body.description !== undefined) out.description = String(body.description).slice(0, 500);
-  if (body.icon !== undefined) out.icon = String(body.icon).slice(0, 8) || "🚀";
+  if (body.icon !== undefined) out.icon = String(body.icon).slice(0, 8) || "⌘";
   if (body.tags !== undefined) {
     if (!Array.isArray(body.tags)) return { ok: false, error: "Tags must be a list." };
     out.tags = body.tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean).slice(0, 10);

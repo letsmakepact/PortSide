@@ -76,8 +76,8 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
         </div>
 
         <div className="mt-4 flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-2xl text-white shadow-lg shadow-sky-500/25">
-            🚀
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/25">
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15" /><path d="M12 9v12" /></svg>
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900">
@@ -93,7 +93,7 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
           <>
             <div className="mt-5 rounded-xl border border-amber-200/70 bg-amber-50/60 p-4 text-xs text-amber-900">
               <p className="font-semibold flex items-center gap-1.5">
-                <span>💡</span> Running locally without the launcher?
+                Running locally without the launcher?
               </p>
               <p className="mt-1 leading-relaxed text-amber-800">
                 You are currently running Portside via localhost. You can update manually using{" "}

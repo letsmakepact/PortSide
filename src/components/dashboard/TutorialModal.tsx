@@ -23,7 +23,12 @@ const STEPS = [
       { label: "Modern Standard", value: "*.localhost automatically resolves locally without /etc/hosts changes" },
       { label: "Zero Setup", value: "Works directly out of the box with your preferred browser" },
     ],
-    icon: "🧭",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+      </svg>
+    ),
   },
   {
     stepNumber: 2,
@@ -36,7 +41,11 @@ const STEPS = [
       { label: "Example Route", value: "api.localhost:3000  →  127.0.0.1:8081" },
       { label: "Header Rewriting", value: "Automatic Host & Location header translation for redirects" },
     ],
-    icon: "⚡",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
   },
   {
     stepNumber: 3,
@@ -49,7 +58,11 @@ const STEPS = [
       { label: "Proactive Probing", value: "Real-time socket checks with latency measurements" },
       { label: "Configurable", value: "Toggle auto-checks or trigger manual refreshes anytime" },
     ],
-    icon: "📡",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
   },
   {
     stepNumber: 4,
@@ -62,7 +75,12 @@ const STEPS = [
       { label: "Pinned Favorites", value: "Quick launch panel for high-frequency servers" },
       { label: "Graceful Fallbacks", value: "Paused routes show a polite explainer instead of connection drops" },
     ],
-    icon: "📌",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="12" y1="17" x2="12" y2="22" />
+        <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.89A2 2 0 0 1 15 10.76V6a3 3 0 0 0-6 0v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+      </svg>
+    ),
   },
   {
     stepNumber: 5,
@@ -75,7 +93,11 @@ const STEPS = [
       { label: "Project Groups", value: "Filter services by stack or application suite" },
       { label: "Audit Log", value: "Every service change and status fluctuation is logged" },
     ],
-    icon: "🗂️",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
   },
   {
     stepNumber: 6,
@@ -88,7 +110,11 @@ const STEPS = [
       { label: "Created By", value: "pact (github.com/letsmakepact · t.me/pactwithdevil)" },
       { label: "Revisit Anytime", value: "You can reopen this tutorial anytime from the sidebar" },
     ],
-    icon: "🚀",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ),
   },
 ];
 
@@ -147,7 +173,7 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
         </div>
 
         <div className="mt-4 flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-2xl shadow-lg shadow-sky-500/25 text-white">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 shadow-lg shadow-sky-500/25 text-white">
             {current.icon}
           </div>
           <div>
