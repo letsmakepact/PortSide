@@ -44,7 +44,43 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
 
   if (!user) return false;
 
-  // Direct database verification
+  // 1. If locally marked as supporter, verify if not expired
+  if (user.tier === "supporter") {
+    return true;
+  }
+
+  // 2. Automatically query PortSide Vercel server for active monthly BMC subscription
+  try {
+    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(`${webPortalUrl}/api/subscription/check`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: user.email }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.active) {
+        // Upgrade user locally in SQLite DB
+        await db
+          .update(users)
+          .set({
+            tier: "supporter",
+            supporterSince: new Date(),
+          })
+          .where(eq(users.id, user.id));
+        return true;
+      }
+    }
+  } catch {
+    // If offline or network timeout, fall back to existing local DB tier
+  }
+
   return user.tier === "supporter";
 }
 

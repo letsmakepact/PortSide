@@ -101,14 +101,34 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
             </a>
 
             {!showKeyInput ? (
-              <div className="text-center">
+              <div className="flex flex-col gap-2 pt-1">
                 <button
                   type="button"
-                  onClick={() => setShowKeyInput(true)}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                  onClick={async () => {
+                    setActivating(true);
+                    const res = await fetch("/api/supporter/check");
+                    const data = await res.json();
+                    setActivating(false);
+                    if (data.isSupporter) {
+                      onClose();
+                    } else {
+                      setShowKeyInput(true);
+                    }
+                  }}
+                  disabled={activating}
+                  className="w-full py-2 px-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 transition flex items-center justify-center gap-1.5"
                 >
-                  Already have a key or BMC supporter code?
+                  🔄 Check / Refresh Monthly Supporter Status
                 </button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowKeyInput(true)}
+                    className="text-xs font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                  >
+                    Or activate with a manual license key
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleActivate} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 space-y-2.5">
