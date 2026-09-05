@@ -92,46 +92,24 @@ export function Sidebar() {
           );
         })}
 
-        <div className="my-3 border-t border-slate-200 dark:border-slate-800/80 pt-2" />
-
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false);
-            openSupport();
-          }}
-          className={cn(
-            "group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors",
-            isSupporter
-              ? "text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20"
-              : "text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-slate-800/60 hover:text-amber-700 dark:hover:text-amber-300"
-          )}
-        >
-          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
-          </svg>
-          {isSupporter ? "Supporter Active" : "Become a Supporter"}
-          {isSupporter && (
-            <span className="ml-auto rounded-full bg-amber-100 dark:bg-amber-900/40 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 dark:text-amber-300">
-              PRO
-            </span>
-          )}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false);
-            openHotspot();
-          }}
-          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
-        >
-          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" />
-          </svg>
-          Dev Wi-Fi Hotspot
-          <SupporterBadge size="xs" className="ml-auto" />
-        </button>
+        {!isSupporter && (
+          <>
+            <div className="my-3 border-t border-slate-200 dark:border-slate-800/80 pt-2" />
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                openSupport();
+              }}
+              className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-slate-800/60 transition-colors"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
+              </svg>
+              Become a Supporter
+            </button>
+          </>
+        )}
 
         <button
           type="button"
