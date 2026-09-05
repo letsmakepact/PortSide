@@ -9,6 +9,17 @@ export function getLanIp(): string {
   const interfaces = os.networkInterfaces();
   const candidates: { name: string; ip: string; priority: number }[] = [];
 
+  const isVpnOrVirtual = (name: string) => {
+    const lower = name.toLowerCase();
+    const banned = [
+      "mullvad", "vpn", "wireguard", "wintun", "openvpn",
+      "nord", "proton", "tailscale", "expressvpn", "tun",
+      "tap", "docker", "wsl", "veth", "hyper-v", "loopback",
+      "pseudo", "teredo", "isatap", "virtual", "vbox", "vmware",
+    ];
+    return banned.some((b) => lower.includes(b));
+  };
+
   for (const name of Object.keys(interfaces)) {
     const list = interfaces[name];
     if (!list) continue;
@@ -16,19 +27,30 @@ export function getLanIp(): string {
     for (const info of list) {
       if (info.family === "IPv4" && !info.internal) {
         const lowerName = name.toLowerCase();
-        let priority = 10;
+        const ip = info.address;
 
-        if (lowerName.includes("wi-fi") || lowerName.includes("wifi") || lowerName.includes("wlan")) {
-          priority = 100;
-        } else if (lowerName.includes("ethernet") && !lowerName.includes("veth") && !lowerName.includes("wsl")) {
-          priority = 80;
-        } else if (lowerName.includes("tailscale") || lowerName.includes("vpn") || lowerName.includes("mullvad")) {
-          priority = 5;
-        } else if (lowerName.includes("vethernet") || lowerName.includes("docker") || lowerName.includes("wsl")) {
-          priority = 1;
+        // Skip link-local and virtual host-only IPs
+        if (ip.startsWith("169.254.") || ip.startsWith("192.168.56.")) {
+          continue;
         }
 
-        candidates.push({ name, ip: info.address, priority });
+        let priority = 10;
+
+        if (isVpnOrVirtual(lowerName)) {
+          priority = -100;
+        } else if (lowerName.includes("wi-fi") || lowerName.includes("wifi") || lowerName.includes("wlan")) {
+          priority = 100;
+        } else if (lowerName.includes("ethernet")) {
+          priority = 80;
+        }
+
+        if (ip.startsWith("192.168.")) {
+          priority += 20;
+        } else if (ip.startsWith("10.") && !isVpnOrVirtual(lowerName)) {
+          priority += 10;
+        }
+
+        candidates.push({ name, ip, priority });
       }
     }
   }

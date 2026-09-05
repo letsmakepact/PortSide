@@ -38,8 +38,9 @@ export async function GET(req: Request) {
 
   // Generate server-signed pairing token so mobile/TV pairing cannot be spoofed
   let pairToken: string | null = null;
-  if (user?.email) {
-    const pairRes = await requestPairToken(user.email);
+  const supporterEmail = user?.email || global.__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email;
+  if (supporterEmail) {
+    const pairRes = await requestPairToken(supporterEmail);
     if (pairRes.valid) {
       pairToken = pairRes.pairToken;
     }

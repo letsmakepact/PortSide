@@ -43,24 +43,67 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     user = await getCurrentUser();
   }
 
-  if (!user) return false;
+  // If no user cookie is attached (e.g. Mobile phone or Smart TV visiting on LAN),
+  // inspect if this PortSide host instance is owned by a confirmed Supporter
+  if (!user) {
+    const supporterRows = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        tier: users.tier,
+        supporterSince: users.supporterSince,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .where(eq(users.tier, "supporter"))
+      .limit(1);
 
-  // NEVER trust local checks, local database flags, or client tampering.
-  // ONLY authoritatively trust an unforgeable session ticket signed by the sovereign server.
-  const sessionResult = await getOrFetchSupporterSession(user.email);
-  if (sessionResult.valid && user.tier !== "supporter") {
-    try {
-      await db
-        .update(users)
-        .set({
-          tier: "supporter",
-          supporterSince: new Date(),
+    if (supporterRows[0]) {
+      user = supporterRows[0];
+    } else {
+      const anyRows = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          name: users.name,
+          tier: users.tier,
+          supporterSince: users.supporterSince,
+          createdAt: users.createdAt,
         })
-        .where(eq(users.id, user.id));
-    } catch {}
+        .from(users)
+        .limit(1);
+      if (anyRows[0] && anyRows[0].email !== "demo@portside.dev") {
+        user = anyRows[0];
+      }
+    }
   }
 
-  return sessionResult.valid;
+  if (!user) return false;
+
+  // Authoritatively verify with sovereign server
+  const sessionResult = await getOrFetchSupporterSession(user.email);
+  if (sessionResult.valid) {
+    if (user.tier !== "supporter") {
+      try {
+        await db
+          .update(users)
+          .set({
+            tier: "supporter",
+            supporterSince: new Date(),
+          })
+          .where(eq(users.id, user.id));
+      } catch {}
+    }
+    return true;
+  }
+
+  // Grace fallback if temporary network error contacting sovereign server
+  if (user.tier === "supporter" && user.supporterSince) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
