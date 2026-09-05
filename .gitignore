@@ -15,3 +15,22 @@ drizzle/.temp/
 Portside-Launcher*
 launcher/
 release_binaries/
+*.key
+*license*
+*issuer*
+*keygen*
+*.pub
+*.priv
+*bmc-user*
+
+# Private desktop app modules (not published to GitHub; injected into official releases)
+src/desktop/
+src/app/api/supporter/
+src/components/dashboard/SupporterModal.tsx
+src/lib/supporter.ts
+src/lib/mdns.ts
+src/lib/hotspot.ts
+desktop-runtime/
+release_bundles/
+
+.aider*

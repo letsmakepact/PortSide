@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: { default: "Portside — name your localhost", template: "%s · Portside" },
@@ -12,8 +19,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen font-sans">
+    <html lang="en" className={inter.variable}>
+      <body className="min-h-screen font-sans bg-slate-50/70 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 antialiased selection:bg-slate-900 selection:text-white dark:selection:bg-sky-500">
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

@@ -38,9 +38,9 @@ export function ProjectsView() {
 
       {projects.length === 0 ? (
         <EmptyState
-          icon="🗂️"
-          title="No projects yet"
-          description="Create a project like “Storefront” or “Data Platform” and assign services to it."
+          icon={<svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>}
+          title="No projects configured"
+          description="Group related services together under unified project categories."
           action={
             <Button onClick={() => setOpen(true)}>
               <PlusIcon /> Create a project
@@ -48,7 +48,7 @@ export function ProjectsView() {
           }
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
           {projects.map((p) => {
             const c = colorFor(p.color);
             const members = services.filter((s) => s.projectId === p.id);
@@ -56,15 +56,15 @@ export function ProjectsView() {
             return (
               <div
                 key={p.id}
-                className={cn("group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-px hover:shadow-md", p.id < 0 && "animate-pulse")}
+                className={cn("group relative flex flex-col rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]/70 p-4.5 shadow-xs transition hover:border-slate-300 dark:hover:border-slate-700/80 hover:bg-slate-50 dark:hover:bg-[#0f172a] backdrop-blur-xs", p.id < 0 && "animate-pulse")}
               >
-                <div className={cn("absolute inset-x-5 top-0 h-1 rounded-b-full", c.dot)} />
+                <div className={cn("absolute inset-x-4 top-0 h-0.5 rounded-b", c.dot)} />
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h3 className="truncate text-[15px] font-semibold text-slate-900">{p.name}</h3>
-                    <p className="mt-0.5 font-mono text-[11px] text-slate-400">{p.slug}</p>
+                    <h3 className="truncate text-sm font-bold text-slate-900 dark:text-white">{p.name}</h3>
+                    <p className="mt-0.5 font-mono text-[10px] text-slate-500">{p.slug}</p>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100">
+                  <div className="flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
                     <IconButton
                       label="Edit"
                       onClick={() => {
@@ -72,31 +72,31 @@ export function ProjectsView() {
                         setOpen(true);
                       }}
                     >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 3l3 3-9 9H5v-3l9-9z" /></svg>
+                      <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 3l3 3-9 9H5v-3l9-9z" /></svg>
                     </IconButton>
                     <IconButton label="Delete" onClick={() => setDeleting(p)} danger>
-                      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10" /></svg>
+                      <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10" /></svg>
                     </IconButton>
                   </div>
                 </div>
-                <p className="mt-3 line-clamp-2 min-h-[2.5rem] text-[13px] leading-relaxed text-slate-500">{p.description || "No description."}</p>
+                <p className="mt-2.5 line-clamp-2 min-h-[2.25rem] text-xs leading-relaxed text-slate-400">{p.description || "No description provided."}</p>
 
-                <div className="mt-4 flex flex-wrap gap-1.5">
+                <div className="mt-3.5 flex flex-wrap gap-1.5">
                   {members.slice(0, 5).map((s) => (
-                    <span key={s.id} className="inline-flex items-center gap-1.5 rounded-md bg-slate-50 px-2 py-1 font-mono text-[11px] text-slate-700 ring-1 ring-slate-200">
+                    <span key={s.id} className="inline-flex items-center gap-1.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 font-mono text-[10px] text-slate-600 dark:text-slate-300">
                       <StatusDot status={s.enabled ? s.lastStatus : "unknown"} className="h-1.5 w-1.5" />
                       {s.hostname}
                     </span>
                   ))}
-                  {members.length > 5 && <span className="px-1 py-1 text-[11px] text-slate-400">+{members.length - 5} more</span>}
-                  {members.length === 0 && <span className="text-[11px] text-slate-400">No services assigned</span>}
+                  {members.length > 5 && <span className="px-1 py-0.5 text-[10px] font-mono text-slate-500">+{members.length - 5} more</span>}
+                  {members.length === 0 && <span className="text-[11px] text-slate-500">No services assigned</span>}
                 </div>
 
-                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                  <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", c.bg, c.text)}>
+                <div className="mt-3.5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                  <span className={cn("rounded-md px-2 py-0.5 text-[10px] font-semibold border border-slate-200/60 dark:border-slate-700/40", c.bg, c.text)}>
                     {online}/{members.length} online
                   </span>
-                  <Link href={`/dashboard/services?project=${p.id}`} className="text-xs font-medium text-indigo-600 hover:text-indigo-500">
+                  <Link href={`/dashboard/services?project=${p.id}`} className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
                     Open services →
                   </Link>
                 </div>
@@ -107,11 +107,11 @@ export function ProjectsView() {
           {ungrouped > 0 && (
             <Link
               href="/dashboard/services?project=none"
-              className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 p-5 text-center transition hover:border-indigo-300 hover:bg-indigo-50/40"
+              className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-4.5 text-center transition hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/40"
             >
-              <span className="text-2xl">🧺</span>
-              <p className="mt-2 text-sm font-medium text-slate-700">{ungrouped} ungrouped service{ungrouped === 1 ? "" : "s"}</p>
-              <p className="text-xs text-slate-400">Click to review and assign</p>
+              <svg viewBox="0 0 24 24" className="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+              <p className="mt-2 text-xs font-bold text-slate-800 dark:text-slate-200">{ungrouped} ungrouped service{ungrouped === 1 ? "" : "s"}</p>
+              <p className="text-[11px] text-slate-500">Click to review and assign</p>
             </Link>
           )}
         </div>
@@ -205,7 +205,7 @@ function IconButton({ children, onClick, label, danger }: { children: React.Reac
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={cn("rounded-lg p-1.5 text-slate-400 transition", danger ? "hover:bg-rose-50 hover:text-rose-600" : "hover:bg-slate-100 hover:text-slate-700")}
+      className={cn("rounded-lg p-1.5 text-slate-400 transition", danger ? "hover:bg-rose-50 hover:text-rose-600" : "hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-700 dark:hover:text-slate-300")}
     >
       {children}
     </button>

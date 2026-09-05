@@ -22,9 +22,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     >
       <div className="min-h-screen">
         <Sidebar />
-        <main className="lg:pl-64">
+        <main className="lg:pl-60">
           <DemoBanner email={user.email} />
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">{children}</div>
+          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</div>
         </main>
       </div>
     </DashboardProvider>
