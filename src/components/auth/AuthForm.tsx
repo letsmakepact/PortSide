@@ -16,36 +16,41 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
   const router = useRouter();
   const [currentMode, setCurrentMode] = useState<"login" | "register" | "link">(mode);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState(mode === "login" && demo ? demo.email : "");
-  const [password, setPassword] = useState(mode === "login" && demo ? demo.password : "");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [detectedUser, setDetectedUser] = useState<DetectedUser | null>(null);
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [isChoiceScreen, setIsChoiceScreen] = useState(false);
+  const [hasDismissedChoice, setHasDismissedChoice] = useState(false);
 
   useEffect(() => {
-    // Check if an existing account is already registered locally
+    // Detect if an account already exists locally on this machine
     fetch("/api/auth/detect-account")
       .then((r) => r.json())
       .then((d) => {
         if (d.detected && d.user) {
           setDetectedUser(d.user);
-          // If in register mode or fresh landing, offer the link choice
-          if (mode === "register") {
-            setShowPrompt(true);
+          if (!hasDismissedChoice) {
+            setIsChoiceScreen(true);
           }
+        } else if (mode === "login" && demo) {
+          setEmail(demo.email);
+          setPassword(demo.password);
         }
       })
       .catch(() => {});
-  }, [mode]);
+  }, [mode, demo, hasDismissedChoice]);
 
   function handleChooseLink() {
     if (!detectedUser) return;
     setEmail(detectedUser.email);
     setName(detectedUser.name || "");
+    setPassword("");
     setCurrentMode("link");
-    setShowPrompt(false);
+    setIsChoiceScreen(false);
+    setHasDismissedChoice(true);
     setError(null);
   }
 
@@ -54,7 +59,13 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
     setName("");
     setPassword("");
     setCurrentMode("register");
-    setShowPrompt(false);
+    setIsChoiceScreen(false);
+    setHasDismissedChoice(true);
+    setError(null);
+  }
+
+  function handleBackToChoice() {
+    setIsChoiceScreen(true);
     setError(null);
   }
 
@@ -77,7 +88,7 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
         if (data.canLink && detectedUser) {
-          setShowPrompt(true);
+          setIsChoiceScreen(true);
         }
         setLoading(false);
         return;
@@ -90,65 +101,107 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
     }
   }
 
+  // CHOICE SCREEN: If an existing account was detected on this machine
+  if (isChoiceScreen && detectedUser) {
+    return (
+      <div className="animate-fade-up">
+        <div className="text-center mb-6">
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shadow-xs mb-3">
+            <span className="text-2xl">⚓</span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Existing Account Found
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            Portside detected an existing account registered on this machine.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-sky-200/80 dark:border-sky-900/60 bg-sky-50/50 dark:bg-sky-950/20 p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-sky-500/20 flex items-center justify-center font-bold text-sky-700 dark:text-sky-300">
+              {detectedUser.name ? detectedUser.name.charAt(0).toUpperCase() : "P"}
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                {detectedUser.name || "Portside User"}
+              </p>
+              <p className="text-xs font-mono text-sky-700 dark:text-sky-300">
+                {detectedUser.email}
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center rounded-full bg-sky-100 dark:bg-sky-900/50 px-2.5 py-0.5 text-xs font-medium text-sky-800 dark:text-sky-200">
+            Detected
+          </span>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={handleChooseLink}
+            className="w-full text-left p-4 rounded-xl border border-sky-500 bg-sky-500/5 hover:bg-sky-500/10 dark:bg-sky-500/10 dark:hover:bg-sky-500/20 transition-all flex items-center justify-between group cursor-pointer"
+          >
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                Use Current Account
+                <span className="text-xs bg-sky-600 text-white px-2 py-0.5 rounded-full font-normal">Recommended</span>
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Sign in with your password to link this device and sync your hosts.
+              </p>
+            </div>
+            <span className="text-sky-600 dark:text-sky-400 font-bold group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleChooseNew}
+            className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all flex items-center justify-between group cursor-pointer"
+          >
+            <div>
+              <p className="font-medium text-slate-900 dark:text-white">
+                Create a Different Account
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Register a new account or sign in with another email.
+              </p>
+            </div>
+            <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="animate-fade-up">
-      {/* Existing Account Detected Banner */}
-      {showPrompt && detectedUser ? (
-        <div className="rounded-2xl border border-sky-200 dark:border-sky-900/60 bg-sky-50/70 dark:bg-sky-950/30 p-5 text-center shadow-xs mb-6">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600 font-bold text-xl mb-2">
-            ⚓
-          </span>
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">Existing Portside Account Detected</h2>
-          <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 max-w-sm mx-auto">
-            We found an account already installed on this machine:
-            <br />
-            <span className="font-mono font-bold text-sky-700 dark:text-sky-300">
-              {detectedUser.email}
-            </span>{" "}
-            ({detectedUser.name || "pact"})
-          </p>
-          <div className="mt-4 flex flex-col sm:flex-row gap-2.5 justify-center">
-            <Button
-              onClick={handleChooseLink}
-              size="sm"
-              className="bg-sky-600 hover:bg-sky-700 text-white"
-            >
-              Link Current Account
-            </Button>
-            <Button
-              onClick={handleChooseNew}
-              size="sm"
-              variant="secondary"
-            >
-              Create New Account
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      <div className="flex items-center justify-between mb-4">
+        {detectedUser && hasDismissedChoice && (
+          <button
+            type="button"
+            onClick={handleBackToChoice}
+            className="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            ← Back to account choice
+          </button>
+        )}
+      </div>
 
       <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
         {currentMode === "link"
-          ? "Link Your Account"
+          ? "Confirm & Link Account"
           : currentMode === "login"
           ? "Welcome back"
           : "Create your account"}
       </h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         {currentMode === "link"
-          ? "Confirm your password to link this installation to your account."
+          ? `Enter your password to link ${email} to this machine.`
           : currentMode === "login"
           ? "Sign in to manage your local hostnames."
           : "Runs entirely on your machine. Confirmed securely on server."}
       </p>
-
-      {mode === "login" && demo && (
-        <div className="mt-5 rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/70 dark:bg-indigo-950/30 px-4 py-3 text-xs text-indigo-800 dark:text-indigo-300">
-          <p className="font-semibold">Demo account pre-filled</p>
-          <p className="mt-0.5 font-mono">
-            {demo.email} · {demo.password}
-          </p>
-        </div>
-      )}
 
       <form onSubmit={submit} className="mt-6 space-y-4">
         {currentMode === "register" && (
@@ -209,7 +262,7 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
           <button
             type="button"
             onClick={handleChooseNew}
-            className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+            className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
           >
             Create a different account instead
           </button>
