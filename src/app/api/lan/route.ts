@@ -3,6 +3,7 @@ import { getLanIp, getLanUrls } from "@/lib/lan";
 import QRCode from "qrcode";
 import { getCurrentUser } from "@/lib/auth";
 import { isServerSupporter } from "@/lib/server-checks";
+import { requestPairToken } from "@/lib/supporter-session";
 
 export const dynamic = "force-dynamic";
 
@@ -35,9 +36,22 @@ export async function GET(req: Request) {
   const urls = hostname ? getLanUrls(hostname, port, lanIp) : null;
   const portalUrl = `http://${lanIp}${port === "80" || port === "443" ? "" : `:${port}`}/lan`;
 
-  let qrDataUrl = "";
-  const qrTarget = target || (urls ? urls.subdomainUrl : portalUrl);
+  // Generate server-signed pairing token so mobile/TV pairing cannot be spoofed
+  let pairToken: string | null = null;
+  if (user?.email) {
+    const pairRes = await requestPairToken(user.email);
+    if (pairRes.valid) {
+      pairToken = pairRes.pairToken;
+    }
+  }
 
+  let qrTarget = target || (urls ? urls.subdomainUrl : portalUrl);
+  if (pairToken) {
+    const delimiter = qrTarget.includes("?") ? "&" : "?";
+    qrTarget = `${qrTarget}${delimiter}pst=${encodeURIComponent(pairToken)}`;
+  }
+
+  let qrDataUrl = "";
   try {
     qrDataUrl = await QRCode.toDataURL(qrTarget, {
       margin: 2,
@@ -57,6 +71,7 @@ export async function GET(req: Request) {
     urls,
     qrDataUrl,
     qrTarget,
+    pairToken,
     isSupporter: true,
     serverConfirmed: true,
   });

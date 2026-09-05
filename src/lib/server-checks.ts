@@ -2,6 +2,7 @@ import { getCurrentUser, requireUser, type SafeUser } from "./auth";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { getOrFetchSupporterSession } from "./supporter-session";
 
 export class SupporterRequiredError extends Error {
   constructor(message = "Supporter tier required") {
@@ -44,29 +45,12 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
 
   if (!user) return false;
 
-  // 1. If locally marked as supporter, verify if not expired
-  if (user.tier === "supporter") {
-    return true;
-  }
-
-  // 2. Automatically query PortSide Vercel server for active monthly BMC subscription
-  try {
-    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
-
-    const res = await fetch(`${webPortalUrl}/api/subscription/check`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.active) {
-        // Upgrade user locally in SQLite DB
+  // 1. First, check if we have a valid, cryptographically unforgeable session ticket from sovereign server
+  const sessionResult = await getOrFetchSupporterSession(user.email);
+  if (sessionResult.valid) {
+    // If DB is not yet marked, sync it
+    if (user.tier !== "supporter") {
+      try {
         await db
           .update(users)
           .set({
@@ -74,14 +58,18 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
             supporterSince: new Date(),
           })
           .where(eq(users.id, user.id));
-        return true;
-      }
+      } catch {}
     }
-  } catch {
-    // If offline or network timeout, fall back to existing local DB tier
+    return true;
   }
 
-  return user.tier === "supporter";
+  // 2. If locally marked as supporter, try fallback check
+  if (user.tier === "supporter") {
+    // Attempt re-verification if offline; if never had a server ticket, reject tampering
+    return sessionResult.valid;
+  }
+
+  return false;
 }
 
 /**

@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { isServerSupporter, requireServerSupporter, supporterForbidden } from "@/lib/server-checks";
+import { getOrFetchSupporterSession } from "@/lib/supporter-session";
 
 // Hotspot state in memory for active runtime
 let hotspotActive = false;
@@ -28,14 +29,22 @@ async function queryLauncherState() {
   return null;
 }
 
-async function syncWithLauncher(enable?: boolean, ssid?: string, key?: string) {
+async function syncWithLauncher(enable?: boolean, ssid?: string, key?: string, userEmail?: string) {
   try {
+    let sessionTicket: string | null = null;
+    if (userEmail) {
+      const session = await getOrFetchSupporterSession(userEmail);
+      if (session.valid) {
+        sessionTicket = session.sessionTicket;
+      }
+    }
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 1200);
     const res = await fetch("http://127.0.0.1:4242/api/pro/hotspot", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ enable, ssid, key }),
+      body: JSON.stringify({ enable, ssid, key, sessionTicket }),
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -98,7 +107,7 @@ export async function POST(req: Request) {
       hotspotActive = body.active;
     }
 
-    await syncWithLauncher(body.active, body.ssid, body.key);
+    await syncWithLauncher(body.active, body.ssid, body.key, user.email);
 
     return Response.json({
       ok: true,
