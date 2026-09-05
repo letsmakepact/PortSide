@@ -4,15 +4,18 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { useDashboard } from "./DashboardProvider";
+import { SupporterBadge } from "@/components/ui/SupporterBadge";
 
 export function LanModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { services } = useDashboard();
+  const { services, isSupporter, openSupport } = useDashboard();
   const [lanData, setLanData] = useState<{
     lanIp: string;
     port: string;
     portalUrl: string;
     qrDataUrl: string;
     qrTarget: string;
+    isSupporter?: boolean;
+    serverConfirmed?: boolean;
   } | null>(null);
   const [selectedService, setSelectedService] = useState<string>("");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -52,33 +55,65 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               📱
             </span>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Mobile & TV Access</h2>
-              <p className="text-xs text-slate-500">Open your websites instantly on phones, tablets & Smart TVs</p>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mobile & TV Access</h2>
+                <SupporterBadge size="xs" />
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Open your websites instantly on phones, tablets & Smart TVs</p>
             </div>
           </div>
-          <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+          <span className="rounded-full bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-800">
             Wi-Fi: {lanIp}
           </span>
         </div>
 
+        {lanData && !lanData.isSupporter && (
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200/80 bg-amber-50/70 dark:border-amber-900/30 dark:bg-amber-950/20 px-3.5 py-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">⭐</span>
+              <p className="text-xs text-amber-900 dark:text-amber-200">
+                <span className="font-semibold">Server Locked:</span> Mobile QR launchpad & wildcard LAN routing require confirmed Supporter status.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                openSupport();
+              }}
+              className="shrink-0 rounded-lg bg-amber-500 hover:bg-amber-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs transition"
+            >
+              Unlock Perks
+            </button>
+          </div>
+        )}
+
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 text-center">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/40 p-5 text-center">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
               Scan with Phone Camera
             </p>
-            {lanData?.qrDataUrl ? (
+            {lanData?.isSupporter && lanData?.qrDataUrl ? (
               <img
                 src={lanData.qrDataUrl}
                 alt="QR Code for mobile access"
-                className="h-48 w-48 rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
+                className="h-48 w-48 rounded-xl border border-slate-200 dark:border-slate-800 bg-white p-2 shadow-sm"
               />
             ) : (
-              <div className="flex h-48 w-48 items-center justify-center rounded-xl border border-slate-200 bg-white text-xs text-slate-400">
-                {loading ? "Generating QR code..." : "No QR code"}
+              <div className="flex flex-col items-center justify-center h-48 w-48 rounded-xl border border-dashed border-amber-300 dark:border-amber-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-400">
+                <span className="text-2xl mb-1">🔒</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300 text-center">
+                  {loading ? "Checking server..." : "Supporter Locked"}
+                </span>
+                <span className="text-[10px] text-slate-400 mt-1 text-center">
+                  Server confirmation required
+                </span>
               </div>
             )}
-            <p className="mt-3 text-[11px] text-slate-500 max-w-[240px]">
-              No configuration required. Point your phone camera to open {selectedService ? `${selectedService}` : "the mobile launchpad"} instantly.
+            <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400 max-w-[240px]">
+              {lanData?.isSupporter
+                ? `Point your phone camera to open ${selectedService ? selectedService : "the mobile launchpad"} instantly.`
+                : "Unlock PortSide Supporter perks to generate instant QR connection codes."}
             </p>
           </div>
 
@@ -90,7 +125,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               <select
                 value={selectedService}
                 onChange={(e) => setSelectedService(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100"
               >
                 <option value="">📱 Full Mobile Launchpad (/lan)</option>
                 {services.map((s) => (
@@ -103,50 +138,50 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
 
             <div className="space-y-3">
               {!selectedService ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-sm">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-700">Mobile Launchpad URL</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">Mobile Launchpad URL</span>
                     <button
                       type="button"
                       onClick={() => copy(portalUrl, "portal")}
-                      className="text-sky-600 hover:text-sky-700 font-medium"
+                      className="text-sky-600 dark:text-sky-400 hover:text-sky-700 font-medium"
                     >
                       {copiedKey === "portal" ? "Copied!" : "Copy"}
                     </button>
                   </div>
-                  <p className="mt-1 font-mono text-xs text-slate-500 break-all">{portalUrl}</p>
-                  <p className="mt-1 text-[11px] text-slate-400">Opens a clean touch/remote dashboard for all services.</p>
+                  <p className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400 break-all">{portalUrl}</p>
+                  <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Opens a clean touch/remote dashboard for all services.</p>
                 </div>
               ) : (
                 <>
-                  <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-sm">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-700">Subdomain Address</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-200">Subdomain Address</span>
                       <button
                         type="button"
                         onClick={() => copy(wildcardSvcUrl, "wildcard")}
-                        className="text-sky-600 hover:text-sky-700 font-medium"
+                        className="text-sky-600 dark:text-sky-400 hover:text-sky-700 font-medium"
                       >
                         {copiedKey === "wildcard" ? "Copied!" : "Copy"}
                       </button>
                     </div>
-                    <p className="mt-1 font-mono text-xs text-slate-500 break-all">{wildcardSvcUrl}</p>
-                    <p className="mt-1 text-[11px] text-slate-400">Works in any phone or TV browser without setup.</p>
+                    <p className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400 break-all">{wildcardSvcUrl}</p>
+                    <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Works in any phone or TV browser without setup.</p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-sm">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-700">Direct IP Path</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-200">Direct IP Path</span>
                       <button
                         type="button"
                         onClick={() => copy(directSvcUrl, "direct")}
-                        className="text-sky-600 hover:text-sky-700 font-medium"
+                        className="text-sky-600 dark:text-sky-400 hover:text-sky-700 font-medium"
                       >
                         {copiedKey === "direct" ? "Copied!" : "Copy"}
                       </button>
                     </div>
-                    <p className="mt-1 font-mono text-xs text-slate-500 break-all">{directSvcUrl}</p>
-                    <p className="mt-1 text-[11px] text-slate-400">Direct fallback if your Wi-Fi is offline from the internet.</p>
+                    <p className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400 break-all">{directSvcUrl}</p>
+                    <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Direct fallback if your Wi-Fi is offline from the internet.</p>
                   </div>
                 </>
               )}

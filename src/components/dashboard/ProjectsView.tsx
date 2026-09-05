@@ -56,7 +56,7 @@ export function ProjectsView() {
             return (
               <div
                 key={p.id}
-                className={cn("group relative flex flex-col rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]/70 p-4.5 shadow-xs transition hover:border-slate-300 dark:hover:border-slate-700/80 hover:bg-slate-50 dark:hover:bg-[#0f172a] backdrop-blur-xs", p.id < 0 && "animate-pulse")}
+                className={cn("group relative flex flex-col rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-brand-surface dark:bg-brand-surface-dark p-4.5 shadow-xs transition hover:border-slate-300 dark:hover:border-slate-700/80 hover:bg-brand-bg dark:hover:bg-[#0f172a] backdrop-blur-xs", p.id < 0 && "animate-pulse")}
               >
                 <div className={cn("absolute inset-x-4 top-0 h-0.5 rounded-b", c.dot)} />
                 <div className="flex items-start justify-between gap-3">
@@ -92,7 +92,7 @@ export function ProjectsView() {
                   {members.length === 0 && <span className="text-[11px] text-slate-500">No services assigned</span>}
                 </div>
 
-                <div className="mt-3.5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                <div className="mt-3.5 flex items-center justify-between border-t border-brand-bg dark:border-slate-800/80 pt-2.5">
                   <span className={cn("rounded-md px-2 py-0.5 text-[10px] font-semibold border border-slate-200/60 dark:border-slate-700/40", c.bg, c.text)}>
                     {online}/{members.length} online
                   </span>
@@ -205,7 +205,7 @@ function IconButton({ children, onClick, label, danger }: { children: React.Reac
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={cn("rounded-lg p-1.5 text-slate-400 transition", danger ? "hover:bg-rose-50 hover:text-rose-600" : "hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-700 dark:hover:text-slate-300")}
+      className={cn("rounded-lg p-1.5 text-slate-500 dark:text-slate-400 transition", danger ? "hover:bg-rose-50 hover:text-rose-600" : "hover:bg-brand-bg dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200")}
     >
       {children}
     </button>

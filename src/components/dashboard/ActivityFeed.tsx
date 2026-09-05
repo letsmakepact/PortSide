@@ -73,13 +73,13 @@ export function ActivityFeed({ initialActivity }: { initialActivity: ActivityDTO
           {groupByDay(activity).map((g) => (
             <div key={g.label}>
               <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">{g.label}</p>
-              <Card>
-                <ul className="divide-y divide-slate-100">
+              <Card className="bg-brand-surface dark:bg-brand-surface-dark border-brand-bg dark:border-slate-800">
+                <ul className="divide-y divide-slate-100 dark:divide-slate-800">
                   {g.items.map((a) => (
                     <li key={a.id} className="flex items-center gap-3 px-5 py-3">
                       <ActivityIcon action={a.action} />
-                      <p className="min-w-0 flex-1 truncate text-sm text-slate-800">{a.message}</p>
-                      <span className="shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-500">{a.action}</span>
+                      <p className="min-w-0 flex-1 truncate text-sm text-slate-800 dark:text-slate-200">{a.message}</p>
+                      <span className="shrink-0 rounded-md bg-brand-bg dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{a.action}</span>
                       <time className="w-16 shrink-0 text-right text-xs text-slate-400" title={new Date(a.createdAt).toLocaleString()}>
                         {formatRelative(a.createdAt)}
                       </time>

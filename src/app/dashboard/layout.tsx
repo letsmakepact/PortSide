@@ -16,7 +16,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   return (
     <DashboardProvider
-      user={{ ...user, createdAt: user.createdAt.toISOString() }}
+      user={{
+        ...user,
+        createdAt: user.createdAt.toISOString(),
+        supporterSince: user.supporterSince ? user.supporterSince.toISOString() : null,
+      }}
       initialServices={services}
       initialProjects={projects}
     >

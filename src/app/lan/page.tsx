@@ -1,13 +1,49 @@
 import { listLanServices } from "@/lib/queries";
 import { getLanIp, getLanUrls } from "@/lib/lan";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { isServerSupporter } from "@/lib/server-checks";
 
 export const dynamic = "force-dynamic";
 
 export default async function LanPortalPage() {
+  const isSupporter = await isServerSupporter();
   const [allServices, lanIp] = await Promise.all([listLanServices(), Promise.resolve(getLanIp())]);
   const port = process.env.PORT || "80";
   const portSuffix = port === "80" || port === "443" ? "" : `:${port}`;
+
+  if (!isSupporter) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md w-full rounded-2xl border border-amber-500/30 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-md">
+          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-3xl text-white shadow-lg shadow-orange-500/25 mb-4">
+            🔒
+          </span>
+          <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+            Supporter Perk Required
+          </h1>
+          <p className="mt-2 text-xs leading-relaxed text-slate-400">
+            Zero-configuration mobile & Smart TV LAN routing requires a verified PortSide Supporter license.
+          </p>
+          <p className="mt-3 text-xs text-slate-500">
+            Activate Supporter status on the PortSide host dashboard or support monthly on Buy Me a Coffee to unlock this screen instantly.
+          </p>
+          <div className="mt-6 pt-5 border-t border-white/10">
+            <a
+              href="https://buymeacoffee.com/letsmakepact"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 transition"
+            >
+              ☕ Support PortSide on Buy Me a Coffee
+            </a>
+          </div>
+        </div>
+        <p className="mt-8 text-xs text-slate-600">
+          Created by pact (letsmakepact · @pactwithdevil)
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white selection:bg-sky-500 selection:text-white">

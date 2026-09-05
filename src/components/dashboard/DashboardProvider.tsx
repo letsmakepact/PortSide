@@ -1,5 +1,6 @@
 "use client";
 
+import { isDesktopApp } from "@/lib/desktop-client";
 import {
   createContext,
   useCallback,
@@ -15,13 +16,17 @@ import { useToast } from "@/components/ui/Toast";
 import type { ProjectDTO, ProjectInput, ServiceDTO, ServiceInput } from "@/lib/types";
 import type { SafeUser } from "@/lib/auth";
 
-export type ClientUser = Omit<SafeUser, "createdAt"> & { createdAt: string };
+export type ClientUser = Omit<SafeUser, "createdAt" | "supporterSince"> & {
+  createdAt: string;
+  supporterSince?: string | null;
+};
 
 export type ThemeMode = "dark" | "light";
 
 interface DashboardContextValue {
   user: ClientUser;
   setUser: (u: ClientUser) => void;
+  isSupporter: boolean;
   services: ServiceDTO[];
   projects: ProjectDTO[];
   appPort: string;
@@ -29,6 +34,7 @@ interface DashboardContextValue {
   lastCheckedAt: string | null;
   autoCheck: boolean;
   setAutoCheck: (v: boolean) => void;
+  isDesktop: boolean;
   theme: ThemeMode;
   setTheme: (t: ThemeMode) => void;
   runCheck: () => Promise<void>;
@@ -47,6 +53,11 @@ interface DashboardContextValue {
   supportOpen: boolean;
   openSupport: () => void;
   closeSupport: () => void;
+  hotspotOpen: boolean;
+  openHotspot: () => void;
+  closeHotspot: () => void;
+  activateLicense: (key: string) => Promise<{ ok: boolean; error?: string }>;
+  verifyServerSupporter: () => Promise<boolean>;
 }
 
 const Ctx = createContext<DashboardContextValue | null>(null);
@@ -94,10 +105,15 @@ export function DashboardProvider({
   const [autoCheck, setAutoCheckState] = useState(storedAutoCheck);
   const storedTheme = useSyncExternalStore(subscribe, getThemeSnapshot, () => "light" as ThemeMode);
   const [theme, setThemeState] = useState<ThemeMode>(storedTheme);
+  const [isDesktop, setIsDesktop] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [lanOpen, setLanOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [hotspotOpen, setHotspotOpen] = useState(false);
   const inFlight = useRef(false);
+
+  // Strictly server-authoritative tier
+  const isSupporter = user.tier === "supporter";
 
   const openTutorial = useCallback(() => setTutorialOpen(true), []);
   const closeTutorial = useCallback(() => setTutorialOpen(false), []);
@@ -105,6 +121,65 @@ export function DashboardProvider({
   const closeLan = useCallback(() => setLanOpen(false), []);
   const openSupport = useCallback(() => setSupportOpen(true), []);
   const closeSupport = useCallback(() => setSupportOpen(false), []);
+  const openHotspot = useCallback(() => setHotspotOpen(true), []);
+  const closeHotspot = useCallback(() => setHotspotOpen(false), []);
+
+  const verifyServerSupporter = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/supporter/check");
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (data.serverConfirmed) {
+        if (data.tier !== user.tier) {
+          setUser((prev) => ({
+            ...prev,
+            tier: data.tier,
+            supporterSince: data.supporterSince,
+          }));
+        }
+        return Boolean(data.isSupporter);
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, [user.tier]);
+
+  // Live server verification handshake on mount
+  useEffect(() => {
+    void verifyServerSupporter();
+  }, [verifyServerSupporter]);
+
+  const activateLicense = useCallback(
+    async (licenseKey: string) => {
+      try {
+        const res = await fetch("/api/supporter/activate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ licenseKey }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          toast({ tone: "error", title: data.error ?? "Activation failed" });
+          return { ok: false, error: data.error };
+        }
+
+        // Immediately verify with server to guarantee authoritative confirmation
+        await verifyServerSupporter();
+
+        toast({
+          tone: "success",
+          title: "Supporter Perks Unlocked! ⭐",
+          description: "Server confirmed: all Pro features, zero-config LAN & Wi-Fi hotspot are active.",
+        });
+        return { ok: true };
+      } catch (e: any) {
+        toast({ tone: "error", title: "Activation error", description: e.message });
+        return { ok: false, error: e.message };
+      }
+    },
+    [toast, verifyServerSupporter]
+  );
 
   const setAutoCheck = useCallback((v: boolean) => {
     setAutoCheckState(v);
@@ -124,14 +199,8 @@ export function DashboardProvider({
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-  }, [theme]);
+    void isDesktopApp().then(setIsDesktop);
+  }, []);
 
   const runCheck = useCallback(async () => {
     if (inFlight.current) return;
@@ -375,6 +444,7 @@ export function DashboardProvider({
     () => ({
       user,
       setUser,
+      isSupporter,
       services,
       projects,
       appPort,
@@ -382,6 +452,7 @@ export function DashboardProvider({
       lastCheckedAt,
       autoCheck,
       setAutoCheck,
+      isDesktop,
       theme,
       setTheme,
       runCheck,
@@ -400,9 +471,15 @@ export function DashboardProvider({
       supportOpen,
       openSupport,
       closeSupport,
+      hotspotOpen,
+      openHotspot,
+      closeHotspot,
+      activateLicense,
+      verifyServerSupporter,
     }),
     [
       user,
+      isSupporter,
       services,
       projects,
       appPort,
@@ -410,6 +487,7 @@ export function DashboardProvider({
       lastCheckedAt,
       autoCheck,
       setAutoCheck,
+      isDesktop,
       theme,
       setTheme,
       runCheck,
@@ -428,6 +506,11 @@ export function DashboardProvider({
       supportOpen,
       openSupport,
       closeSupport,
+      hotspotOpen,
+      openHotspot,
+      closeHotspot,
+      activateLicense,
+      verifyServerSupporter,
     ],
   );
 

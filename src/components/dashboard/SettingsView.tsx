@@ -5,12 +5,26 @@ import { useDashboard } from "./DashboardProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, Input, Label, PageHeader } from "@/components/ui/Primitives";
 import { useToast } from "@/components/ui/Toast";
+import { SupporterBadge } from "@/components/ui/SupporterBadge";
 import { cn } from "@/lib/utils";
 
 export function SettingsView() {
-  const { user, setUser, appPort, autoCheck, setAutoCheck, theme, setTheme, services } = useDashboard();
+  const {
+    user,
+    setUser,
+    isSupporter,
+    activateLicense,
+    verifyServerSupporter,
+    openSupport,
+    appPort,
+    autoCheck,
+    setAutoCheck,
+    theme,
+    setTheme,
+    services,
+  } = useDashboard();
   const toast = useToast();
-  const [activeTab, setActiveTab] = useState<"general" | "account" | "routing" | "about">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "supporter" | "account" | "routing" | "about">("general");
   const [name, setName] = useState(user.name);
   const [savingName, setSavingName] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -18,6 +32,9 @@ export function SettingsView() {
   const [savingPw, setSavingPw] = useState(false);
   const [checkingUpdate, setCheckingUpdate] = useState(false);
   const [updateStatus, setUpdateStatus] = useState<string | null>(null);
+  const [licenseKey, setLicenseKey] = useState("");
+  const [activatingKey, setActivatingKey] = useState(false);
+  const [rechecking, setRechecking] = useState(false);
 
   const example = services[0];
   const portSuffix = appPort !== "80" ? `:${appPort}` : "";
@@ -77,8 +94,31 @@ export function SettingsView() {
     setSavingPw(false);
   }
 
+  async function handleActivate(e: FormEvent) {
+    e.preventDefault();
+    if (!licenseKey.trim()) return;
+    setActivatingKey(true);
+    const res = await activateLicense(licenseKey.trim());
+    if (res.ok) {
+      setLicenseKey("");
+    }
+    setActivatingKey(false);
+  }
+
+  async function handleReverify() {
+    setRechecking(true);
+    const confirmed = await verifyServerSupporter();
+    if (confirmed) {
+      toast({ tone: "success", title: "Server Confirmed", description: "Supporter license verified by the server." });
+    } else {
+      toast({ tone: "info", title: "Free Tier Confirmed", description: "Server verified instance is on Free tier." });
+    }
+    setRechecking(false);
+  }
+
   const tabs = [
     { id: "general", label: "Preferences & Health" },
+    { id: "supporter", label: "Supporter & Perks ⭐" },
     { id: "account", label: "Account & Profile" },
     { id: "routing", label: "Proxy & How Routing Works" },
     { id: "about", label: "Updates & About" },
@@ -119,8 +159,8 @@ export function SettingsView() {
                 className={cn(
                   "flex flex-1 items-center gap-3 rounded-lg border p-3.5 text-left transition-colors",
                   theme === "light"
-                    ? "border-slate-900 bg-slate-100 text-slate-900 dark:border-sky-500/60 dark:bg-[#0f172a] dark:text-white"
-                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400 dark:hover:bg-slate-800/40",
+                    ? "border-brand-primary bg-brand-surface text-slate-900 dark:border-sky-500/60 dark:bg-brand-surface-dark dark:text-white"
+                    : "border-slate-200 bg-brand-surface text-slate-600 hover:bg-brand-bg dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400 dark:hover:bg-slate-800/40",
                 )}
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-slate-800 border border-slate-200 shadow-xs dark:bg-slate-900 dark:text-amber-400 dark:border-slate-800">
@@ -137,8 +177,8 @@ export function SettingsView() {
                 className={cn(
                   "flex flex-1 items-center gap-3 rounded-lg border p-3.5 text-left transition-colors",
                   theme === "dark"
-                    ? "border-slate-900 bg-slate-100 text-slate-900 dark:border-sky-500/60 dark:bg-[#0f172a] dark:text-white"
-                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400 dark:hover:bg-slate-800/40",
+                    ? "border-brand-primary bg-brand-surface text-slate-900 dark:border-sky-500/60 dark:bg-brand-surface-dark dark:text-white"
+                    : "border-slate-200 bg-brand-surface text-slate-600 hover:bg-brand-bg dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400 dark:hover:bg-slate-800/40",
                 )}
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-sky-400 border border-slate-800">
@@ -173,7 +213,125 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB 2: ACCOUNT & PROFILE */}
+      {/* TAB: SUPPORTER & PERKS */}
+      {activeTab === "supporter" && (
+        <div className="space-y-5">
+          <div className="grid gap-5 lg:grid-cols-2">
+            <Card className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">Current Tier Status</h2>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Your current PortSide instance license</p>
+                </div>
+                {isSupporter ? (
+                  <SupporterBadge size="md" />
+                ) : (
+                  <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                    Free Tier
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-4">
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {isSupporter
+                    ? "⭐ Supporter tier is active on this instance."
+                    : "You are currently on the Free tier."}
+                </p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {isSupporter
+                    ? "All perks are unlocked: zero-config Mobile & TV LAN access, Dev Wi-Fi hotspot broadcasting, and unlimited routes."
+                    : "Support PortSide with any monthly amount on Buy Me a Coffee to unlock all supporter perks, or enter a license key below."}
+                </p>
+                <div className="mt-4 flex items-center gap-2">
+                  {!isSupporter ? (
+                    <button
+                      type="button"
+                      onClick={openSupport}
+                      className="inline-flex items-center gap-2 rounded-lg bg-amber-500 hover:bg-amber-600 px-3 py-2 text-xs font-semibold text-white shadow-xs transition"
+                    >
+                      ☕ Become a Supporter on Buy Me a Coffee
+                    </button>
+                  ) : null}
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleReverify}
+                    loading={rechecking}
+                  >
+                    Verify with Server
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white">Activate License Key</h2>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Enter your supporter license key or Buy Me a Coffee code.
+              </p>
+              <form onSubmit={handleActivate} className="mt-4 space-y-3.5">
+                <div>
+                  <Label htmlFor="licenseKey">Cryptographic License Key</Label>
+                  <Input
+                    id="licenseKey"
+                    placeholder="PSL1.eyJlbWFpbCI6... (Cryptographically signed key)"
+                    value={licenseKey}
+                    onChange={(e) => setLicenseKey(e.target.value)}
+                    required
+                  />
+                  <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+                    Keys are cryptographically signed and bound to your account email ({user.email}).
+                  </p>
+                </div>
+                <Button type="submit" loading={activatingKey} disabled={!licenseKey.trim()}>
+                  Activate Supporter Status
+                </Button>
+              </form>
+            </Card>
+          </div>
+
+          <Card className="p-5">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white">Supporter Perks & Features</h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
+                <span className="text-2xl">📡</span>
+                <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Mobile & Smart TV LAN</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  Instant QR code launchpad and wildcard .local routing for testing on phones, tablets, and TV browsers.
+                </p>
+                <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  {isSupporter ? "✓ Unlocked" : "Locked for Free tier"}
+                </span>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
+                <span className="text-2xl">📶</span>
+                <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Dev Wi-Fi Hotspot</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  Broadcast an isolated private wireless network straight from your development PC with zero router setup.
+                </p>
+                <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  {isSupporter ? "✓ Unlocked" : "Locked for Free tier"}
+                </span>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
+                <span className="text-2xl">🖥️</span>
+                <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Official Desktop App</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  Standalone multi-OS launcher for Windows, macOS, and Linux that auto-activates all supporter capabilities.
+                </p>
+                <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  {isSupporter ? "✓ Unlocked" : "Included with monthly support"}
+                </span>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* TAB 3: ACCOUNT & PROFILE */}
       {activeTab === "account" && (
         <div className="grid gap-5 lg:grid-cols-2">
           <Card className="p-5">
