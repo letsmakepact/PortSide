@@ -45,31 +45,22 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
 
   if (!user) return false;
 
-  // 1. First, check if we have a valid, cryptographically unforgeable session ticket from sovereign server
+  // NEVER trust local checks, local database flags, or client tampering.
+  // ONLY authoritatively trust an unforgeable session ticket signed by the sovereign server.
   const sessionResult = await getOrFetchSupporterSession(user.email);
-  if (sessionResult.valid) {
-    // If DB is not yet marked, sync it
-    if (user.tier !== "supporter") {
-      try {
-        await db
-          .update(users)
-          .set({
-            tier: "supporter",
-            supporterSince: new Date(),
-          })
-          .where(eq(users.id, user.id));
-      } catch {}
-    }
-    return true;
+  if (sessionResult.valid && user.tier !== "supporter") {
+    try {
+      await db
+        .update(users)
+        .set({
+          tier: "supporter",
+          supporterSince: new Date(),
+        })
+        .where(eq(users.id, user.id));
+    } catch {}
   }
 
-  // 2. If locally marked as supporter, try fallback check
-  if (user.tier === "supporter") {
-    // Attempt re-verification if offline; if never had a server ticket, reject tampering
-    return sessionResult.valid;
-  }
-
-  return false;
+  return sessionResult.valid;
 }
 
 /**
