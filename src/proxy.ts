@@ -1,6 +1,57 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function proxy(request: NextRequest) {
+interface CachedHostVerification {
+  known: boolean;
+  expiresAt: number;
+}
+
+const clientHostCache = new Map<string, CachedHostVerification>();
+const CLIENT_POSITIVE_TTL_MS = 10 * 60 * 1000; // 10 minutes for verified hosts
+const CLIENT_NEGATIVE_TTL_MS = 30 * 1000;      // 30 seconds for rejected hosts
+
+async function verifyHostWithServer(hostname: string): Promise<boolean> {
+  const cached = clientHostCache.get(hostname);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.known;
+  }
+
+  // Ask authoritative sovereign servers
+  const serverEndpoints = [
+    "https://portside-theta.vercel.app",
+    "https://portside.lol",
+  ];
+
+  for (const base of serverEndpoints) {
+    try {
+      const res = await fetch(`${base}/api/host/verify?host=${encodeURIComponent(hostname)}`, {
+        signal: AbortSignal.timeout(2500),
+        headers: {
+          "user-agent": "PortSide-Proxy/1.1.0",
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const isKnown = Boolean(data.known);
+        clientHostCache.set(hostname, {
+          known: isKnown,
+          expiresAt: Date.now() + (isKnown ? CLIENT_POSITIVE_TTL_MS : CLIENT_NEGATIVE_TTL_MS),
+        });
+        return isKnown;
+      } else if (res.status === 403) {
+        clientHostCache.set(hostname, {
+          known: false,
+          expiresAt: Date.now() + CLIENT_NEGATIVE_TTL_MS,
+        });
+        return false;
+      }
+    } catch {}
+  }
+
+  return false;
+}
+
+export async function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase();
   const hostname = host.split(":")[0];
   const { pathname } = request.nextUrl;
@@ -18,23 +69,25 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Known host validation: protect against DNS rebinding attacks from malicious websites
-  const isKnownHost =
+  // 1. Fast-path local network addresses (0ms latency, works offline)
+  const isLocalNetwork =
     hostname === "localhost" ||
     hostname === "127.0.0.1" ||
     hostname === "::1" ||
     hostname.endsWith(".localhost") ||
     hostname.endsWith(".local") ||
-    hostname.endsWith(".portside.lol") ||
-    hostname.endsWith(".trycloudflare.com") ||
     /\.(?:nip\.io|sslip\.io)$/.test(hostname) ||
     hostname.startsWith("192.168.") ||
     hostname.startsWith("10.") ||
     hostname.startsWith("127.") ||
     /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
 
-  if (!isKnownHost) {
-    return new NextResponse("Forbidden: Host not recognized by PortSide.", { status: 403 });
+  if (!isLocalNetwork) {
+    // 2. Authoritative check: ask the sovereign server if this host is recognized and authorized
+    const isKnown = await verifyHostWithServer(hostname);
+    if (!isKnown) {
+      return new NextResponse("Forbidden: Host not recognized by PortSide sovereign server.", { status: 403 });
+    }
   }
 
   if (pathname.startsWith("/portside-proxy")) {
