@@ -83,7 +83,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                 />
                 {/* Custom center anchor emblem with clean quiet zone ring */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-b from-[#0e1e38] to-[#040a14] border border-sky-400 shadow-lg shadow-sky-500/40 p-1.5 ring-4 ring-white dark:ring-white">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#081426] border border-sky-400 shadow-md shadow-sky-500/30 p-1.5 ring-4 ring-white dark:ring-white">
                     <AnchorLogo className="h-full w-full" />
                   </div>
                 </div>
