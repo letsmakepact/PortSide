@@ -17,28 +17,13 @@ export async function GET(req: Request) {
   const lanIp = getLanIp();
   const port = process.env.PORT || "80";
 
-  // If not confirmed by the server as a supporter, do not compute or expose mobile/TV routing or QR codes
-  if (!isSupporter) {
-    return NextResponse.json({
-      lanIp,
-      port,
-      portalUrl: "",
-      urls: null,
-      qrDataUrl: "",
-      qrTarget: "",
-      isSupporter: false,
-      serverConfirmed: true,
-      requiresSupporter: true,
-      error: "Server confirmation required: Mobile & Smart TV LAN routing is a PortSide Supporter perk.",
-    });
-  }
-
+  // Mobile & Smart TV LAN routing is a standard core feature in the public version
   const urls = hostname ? getLanUrls(hostname, port, lanIp) : null;
   const portalUrl = `http://${lanIp}${port === "80" || port === "443" ? "" : `:${port}`}/lan`;
 
-  // Generate server-signed pairing token so mobile/TV pairing cannot be spoofed
+  // Optional server-signed pairing token if supporter session is present
   let pairToken: string | null = null;
-  const supporterEmail = user?.email || global.__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email;
+  const supporterEmail = user?.email || (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email;
   if (supporterEmail) {
     const pairRes = await requestPairToken(supporterEmail);
     if (pairRes.valid) {
@@ -86,9 +71,12 @@ export async function GET(req: Request) {
 
   let qrDataUrl = "";
   try {
+    // Generate high-resolution QR with Error Correction Level 'H' (30% redundancy)
+    // to ensure instantaneous phone camera scannability with the center PortSide anchor emblem
     qrDataUrl = await QRCode.toDataURL(qrTarget, {
+      errorCorrectionLevel: "H",
       margin: 2,
-      width: 280,
+      width: 320,
       color: {
         dark: "#0369a1",
         light: "#ffffff",
@@ -107,7 +95,7 @@ export async function GET(req: Request) {
     qrDataUrl,
     qrTarget,
     pairToken,
-    isSupporter: true,
+    isSupporter: Boolean(isSupporter),
     serverConfirmed: true,
   });
 }
