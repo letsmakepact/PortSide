@@ -47,6 +47,7 @@ export async function GET(req: Request) {
   }
 
   let publicTunnelUrl = "";
+  let vanityDomain = "";
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 400);
@@ -59,13 +60,19 @@ export async function GET(req: Request) {
       if (data.publicTunnelUrl) {
         publicTunnelUrl = data.publicTunnelUrl;
       }
+      if (data.vanityDomain) {
+        vanityDomain = data.vanityDomain;
+      }
     }
   } catch {}
 
-  const mode = searchParams.get("mode") || (publicTunnelUrl ? "tunnel" : "lan");
+  const brandedUrl = vanityDomain ? `https://${vanityDomain}` : "";
+  const mode = searchParams.get("mode") || (brandedUrl ? "branded" : publicTunnelUrl ? "tunnel" : "lan");
   let qrTarget = target;
   if (!qrTarget) {
-    if (mode === "tunnel" && publicTunnelUrl) {
+    if (mode === "branded" && brandedUrl) {
+      qrTarget = hostname ? `${brandedUrl}/s/${hostname}` : `${brandedUrl}/lan`;
+    } else if (mode === "tunnel" && publicTunnelUrl) {
       qrTarget = hostname ? `${publicTunnelUrl}/s/${hostname}` : `${publicTunnelUrl}/lan`;
     } else {
       qrTarget = urls ? urls.subdomainUrl : portalUrl;
@@ -94,6 +101,8 @@ export async function GET(req: Request) {
     port,
     portalUrl,
     publicTunnelUrl,
+    vanityDomain,
+    brandedUrl,
     urls,
     qrDataUrl,
     qrTarget,

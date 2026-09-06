@@ -40,6 +40,13 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  if (!label) {
+    const portsideSubdomainMatch = hostname.match(/^([a-z0-9-]+)\.[a-z0-9-]+\.portside\.lol$/);
+    if (portsideSubdomainMatch) {
+      label = portsideSubdomainMatch[1];
+    }
+  }
+
   const isRawIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname);
   const isPublicTunnel = hostname.endsWith(".trycloudflare.com") || hostname.endsWith(".portside.lol");
   if (!label && (isRawIp || isPublicTunnel) && pathname === "/") {

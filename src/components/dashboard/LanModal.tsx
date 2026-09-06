@@ -13,6 +13,8 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     port: string;
     portalUrl: string;
     publicTunnelUrl?: string;
+    vanityDomain?: string;
+    brandedUrl?: string;
     qrDataUrl: string;
     qrTarget: string;
     isSupporter?: boolean;
@@ -231,7 +233,30 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   </div>
                 </>
               )}
-              {lanData?.publicTunnelUrl && (
+              {lanData?.vanityDomain && (
+                <div className="rounded-xl border border-sky-500/30 bg-sky-50/50 dark:bg-sky-950/20 p-3">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400">
+                      <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
+                      Permanent Branded Domain (*.portside.lol)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => copy(`https://${lanData.vanityDomain}${selectedService ? `/s/${selectedService}` : "/lan"}`, "vanity")}
+                      className="text-[11px] text-sky-700 dark:text-sky-400 hover:underline font-semibold"
+                    >
+                      {copiedKey === "vanity" ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="mt-1 font-mono text-xs text-sky-800 dark:text-sky-300 break-all">
+                    https://{lanData.vanityDomain}{selectedService ? `/s/${selectedService}` : "/lan"}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    Your personal permanent address. Works globally on 5G and any network.
+                  </p>
+                </div>
+              )}
+              {lanData?.publicTunnelUrl && !lanData?.vanityDomain && (
                 <div className="rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 p-3">
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
