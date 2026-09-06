@@ -1743,12 +1743,12 @@ export function SettingsView() {
                   Check for updates
                 </Button>
                 <a
-                  href="https://github.com/letsmakepact/PortSide/releases/latest/download/Portside-Launcher.exe"
+                  href="https://github.com/letsmakepact/PortSide/releases/latest/download/Portside.exe"
                   target="_blank"
                   rel="noreferrer"
                 >
                   <Button>
-                    Get Auto-Update Launcher (.exe)
+                    Get Portside (.exe)
                   </Button>
                 </a>
               </div>

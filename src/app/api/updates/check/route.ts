@@ -41,7 +41,7 @@ export async function GET() {
           latestVersion: CURRENT_VERSION,
           updateAvailable: false,
           releaseUrl: `https://github.com/letsmakepact/PortSide`,
-          exeDownloadUrl: `https://github.com/letsmakepact/PortSide/releases/latest/download/Portside-Launcher.exe`,
+          exeDownloadUrl: `https://github.com/letsmakepact/PortSide/releases/latest/download/Portside.exe`,
           releaseNotes: "You are running the latest version.",
           publishedAt: new Date().toISOString(),
           checkedAt: new Date().toISOString(),
@@ -66,7 +66,7 @@ export async function GET() {
 
     const exeDownloadUrl = exeAsset
       ? exeAsset.browser_download_url
-      : `https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/latest/download/Portside-Launcher.exe`;
+      : `https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/latest/download/Portside.exe`;
 
     return NextResponse.json({
       currentVersion: CURRENT_VERSION,

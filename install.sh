@@ -30,13 +30,13 @@ echo "             Target Platform: $OS/$ARCH                           "
 echo "=================================================================="
 echo ""
 
-BINARY_NAME="Portside-Launcher-${OS}-${ARCH}"
+BINARY_NAME="Portside-${OS}-${ARCH}"
 DOWNLOAD_URL="https://github.com/${REPO}/releases/latest/download/${BINARY_NAME}"
 
-echo "Fetching latest launcher binary..."
+echo "Fetching latest binary..."
 if curl -fsSL -o "$DEST_DIR/Portside" "$DOWNLOAD_URL" 2>/dev/null; then
   chmod +x "$DEST_DIR/Portside"
-  echo "✓ Successfully installed launcher to: $DEST_DIR/Portside"
+  echo "[OK] Successfully installed to: $DEST_DIR/Portside"
   echo "Running Portside..."
   "$DEST_DIR/Portside"
 else

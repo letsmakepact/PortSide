@@ -71,11 +71,11 @@ Download the pre-compiled launcher for your operating system from [GitHub Releas
 
 | Operating System | Binary Asset |
 |---|---|
-| **Windows** (x64) | `Portside-Launcher.exe` |
-| **macOS** (Apple Silicon M1/M2/M3/M4) | `Portside-Launcher-darwin-arm64` |
-| **macOS** (Intel) | `Portside-Launcher-darwin-amd64` |
-| **Linux** (x86_64) | `Portside-Launcher-linux-amd64` |
-| **Linux** (arm64) | `Portside-Launcher-linux-arm64` |
+| **Windows** (x64) | `Portside.exe` (with embedded anchor icon) |
+| **macOS** (Apple Silicon M1/M2/M3/M4) | `Portside-darwin-arm64` / `Portside.app` |
+| **macOS** (Intel) | `Portside-darwin-amd64` / `Portside.app` |
+| **Linux** (x86_64) | `Portside-linux-amd64` / `Portside` |
+| **Linux** (arm64) | `Portside-linux-arm64` |
 
 #### One-Line Terminal Setup (macOS & Linux):
 
