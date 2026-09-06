@@ -132,7 +132,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                 <Lock className="h-8 w-8 text-amber-400 mb-2" />
                 <span className="text-xs font-bold text-amber-300">Supporter Feature</span>
                 <p className="text-[11px] text-slate-400 mt-1">
-                  Global 5G tunneling requires verified Supporter plan.
+                  Remote access requires an active Supporter plan.
                 </p>
               </div>
             ) : lanData?.qrDataUrl ? (
@@ -165,8 +165,8 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               <p className="mt-1 text-[11px] text-slate-400 leading-tight">
                 {connectionMode === "tunnel"
                   ? isSupporter
-                    ? "Global 5G redirect. Works anywhere on cellular data and remote networks."
-                    : "Upgrade to Supporter to generate permanent 5G QR links."
+                    ? "Remote redirect. Connect seamlessly from external devices."
+                    : "Upgrade to Supporter to enable remote links."
                   : isSupporter
                   ? "Local Wi-Fi redirect (.local for iOS & Apple Bonjour). Point camera to launch."
                   : "Local Wi-Fi redirect. Point your camera to launch immediately."}
@@ -203,7 +203,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   }`}
                 >
                   <Globe className="h-3.5 w-3.5" />
-                  <span>Global (5G / Remote)</span>
+                  <span>Remote Access</span>
                 </button>
               </div>
             </div>
@@ -243,7 +243,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
                       <Globe className="h-3.5 w-3.5 text-sky-400" />
-                      Custom portside.lol 5G Link
+                      Custom portside.lol Link
                     </span>
                     <span className="rounded bg-sky-500/20 px-2 py-0.5 text-[10px] font-bold text-sky-300 border border-sky-400/30">
                       PERMANENT
@@ -302,17 +302,17 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   </div>
 
                   <p className="text-[11px] text-slate-400">
-                    Accessible anywhere outside your local Wi-Fi via permanent Cloudflare tunnel.
+                    Permanent remote link. Connect seamlessly from any network.
                   </p>
                 </div>
               ) : (
                 <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 space-y-3">
                   <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs">
                     <Lock className="h-4 w-4" />
-                    <span>Supporter Plan Required for 5G Tunneling</span>
+                    <span>Supporter Plan Required</span>
                   </div>
                   <p className="text-[11px] text-slate-300 leading-relaxed">
-                    Permanent *.portside.lol vanity domains and global cellular 5G access require an active Supporter plan.
+                    Custom branded domains and remote access are reserved for Portside Supporters.
                   </p>
                   <a
                     href="https://buymeacoffee.com/pacts"
@@ -339,7 +339,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                         iOS & Apple Devices (.local)
                       </span>
                       <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-400/30">
-                        mDNS ZERO-CONFIG
+                        DIRECT LINK
                       </span>
                     </div>
 
@@ -370,7 +370,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                     </div>
 
                     <p className="text-[11px] text-slate-400">
-                      Direct Apple Bonjour broadcast. Opens immediately in iOS Safari without typing IP addresses.
+                      Direct device connection. Opens immediately on your mobile device without typing IP addresses.
                     </p>
                   </div>
                 )}

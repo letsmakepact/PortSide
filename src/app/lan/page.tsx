@@ -65,7 +65,7 @@ export default async function LanPortalPage() {
               data-lan-nav="true"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-3 text-xs font-bold text-white shadow-md shadow-sky-500/25 hover:from-sky-400 hover:to-blue-500 transition tv-focus-target touch-action-manipulation"
             >
-              Unlock Personal Dashboard & .local Routing
+              Unlock Personal Dashboard & Supporter Perks
             </a>
           </div>
         </div>

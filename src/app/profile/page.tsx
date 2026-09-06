@@ -423,7 +423,7 @@ export default async function ProfilePage() {
                   </h2>
                 </div>
                 <p className="text-xs text-slate-400 mt-1">
-                  {profile.projectsSubtitle || "Hosted directly from local development ports via PortSide edge tunnels. Open and test in real-time."}
+                  {profile.projectsSubtitle || "Active projects hosted directly through PortSide. Open and test in real-time."}
                 </p>
               </div>
               <span className={`text-xs font-mono ${theme.accentText} ${theme.accentBgSubtle} border ${theme.accentBorder} px-2.5 py-1 rounded-lg self-start sm:self-auto`}>
@@ -571,7 +571,7 @@ export default async function ProfilePage() {
                 {profile.ctaTitle || "Sovereign Local Hosting via PortSide"}
               </h4>
               <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
-                {profile.ctaDescription || "Every project listed here is served directly from physical hardware through sovereign encrypted edge tunnels. Zero third-party cloud hosting required."}
+                {profile.ctaDescription || "Every project listed here is connected directly through PortSide. Zero third-party cloud hosting required."}
               </p>
             </div>
             <div className="flex items-center gap-3 shrink-0">

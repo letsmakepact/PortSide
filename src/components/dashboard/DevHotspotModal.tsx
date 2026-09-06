@@ -133,7 +133,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
               Unlock Multi-Device & Hotspot Perks
             </h3>
             <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300 max-w-md mx-auto">
-              Supporters get zero-configuration <code className="font-mono text-amber-600 dark:text-amber-400">*.local</code> LAN broadcast out of the box, plus the ability to spawn an isolated, hardware-encrypted Wi-Fi access point right from your PC.
+              Supporters get enhanced multi-device routing out of the box, plus the ability to spawn private networks directly from your workstation.
             </p>
 
             <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -159,13 +159,13 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
                   </span>
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white">Zero-Config LAN (mDNS)</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">Local Network Routing</p>
                       <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
-                        ACTIVE · NO SETUP
+                        ACTIVE
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      Nearby phones and PCs on your Wi-Fi automatically resolve <code className="font-mono text-emerald-700 dark:text-emerald-400">http://portside.local</code>
+                      Nearby devices on your Wi-Fi can access active services directly.
                     </p>
                   </div>
                 </div>
@@ -267,7 +267,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
             </div>
 
             <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 dark:border-amber-900/30 dark:bg-amber-950/20 p-3 text-xs text-amber-950 dark:text-amber-200">
-              <span className="font-semibold">Instant Access:</span> Once connected, open any browser on your device and navigate directly to <code className="rounded bg-amber-100/80 dark:bg-amber-900/60 px-1 font-mono text-[11px] font-bold">http://portside.local</code> or any of your custom project subdomains.
+              <span className="font-semibold">Instant Access:</span> Once connected, open any browser on your device to access your custom projects directly.
             </div>
           </div>
         )}

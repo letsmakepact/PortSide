@@ -83,10 +83,10 @@ export function SettingsView() {
   const [profileCustomLinks, setProfileCustomLinks] = useState<Array<{ id: string; label: string; url: string; description?: string }>>([]);
   const [profileShowProjects, setProfileShowProjects] = useState(true);
   const [profileProjectsTitle, setProfileProjectsTitle] = useState("Live Hosted Projects");
-  const [profileProjectsSubtitle, setProfileProjectsSubtitle] = useState("Hosted directly from local development ports via PortSide edge tunnels. Open and test in real-time.");
+  const [profileProjectsSubtitle, setProfileProjectsSubtitle] = useState("Active projects hosted directly through PortSide. Open and test in real-time.");
   const [profileShowCta, setProfileShowCta] = useState(true);
   const [profileCtaTitle, setProfileCtaTitle] = useState("Sovereign Local Hosting via PortSide");
-  const [profileCtaDescription, setProfileCtaDescription] = useState("Every project listed here is served directly from physical hardware through sovereign encrypted edge tunnels. Zero third-party cloud hosting required.");
+  const [profileCtaDescription, setProfileCtaDescription] = useState("Every project listed here is connected directly through PortSide. Zero third-party cloud hosting required.");
   const [profileCtaButtonText, setProfileCtaButtonText] = useState("Get PortSide");
   const [profileCtaButtonUrl, setProfileCtaButtonUrl] = useState("https://buymeacoffee.com/pacts");
   const [profileSubTab, setProfileSubTab] = useState<"identity" | "theme" | "skills" | "socials" | "projects" | "links" | "cta">("identity");
@@ -160,10 +160,10 @@ export function SettingsView() {
           setProfileCustomLinks(p.customLinks || []);
           setProfileShowProjects(p.showProjects !== false);
           setProfileProjectsTitle(p.projectsTitle || "Live Hosted Projects");
-          setProfileProjectsSubtitle(p.projectsSubtitle || "Hosted directly from local development ports via PortSide edge tunnels. Open and test in real-time.");
+          setProfileProjectsSubtitle(p.projectsSubtitle || "Active projects hosted directly through PortSide. Open and test in real-time.");
           setProfileShowCta(p.showCta !== false);
           setProfileCtaTitle(p.ctaTitle || "Sovereign Local Hosting via PortSide");
-          setProfileCtaDescription(p.ctaDescription || "Every project listed here is served directly from physical hardware through sovereign encrypted edge tunnels. Zero third-party cloud hosting required.");
+          setProfileCtaDescription(p.ctaDescription || "Every project listed here is connected directly through PortSide. Zero third-party cloud hosting required.");
           setProfileCtaButtonText(p.ctaButtonText || "Get PortSide");
           setProfileCtaButtonUrl(p.ctaButtonUrl || "https://buymeacoffee.com/pacts");
         }
@@ -887,7 +887,7 @@ export function SettingsView() {
                       id="profSkills"
                       value={profileSkills}
                       onChange={(e) => setProfileSkills(e.target.value)}
-                      placeholder="TypeScript, Next.js, Go, Cloudflare, Tailwind CSS, PostgreSQL, Docker"
+                      placeholder="TypeScript, Next.js, Go, Tailwind CSS, PostgreSQL, Docker"
                     />
                   </div>
 
@@ -1405,7 +1405,7 @@ export function SettingsView() {
                 </span>
                 <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Mobile & Smart TV LAN</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Instant QR code launchpad and wildcard .local routing for testing on phones, tablets, and TV browsers.
+                  Instant launchpad and custom routing for testing on phones, tablets, and TV screens.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                   {isSupporter ? "Unlocked" : "Locked for Free tier"}
@@ -1418,7 +1418,7 @@ export function SettingsView() {
                 </span>
                 <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Dev Wi-Fi Hotspot</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Broadcast an isolated private wireless network straight from your development PC with zero router setup.
+                  Spawn an isolated private network directly from your workstation.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                   {isSupporter ? "Unlocked" : "Locked for Free tier"}
@@ -1431,7 +1431,7 @@ export function SettingsView() {
                 </span>
                 <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Official Desktop App</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Standalone multi-OS launcher for Windows, macOS, and Linux that auto-activates all supporter capabilities.
+                  Standalone workstation app for background management and seamless operation.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                   {isSupporter ? "Unlocked" : "Included with monthly support"}
@@ -1457,7 +1457,7 @@ export function SettingsView() {
                     <SupporterBadge size="xs" />
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Broadcast a private hardware-encrypted Wi-Fi access point right from your development machine.
+                    Spawn a private isolated network directly from your workstation.
                   </p>
                 </div>
               </div>
@@ -1481,7 +1481,7 @@ export function SettingsView() {
                   Supporter Feature
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300 max-w-md mx-auto">
-                  Dev Wi-Fi Hotspot broadcasting requires a verified Supporter license. Once active, you can spin up isolated Wi-Fi networks for physical mobile, tablet, and smart TV testing anywhere.
+                  Hotspot networking features require an active Supporter plan to create dedicated environments for physical device testing.
                 </p>
                 <div className="mt-5 flex justify-center">
                   <button
@@ -1503,13 +1503,13 @@ export function SettingsView() {
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-white">Zero-Config LAN (mDNS)</p>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">Local Network Routing</p>
                         <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
-                          ACTIVE · NO ROUTER CONFIG NEEDED
+                          ACTIVE
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        Any phone or PC on your current Wi-Fi can already reach your services at <code className="font-mono text-emerald-700 dark:text-emerald-400">http://portside.local</code>.
+                        Nearby devices on your current Wi-Fi can access your active projects.
                       </p>
                     </div>
                   </div>
@@ -1525,9 +1525,9 @@ export function SettingsView() {
                         </span>
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold text-slate-900 dark:text-white">Global Remote Access (5G / Anywhere)</p>
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white">Remote Access</p>
                             <span className="rounded-full bg-sky-100 dark:bg-sky-900/60 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
-                              ENCRYPTED TUNNEL LIVE
+                              REMOTE LINK LIVE
                             </span>
                           </div>
                           <p className="font-mono text-xs text-sky-700 dark:text-sky-400 mt-0.5 break-all">
