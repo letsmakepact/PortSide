@@ -51,6 +51,34 @@ async function verifyHostWithServer(hostname: string): Promise<boolean> {
   return false;
 }
 
+let cachedSupporterStatus: { isSupporter: boolean; expiresAt: number } | null = null;
+
+async function verifySupporterStatus(): Promise<boolean> {
+  if (cachedSupporterStatus && cachedSupporterStatus.expiresAt > Date.now()) {
+    return cachedSupporterStatus.isSupporter;
+  }
+
+  try {
+    const res = await fetch("http://127.0.0.1/api/lan?mode=lan", {
+      signal: AbortSignal.timeout(1500),
+      headers: {
+        "user-agent": "PortSide-Internal-Proxy",
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const confirmed = Boolean(data.isSupporter);
+      cachedSupporterStatus = {
+        isSupporter: confirmed,
+        expiresAt: Date.now() + 60 * 1000,
+      };
+      return confirmed;
+    }
+  } catch {}
+
+  return false;
+}
+
 export async function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase();
   const hostname = host.split(":")[0];
@@ -87,6 +115,17 @@ export async function proxy(request: NextRequest) {
     const isKnown = await verifyHostWithServer(hostname);
     if (!isKnown) {
       return new NextResponse("Forbidden: Host not recognized by PortSide sovereign server.", { status: 403 });
+    }
+  }
+
+  // 3. Server-level enforcement for .local mDNS routing: only authorized Supporters can route .local
+  if (hostname.endsWith(".local")) {
+    const isSupporter = await verifySupporterStatus();
+    if (!isSupporter) {
+      return new NextResponse(
+        "Forbidden: *.local mDNS routing is reserved for verified PortSide Supporters.",
+        { status: 403 }
+      );
     }
   }
 

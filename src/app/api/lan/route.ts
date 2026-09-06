@@ -40,13 +40,25 @@ export async function GET(req: Request) {
   const lanIp = getLanIp();
   const port = process.env.PORT || "80";
 
-  const urls = hostname ? getLanUrls(hostname, port, lanIp) : null;
+  const rawUrls = hostname ? getLanUrls(hostname, port, lanIp) : null;
   const portalUrl = `http://${lanIp}${port === "80" || port === "443" ? "" : `:${port}`}/lan`;
+
+  // Server-level security: strictly omit .local URLs for non-supporters
+  const urls = rawUrls
+    ? {
+        lanIp: rawUrls.lanIp,
+        directUrl: rawUrls.directUrl,
+        portalUrl: rawUrls.portalUrl,
+        subdomainUrl: rawUrls.subdomainUrl,
+        localMdnsUrl: isSupporter ? rawUrls.localMdnsUrl : null,
+        portalLocalUrl: isSupporter ? rawUrls.portalLocalUrl : null,
+      }
+    : null;
 
   // Optional server-signed pairing token if supporter session is present
   let pairToken: string | null = null;
   const supporterEmail = user?.email || (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email || "pact@virtuoushigh.com";
-  if (supporterEmail) {
+  if (supporterEmail && isSupporter) {
     try {
       const pairRes = await requestPairToken(supporterEmail);
       if (pairRes.valid) {
@@ -75,7 +87,7 @@ export async function GET(req: Request) {
     }
   } catch {}
 
-  // Supporter domain resolution: guaranteed portside.lol domain
+  // Supporter domain resolution: guaranteed portside.lol domain ONLY for supporters
   if (isSupporter && !vanityDomain) {
     if (requestedDomain) {
       vanityDomain = requestedDomain.includes(".") ? requestedDomain : `${requestedDomain}.portside.lol`;
@@ -90,24 +102,38 @@ export async function GET(req: Request) {
     }
   }
 
+  // Non-supporters do not get vanity domain or custom 5G tunnel
+  if (!isSupporter) {
+    vanityDomain = "";
+    publicTunnelUrl = "";
+  }
+
   const brandedUrl = vanityDomain ? `https://${vanityDomain}` : "";
-  const mode = searchParams.get("mode") || (brandedUrl ? "branded" : publicTunnelUrl ? "tunnel" : "lan");
+  const mode = searchParams.get("mode") || "lan";
   const hasCustomUrl = Boolean(vanityDomain || publicTunnelUrl);
   const requiresCustomUrl = mode === "tunnel" && !hasCustomUrl;
 
   let qrTarget = target;
   if (!qrTarget) {
-    if ((mode === "branded" || mode === "tunnel") && (brandedUrl || publicTunnelUrl)) {
-      const baseUrl = brandedUrl || publicTunnelUrl;
-      qrTarget = hostname ? `${baseUrl}/s/${hostname}` : `${baseUrl}/lan`;
+    if (mode === "tunnel" || mode === "branded") {
+      if (isSupporter && (brandedUrl || publicTunnelUrl)) {
+        const baseUrl = brandedUrl || publicTunnelUrl;
+        qrTarget = hostname ? `${baseUrl}/s/${hostname}` : `${baseUrl}/lan`;
+        if (pairToken) {
+          const delimiter = qrTarget.includes("?") ? "&" : "?";
+          qrTarget = `${qrTarget}${delimiter}pst=${encodeURIComponent(pairToken)}`;
+        }
+      } else {
+        qrTarget = "";
+      }
     } else {
-      qrTarget = urls ? urls.subdomainUrl : portalUrl;
+      // Local Wi-Fi (lan) mode: Supporter gets .local iOS resolution; non-supporter gets direct IP URL
+      if (isSupporter && rawUrls?.localMdnsUrl) {
+        qrTarget = hostname ? rawUrls.localMdnsUrl : rawUrls.portalLocalUrl || portalUrl;
+      } else {
+        qrTarget = rawUrls ? rawUrls.directUrl || rawUrls.subdomainUrl : portalUrl;
+      }
     }
-  }
-
-  if (pairToken && qrTarget) {
-    const delimiter = qrTarget.includes("?") ? "&" : "?";
-    qrTarget = `${qrTarget}${delimiter}pst=${encodeURIComponent(pairToken)}`;
   }
 
   let qrDataUrl = "";
