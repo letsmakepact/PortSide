@@ -24,7 +24,7 @@ export function SettingsView() {
     services,
   } = useDashboard();
   const toast = useToast();
-  const [activeTab, setActiveTab] = useState<"general" | "supporter" | "hotspot" | "account" | "routing" | "about">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "profile" | "supporter" | "hotspot" | "account" | "routing" | "about">("general");
   const [name, setName] = useState(user.name);
   const [savingName, setSavingName] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -35,6 +35,21 @@ export function SettingsView() {
   const [licenseKey, setLicenseKey] = useState("");
   const [activatingKey, setActivatingKey] = useState(false);
   const [rechecking, setRechecking] = useState(false);
+
+  // Profile states
+  const [profileHandle, setProfileHandle] = useState("");
+  const [profileName, setProfileName] = useState("");
+  const [profileTitle, setProfileTitle] = useState("");
+  const [profileBio, setProfileBio] = useState("");
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState("");
+  const [profileGithub, setProfileGithub] = useState("");
+  const [profileTwitter, setProfileTwitter] = useState("");
+  const [profileBmc, setProfileBmc] = useState("");
+  const [profileWebsite, setProfileWebsite] = useState("");
+  const [profileSkills, setProfileSkills] = useState("");
+  const [profileVisibleServices, setProfileVisibleServices] = useState<string[]>([]);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
 
   // Hotspot states
   const [hotspotActive, setHotspotActive] = useState(false);
@@ -66,6 +81,79 @@ export function SettingsView() {
       })
       .finally(() => setLoadingHotspot(false));
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== "profile") return;
+    setLoadingProfile(true);
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.profile) {
+          const p = d.profile;
+          setProfileHandle(p.handle || "");
+          setProfileName(p.name || "");
+          setProfileTitle(p.title || "");
+          setProfileBio(p.bio || "");
+          setProfileAvatarUrl(p.avatarUrl || "");
+          setProfileGithub(p.github || "");
+          setProfileTwitter(p.twitter || "");
+          setProfileBmc(p.buymeacoffee || "");
+          setProfileWebsite(p.website || "");
+          setProfileSkills(Array.isArray(p.skills) ? p.skills.join(", ") : "");
+          setProfileVisibleServices(p.visibleServices || []);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingProfile(false));
+  }, [activeTab]);
+
+  async function savePublicProfile(e: FormEvent) {
+    e.preventDefault();
+    setSavingProfile(true);
+    try {
+      const skillsArray = profileSkills
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          handle: profileHandle,
+          name: profileName,
+          title: profileTitle,
+          bio: profileBio,
+          avatarUrl: profileAvatarUrl,
+          github: profileGithub,
+          twitter: profileTwitter,
+          buymeacoffee: profileBmc,
+          website: profileWebsite,
+          skills: skillsArray,
+          visibleServices: profileVisibleServices,
+        }),
+      });
+      if (res.ok) {
+        toast({ tone: "success", title: "Public Profile Saved", description: "Your About Me showcase has been updated." });
+      } else {
+        toast({ tone: "error", title: "Failed to save profile" });
+      }
+    } catch {
+      toast({ tone: "error", title: "Failed to save profile" });
+    } finally {
+      setSavingProfile(false);
+    }
+  }
+
+  function toggleServiceVisibility(hostname: string) {
+    setProfileVisibleServices((prev) => {
+      if (prev.includes(hostname)) {
+        return prev.filter((h) => h !== hostname);
+      } else {
+        return [...prev, hostname];
+      }
+    });
+  }
 
   async function toggleHotspot() {
     setSavingHotspot(true);
@@ -219,9 +307,10 @@ export function SettingsView() {
 
   const tabs = [
     { id: "general", label: "Preferences & Health" },
+    { id: "profile", label: "Public Profile & About Me" },
     { id: "supporter", label: "Supporter & Perks" },
     { id: "hotspot", label: "Dev Wi-Fi Hotspot" },
-    { id: "account", label: "Account & Profile" },
+    { id: "account", label: "Account & Security" },
     { id: "routing", label: "Proxy & How Routing Works" },
     { id: "about", label: "Updates & About" },
   ] as const;
@@ -312,6 +401,250 @@ export function SettingsView() {
               </span>
             </label>
           </Card>
+        </div>
+      )}
+
+      {/* TAB: PUBLIC PROFILE & ABOUT ME */}
+      {activeTab === "profile" && (
+        <div className="space-y-5">
+          {/* Live URL Banner */}
+          <Card className="p-5 border-sky-500/20 bg-gradient-to-r from-sky-950/20 via-slate-900 to-slate-950">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Public Developer Showcase Live
+                  </h2>
+                  <SupporterBadge size="xs" />
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Your About Me page and live hosted local projects are accessible globally.
+                </p>
+                <p className="font-mono text-xs text-sky-500 dark:text-sky-400">
+                  {publicTunnelUrl || (profileHandle ? `https://${profileHandle}.portside.lol` : "https://pact.portside.lol")}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={publicTunnelUrl || "/profile"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-4 py-2 text-xs font-bold text-white shadow-md shadow-sky-500/20 transition"
+                >
+                  View Showcase
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                </a>
+              </div>
+            </div>
+          </Card>
+
+          {loadingProfile ? (
+            <Card className="p-12 text-center text-xs text-slate-500">
+              Loading profile configuration...
+            </Card>
+          ) : (
+            <form onSubmit={savePublicProfile} className="space-y-5">
+              {/* Card 1: Identity */}
+              <Card className="p-5 space-y-4">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Developer Identity & Branding
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Basic profile details shown at the top of your public About Me page.
+                </p>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="profName">Display Name</Label>
+                    <Input
+                      id="profName"
+                      value={profileName}
+                      onChange={(e) => setProfileName(e.target.value)}
+                      placeholder="e.g. pact"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="profHandle">Supporter Vanity Handle</Label>
+                    <Input
+                      id="profHandle"
+                      value={profileHandle}
+                      onChange={(e) => setProfileHandle(e.target.value)}
+                      placeholder="e.g. pact (pact.portside.lol)"
+                      required
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="profTitle">Professional Title / Headline</Label>
+                    <Input
+                      id="profTitle"
+                      value={profileTitle}
+                      onChange={(e) => setProfileTitle(e.target.value)}
+                      placeholder="e.g. Full-Stack Developer & Systems Architect"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="profAvatar">Avatar Image URL</Label>
+                    <Input
+                      id="profAvatar"
+                      value={profileAvatarUrl}
+                      onChange={(e) => setProfileAvatarUrl(e.target.value)}
+                      placeholder="https://github.com/username.png or image URL"
+                    />
+                  </div>
+                </div>
+              </Card>
+
+              {/* Card 2: Bio & Skills */}
+              <Card className="p-5 space-y-4">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Biography & Tech Stack
+                </h3>
+
+                <div>
+                  <Label htmlFor="profBio">About Me / Bio</Label>
+                  <textarea
+                    id="profBio"
+                    rows={3}
+                    value={profileBio}
+                    onChange={(e) => setProfileBio(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
+                    placeholder="Tell visitors who you are and what you build..."
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="profSkills">Skills & Technologies (comma separated)</Label>
+                  <Input
+                    id="profSkills"
+                    value={profileSkills}
+                    onChange={(e) => setProfileSkills(e.target.value)}
+                    placeholder="TypeScript, Next.js, Go, Cloudflare, Tailwind CSS"
+                  />
+                </div>
+              </Card>
+
+              {/* Card 3: Social & Support */}
+              <Card className="p-5 space-y-4">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Social & Support Links
+                </h3>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="profBmc">Buy Me a Coffee URL</Label>
+                    <Input
+                      id="profBmc"
+                      value={profileBmc}
+                      onChange={(e) => setProfileBmc(e.target.value)}
+                      placeholder="https://buymeacoffee.com/pacts"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="profGithub">GitHub Profile URL</Label>
+                    <Input
+                      id="profGithub"
+                      value={profileGithub}
+                      onChange={(e) => setProfileGithub(e.target.value)}
+                      placeholder="https://github.com/username"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="profTwitter">Twitter / X URL</Label>
+                    <Input
+                      id="profTwitter"
+                      value={profileTwitter}
+                      onChange={(e) => setProfileTwitter(e.target.value)}
+                      placeholder="https://x.com/username"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="profWebsite">Personal Website URL</Label>
+                    <Input
+                      id="profWebsite"
+                      value={profileWebsite}
+                      onChange={(e) => setProfileWebsite(e.target.value)}
+                      placeholder="https://pact.portside.lol"
+                    />
+                  </div>
+                </div>
+              </Card>
+
+              {/* Card 4: Live Hosted Projects Selection */}
+              <Card className="p-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      Live Hosted Projects Showcase
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Select which local services are published on your About Me page for the public to test.
+                    </p>
+                  </div>
+                  <span className="text-xs font-mono text-slate-400">
+                    {profileVisibleServices.length === 0 ? "Showing All" : `${profileVisibleServices.length} Selected`}
+                  </span>
+                </div>
+
+                {services.length === 0 ? (
+                  <p className="text-xs text-slate-500 italic">No services registered yet.</p>
+                ) : (
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {services.map((svc) => {
+                      const isVisible = profileVisibleServices.length === 0 || profileVisibleServices.includes(svc.hostname);
+
+                      return (
+                        <label
+                          key={svc.id}
+                          className={cn(
+                            "flex items-center justify-between p-3 rounded-xl border cursor-pointer transition",
+                            isVisible
+                              ? "border-sky-500/40 bg-sky-500/5 dark:border-sky-500/30 dark:bg-sky-500/10"
+                              : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 opacity-60"
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={isVisible}
+                              onChange={() => toggleServiceVisibility(svc.hostname)}
+                              className="h-4 w-4 rounded-sm border-slate-300 text-sky-600 focus:ring-sky-500"
+                            />
+                            <div>
+                              <p className="text-xs font-bold text-slate-900 dark:text-white">
+                                {svc.name}
+                              </p>
+                              <p className="font-mono text-[11px] text-slate-400">
+                                :{svc.port} · {svc.hostname}.localhost
+                              </p>
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-slate-400">
+                            {isVisible ? "Visible" : "Hidden"}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+              </Card>
+
+              {/* Save Button */}
+              <div className="flex justify-end pt-2">
+                <Button type="submit" loading={savingProfile}>
+                  Save Public Profile Changes
+                </Button>
+              </div>
+            </form>
+          )}
         </div>
       )}
 

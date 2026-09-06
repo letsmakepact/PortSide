@@ -47,12 +47,27 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  if (!label && (pathname === "/about" || pathname === "/@me")) {
+    const profileUrl = request.nextUrl.clone();
+    profileUrl.pathname = "/profile";
+    return NextResponse.rewrite(profileUrl);
+  }
+
   const isRawIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname);
-  const isPublicTunnel = hostname.endsWith(".trycloudflare.com") || hostname.endsWith(".portside.lol");
-  if (!label && (isRawIp || isPublicTunnel) && pathname === "/") {
-    const lanUrl = request.nextUrl.clone();
-    lanUrl.pathname = "/lan";
-    return NextResponse.redirect(lanUrl);
+  const isPortsideDomain = hostname.endsWith(".portside.lol");
+  const isTryCloudflare = hostname.endsWith(".trycloudflare.com");
+
+  if (!label && pathname === "/") {
+    if (isPortsideDomain) {
+      const profileUrl = request.nextUrl.clone();
+      profileUrl.pathname = "/profile";
+      return NextResponse.rewrite(profileUrl);
+    }
+    if (isRawIp || isTryCloudflare) {
+      const lanUrl = request.nextUrl.clone();
+      lanUrl.pathname = "/lan";
+      return NextResponse.redirect(lanUrl);
+    }
   }
 
   if (!label || label === "www" || label === "app") {
