@@ -82,7 +82,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
         setClaimError(data.error || "No active supporter payment was found. Please check your Buy Me a Coffee receipt.");
       }
     } catch {
-      setClaimError("Failed to reach verification server. You can also claim at portside.lol/claim");
+      setClaimError("Failed to reach verification server. Please check your connection.");
     } finally {
       setClaiming(false);
     }
