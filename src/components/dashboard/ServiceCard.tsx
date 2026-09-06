@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDashboard } from "./DashboardProvider";
 import { StatusBadge } from "@/components/ui/Primitives";
 import { DevIconBadge } from "@/components/ui/DevIcon";
@@ -22,6 +22,10 @@ export function ServiceCard({
   const { projects, appPort, updateService } = useDashboard();
   const toast = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const project = projects.find((p) => p.id === service.projectId);
   const url = serviceUrl(service.hostname, appPort);
   const pending = service.id < 0;
@@ -150,7 +154,9 @@ export function ServiceCard({
         <span suppressHydrationWarning>
           {service.enabled
             ? service.lastCheckedAt
-              ? `Checked ${formatRelative(service.lastCheckedAt)}`
+              ? mounted
+                ? `Checked ${formatRelative(service.lastCheckedAt)}`
+                : "Checking status..."
               : "Awaiting first check"
             : "Route paused"}
         </span>

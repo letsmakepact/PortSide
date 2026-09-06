@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Card, EmptyState, PageHeader } from "@/components/ui/Primitives";
@@ -39,7 +39,12 @@ function groupByDay(items: ActivityDTO[]) {
 export function ActivityFeed({ initialActivity }: { initialActivity: ActivityDTO[] }) {
   const [activity, setActivity] = useState(initialActivity);
   const [confirm, setConfirm] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const toast = useToast();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   async function clearAll() {
     const snapshot = activity;
@@ -90,7 +95,7 @@ export function ActivityFeed({ initialActivity }: { initialActivity: ActivityDTO
                       <p className="min-w-0 flex-1 truncate text-sm text-slate-800 dark:text-slate-200">{a.message}</p>
                       <span className="shrink-0 rounded-md bg-brand-bg dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{a.action}</span>
                       <time suppressHydrationWarning className="w-16 shrink-0 text-right text-xs text-slate-400" title={new Date(a.createdAt).toLocaleString()}>
-                        {formatRelative(a.createdAt)}
+                        {mounted ? formatRelative(a.createdAt) : "recently"}
                       </time>
                     </li>
                   ))}
