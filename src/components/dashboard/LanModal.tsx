@@ -352,7 +352,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                       <button
                         type="button"
                         onClick={() => copy(directSvcUrl, "direct")}
-                        className="text-[11px] text-sky-600 hover:underline font-medium"
+                        className="rounded-lg px-2.5 py-1 text-xs text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/30 hover:underline font-medium touch-action-manipulation transition"
                       >
                         {copiedKey === "direct" ? "Copied!" : "Copy"}
                       </button>
@@ -369,7 +369,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                       <button
                         type="button"
                         onClick={() => copy(wildcardSvcUrl, "wildcard")}
-                        className="text-[11px] text-sky-600 hover:underline font-medium"
+                        className="rounded-lg px-2.5 py-1 text-xs text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/30 hover:underline font-medium touch-action-manipulation transition"
                       >
                         {copiedKey === "wildcard" ? "Copied!" : "Copy"}
                       </button>

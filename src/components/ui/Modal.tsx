@@ -35,7 +35,7 @@ export function Modal({
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs" onClick={onClose} />
       <div
         className={cn(
-          "animate-fade-up relative max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-2xl sm:rounded-xl",
+          "animate-fade-up relative max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-2xl sm:rounded-xl pb-safe sm:pb-0",
           size === "sm" && "sm:max-w-md",
           size === "md" && "sm:max-w-lg",
           size === "lg" && "sm:max-w-2xl",
@@ -48,7 +48,7 @@ export function Modal({
           </div>
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-white -mr-1"
             aria-label="Close"
           >
             <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>

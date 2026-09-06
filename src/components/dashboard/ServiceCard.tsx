@@ -99,7 +99,7 @@ export function ServiceCard({
               <button
                 onClick={() => setMenuOpen((v) => !v)}
                 onBlur={() => setTimeout(() => setMenuOpen(false), 150)}
-                className="rounded-md p-1 text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
+                className="flex h-8 w-8 sm:h-7 sm:w-7 items-center justify-center rounded-md p-1 text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 touch-action-manipulation"
                 aria-label="More options"
               >
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor"><path d="M10 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" /></svg>

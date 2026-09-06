@@ -69,14 +69,14 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
           <svg viewBox="0 0 20 20" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="9" r="6" /><path d="M14 14l3.5 3.5" strokeLinecap="round" /></svg>
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, hostname, port or tag…" className="pl-9" />
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-lg border border-slate-200 dark:border-slate-800 bg-brand-bg dark:bg-[#0f172a]/60 p-0.5 shadow-xs">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-1 sm:flex-none overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800 bg-brand-bg dark:bg-[#0f172a]/60 p-0.5 shadow-xs scrollbar-none">
             {(["all", "online", "offline", "paused"] as StatusFilter[]).map((f) => (
               <button
                 key={f}
                 onClick={() => setStatus(f)}
                 className={cn(
-                  "rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors",
+                  "flex-1 sm:flex-none whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors touch-action-manipulation",
                   status === f
                     ? "bg-brand-surface dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/60 shadow-xs"
                     : "text-slate-500 dark:text-slate-400 hover:bg-brand-bg dark:hover:bg-slate-800/40 hover:text-slate-700 dark:hover:text-slate-200",
@@ -86,7 +86,7 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
               </button>
             ))}
           </div>
-          <Select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-44">
+          <Select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full sm:w-44">
             <option value="all">All projects</option>
             <option value="none">No project</option>
             {projects.map((p) => (

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
@@ -64,7 +64,7 @@ export function ProjectsView() {
                     <h3 className="truncate text-sm font-bold text-slate-900 dark:text-white">{p.name}</h3>
                     <p className="mt-0.5 font-mono text-[10px] text-slate-500">{p.slug}</p>
                   </div>
-                  <div className="flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
+                  <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                     <IconButton
                       label="Edit"
                       onClick={() => {
@@ -205,7 +205,12 @@ function IconButton({ children, onClick, label, danger }: { children: React.Reac
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={cn("rounded-lg p-1.5 text-slate-500 dark:text-slate-400 transition", danger ? "hover:bg-rose-50 hover:text-rose-600" : "hover:bg-brand-bg dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200")}
+      className={cn(
+        "flex h-8 w-8 sm:h-7 sm:w-7 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 transition touch-action-manipulation",
+        danger
+          ? "hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+          : "hover:bg-brand-bg dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200",
+      )}
     >
       {children}
     </button>

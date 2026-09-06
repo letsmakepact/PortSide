@@ -232,7 +232,7 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
                     <button
                       type="button"
                       onClick={copyPassword}
-                      className="text-[11px] text-sky-600 dark:text-sky-400 hover:underline font-medium"
+                      className="rounded-md px-2 py-0.5 text-xs text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 hover:underline font-medium touch-action-manipulation transition"
                     >
                       {copiedKey ? "Copied!" : "Copy"}
                     </button>

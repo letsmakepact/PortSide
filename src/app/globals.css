@@ -52,3 +52,32 @@ html.dark body {
 .scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(148 163 184 / 0.3); border-radius: 99px; }
 html.dark .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(30 41 59 / 0.8); }
+
+/* Mobile Touch & Safe Area Ergonomics */
+.touch-action-manipulation {
+  touch-action: manipulation;
+}
+
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+/* Smart TV 10-Foot Focus Accessibility */
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile touch optimization */
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.tv-focus-target:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px #38bdf8, 0 10px 25px -5px rgba(56, 189, 248, 0.4);
+  transform: scale(1.02);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
