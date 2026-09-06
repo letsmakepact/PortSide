@@ -444,12 +444,12 @@ export function SettingsView() {
   }
 
   const tabs = [
-    { id: "general", label: "Preferences & Health", icon: Sliders },
-    { id: "profile", label: "Public Profile & About Me", icon: User },
-    { id: "supporter", label: "Supporter & Perks", icon: Sparkles },
-    { id: "hotspot", label: "Dev Wi-Fi Hotspot", icon: Wifi },
-    { id: "account", label: "Account & Security", icon: Shield },
-    { id: "routing", label: "Proxy & How Routing Works", icon: Network },
+    { id: "general", label: "Preferences", icon: Sliders },
+    { id: "profile", label: "Public Profile", icon: User },
+    { id: "supporter", label: "Supporter Perks", icon: Sparkles },
+    { id: "hotspot", label: "Wi-Fi Hotspot", icon: Wifi },
+    { id: "account", label: "Account", icon: Shield },
+    { id: "routing", label: "Proxy Routing", icon: Network },
     { id: "about", label: "Updates & About", icon: Info },
   ] as const;
 
@@ -457,28 +457,29 @@ export function SettingsView() {
     <div className="space-y-6">
       <PageHeader title="Settings" subtitle="Manage your dashboard preferences, account security, and routing configuration." />
 
-      {/* Tab Navigation Bar */}
-      <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-800 scrollbar-none">
+      {/* Tab Navigation Bar - responsive segmented pills that naturally wrap and fit without scrolling */}
+      <nav aria-label="Settings Tabs" className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
         {tabs.map((tab) => {
           const IconComp = tab.icon;
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "inline-flex shrink-0 items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-px",
+                "inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all touch-action-manipulation shrink-0 sm:shrink",
                 isActive
-                  ? "border-sky-500 text-sky-600 dark:text-sky-400 font-semibold"
-                  : "border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200",
+                  ? "bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm border border-slate-200 dark:border-slate-700/80"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/40 border border-transparent",
               )}
             >
               <IconComp className={cn("h-3.5 w-3.5", isActive ? "text-sky-500 dark:text-sky-400" : "text-slate-400 dark:text-slate-500")} />
-              {tab.label}
+              <span>{tab.label}</span>
             </button>
           );
         })}
-      </div>
+      </nav>
 
       {/* TAB 1: GENERAL / PREFERENCES & HEALTH */}
       {activeTab === "general" && (

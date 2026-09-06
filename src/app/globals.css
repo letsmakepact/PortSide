@@ -49,6 +49,17 @@ html.dark body {
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
 
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(148 163 184 / 0.3); border-radius: 99px; }
 html.dark .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(30 41 59 / 0.8); }
