@@ -64,8 +64,12 @@ export async function GET() {
     const user = await requireUser();
     const isSupporter = await isServerSupporter(user);
 
+    let publicTunnelUrl = "";
     if (isSupporter) {
-      await queryLauncherState();
+      const launcherData = await queryLauncherState();
+      if (launcherData?.publicTunnelUrl) {
+        publicTunnelUrl = launcherData.publicTunnelUrl;
+      }
     }
 
     return Response.json({
@@ -77,6 +81,7 @@ export async function GET() {
       isSupporter,
       serverConfirmed: true,
       mdnsActive: isSupporter, // Zero-config LAN active by default
+      publicTunnelUrl,
     });
   } catch (e: any) {
     if (e?.message === "Unauthorized") {

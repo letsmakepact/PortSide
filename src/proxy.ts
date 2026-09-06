@@ -41,7 +41,8 @@ export function proxy(request: NextRequest) {
   }
 
   const isRawIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname);
-  if (!label && isRawIp && pathname === "/") {
+  const isPublicTunnel = hostname.endsWith(".trycloudflare.com") || hostname.endsWith(".portside.lol");
+  if (!label && (isRawIp || isPublicTunnel) && pathname === "/") {
     const lanUrl = request.nextUrl.clone();
     lanUrl.pathname = "/lan";
     return NextResponse.redirect(lanUrl);

@@ -12,6 +12,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     lanIp: string;
     port: string;
     portalUrl: string;
+    publicTunnelUrl?: string;
     qrDataUrl: string;
     qrTarget: string;
     isSupporter?: boolean;
@@ -194,6 +195,25 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                     <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Direct fallback if your Wi-Fi is offline from the internet.</p>
                   </div>
                 </>
+              )}
+              {lanData?.publicTunnelUrl && (
+                <div className="rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 p-3">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Global Remote Access (Anywhere / 5G)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => copy(lanData.publicTunnelUrl!, "tunnel")}
+                      className="text-[11px] text-emerald-700 dark:text-emerald-400 hover:underline font-semibold"
+                    >
+                      {copiedKey === "tunnel" ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="mt-1 font-mono text-xs text-emerald-800 dark:text-emerald-300 break-all">{lanData.publicTunnelUrl}</p>
+                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Access from anywhere on cellular data or remote Wi-Fi networks.</p>
+                </div>
               )}
             </div>
 

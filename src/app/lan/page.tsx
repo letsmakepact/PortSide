@@ -11,6 +11,22 @@ export default async function LanPortalPage() {
   const port = process.env.PORT || "80";
   const portSuffix = port === "80" || port === "443" ? "" : `:${port}`;
 
+  let publicTunnelUrl = "";
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 350);
+    const launcherRes = await fetch("http://127.0.0.1:4242/api/pro/status", {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (launcherRes.ok) {
+      const data = await launcherRes.json();
+      if (data.publicTunnelUrl) {
+        publicTunnelUrl = data.publicTunnelUrl;
+      }
+    }
+  } catch {}
+
   if (!isSupporter) {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center">
@@ -79,7 +95,7 @@ export default async function LanPortalPage() {
                 Connected from your Mobile or TV
               </h2>
               <p className="mt-1 text-sm text-slate-400 max-w-xl">
-                All custom local services registered on this computer are available across your Wi-Fi network. Tap any service below to open it directly.
+                All custom local services registered on this computer are available across your Wi-Fi network and globally from anywhere. Tap any service below to open it directly.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 text-xs text-slate-300">
@@ -91,8 +107,35 @@ export default async function LanPortalPage() {
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2" /><polyline points="17 2 12 7 7 2" /></svg>
                 Smart TVs
               </span>
+              {publicTunnelUrl && (
+                <span className="rounded-lg bg-sky-500/10 border border-sky-500/30 px-3 py-2 flex items-center gap-1.5 text-sky-300">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                  Global 5G / Remote Access
+                </span>
+              )}
             </div>
           </div>
+
+          {publicTunnelUrl && (
+            <div className="mt-5 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-sky-500/5 rounded-xl p-3 border border-sky-500/15">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-2 w-2 rounded-full bg-sky-400 animate-ping" />
+                <div>
+                  <p className="text-xs font-semibold text-white">Global Encrypted Tunnel (5G / Remote)</p>
+                  <p className="font-mono text-[11px] text-sky-300 break-all">{publicTunnelUrl}</p>
+                </div>
+              </div>
+              <a
+                href={publicTunnelUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-lg bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-sky-400 transition"
+              >
+                Open Remotely
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="mb-4 flex items-center justify-between">

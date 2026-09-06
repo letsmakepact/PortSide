@@ -46,6 +46,8 @@ export function SettingsView() {
   const [savingHotspot, setSavingHotspot] = useState(false);
   const [savedHotspotMsg, setSavedHotspotMsg] = useState("");
   const [serverConfirmedHotspot, setServerConfirmedHotspot] = useState(false);
+  const [publicTunnelUrl, setPublicTunnelUrl] = useState<string>("");
+  const [copiedTunnel, setCopiedTunnel] = useState(false);
 
   useEffect(() => {
     if (activeTab !== "hotspot") return;
@@ -57,6 +59,7 @@ export function SettingsView() {
         if (d.active !== undefined) setHotspotActive(d.active);
         if (d.ssid) setHotspotSsid(d.ssid);
         if (d.key && d.key !== "********") setHotspotKey(d.key);
+        if (d.publicTunnelUrl) setPublicTunnelUrl(d.publicTunnelUrl);
       })
       .catch(() => {
         setServerConfirmedHotspot(false);
@@ -508,6 +511,51 @@ export function SettingsView() {
                     </div>
                   </div>
                 </div>
+
+                {/* Global Remote Access card */}
+                {publicTunnelUrl && (
+                  <div className="rounded-2xl border border-sky-500/30 bg-sky-50/40 dark:bg-sky-950/20 p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                        </span>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white">Global Remote Access (5G / Anywhere)</p>
+                            <span className="rounded-full bg-sky-100 dark:bg-sky-900/60 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
+                              ENCRYPTED TUNNEL LIVE
+                            </span>
+                          </div>
+                          <p className="font-mono text-xs text-sky-700 dark:text-sky-400 mt-0.5 break-all">
+                            {publicTunnelUrl}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 self-start sm:self-auto">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(publicTunnelUrl);
+                            setCopiedTunnel(true);
+                            setTimeout(() => setCopiedTunnel(false), 2000);
+                          }}
+                          className="rounded-lg border border-sky-200 dark:border-sky-800 bg-white dark:bg-slate-900 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:text-sky-300 hover:bg-sky-50 transition"
+                        >
+                          {copiedTunnel ? "Copied!" : "Copy Link"}
+                        </button>
+                        <a
+                          href={publicTunnelUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="rounded-lg bg-sky-600 hover:bg-sky-500 px-2.5 py-1 text-xs font-semibold text-white transition"
+                        >
+                          Open Remote
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Hotspot controls */}
                 <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-5">
