@@ -81,29 +81,21 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
 
   if (!user) return false;
 
-  // Authoritatively verify with sovereign server
+  // Authoritatively verify with sovereign server. NEVER trust local database tier or client state.
   const sessionResult = await getOrFetchSupporterSession(user.email);
-  if (sessionResult.valid) {
-    if (user.tier !== "supporter") {
-      try {
-        await db
-          .update(users)
-          .set({
-            tier: "supporter",
-            supporterSince: new Date(),
-          })
-          .where(eq(users.id, user.id));
-      } catch {}
-    }
-    return true;
+  if (sessionResult.valid && user.tier !== "supporter") {
+    try {
+      await db
+        .update(users)
+        .set({
+          tier: "supporter",
+          supporterSince: new Date(),
+        })
+        .where(eq(users.id, user.id));
+    } catch {}
   }
 
-  // Grace fallback if temporary network error contacting sovereign server
-  if (user.tier === "supporter" && user.supporterSince) {
-    return true;
-  }
-
-  return false;
+  return sessionResult.valid;
 }
 
 /**
