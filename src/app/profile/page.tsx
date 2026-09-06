@@ -1,6 +1,8 @@
 import { getProfile, PublicProfile } from "@/lib/profile";
 import { listLanServices } from "@/lib/queries";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { getCurrentUser } from "@/lib/auth";
+import { isServerSupporter } from "@/lib/server-checks";
 
 export const dynamic = "force-dynamic";
 
@@ -88,26 +90,30 @@ function getBannerGradient(preset: PublicProfile["bannerPreset"]) {
 }
 
 export default async function ProfilePage() {
+  const user = await getCurrentUser();
+  const isSupporter = await isServerSupporter(user);
   const [profile, allServices] = await Promise.all([
-    getProfile(),
+    getProfile(user),
     listLanServices(),
   ]);
 
   let vanityDomain = "";
   let publicTunnelUrl = "";
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 350);
-    const res = await fetch("http://127.0.0.1:4242/api/pro/status", {
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-    if (res.ok) {
-      const data = await res.json();
-      if (data.vanityDomain) vanityDomain = data.vanityDomain;
-      if (data.publicTunnelUrl) publicTunnelUrl = data.publicTunnelUrl;
-    }
-  } catch {}
+  if (isSupporter) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 350);
+      const res = await fetch("http://127.0.0.1:4242/api/pro/status", {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.vanityDomain) vanityDomain = data.vanityDomain;
+        if (data.publicTunnelUrl) publicTunnelUrl = data.publicTunnelUrl;
+      }
+    } catch {}
+  }
 
   const activeDomain = vanityDomain || (publicTunnelUrl ? new URL(publicTunnelUrl).hostname : "");
   const theme = getThemeStyles(profile.accentColor || "sky");
@@ -255,10 +261,16 @@ export default async function ProfilePage() {
                 <span className="font-mono text-sm text-slate-400">
                   @{profile.handle}
                 </span>
-                <span className={`inline-flex items-center gap-1 rounded-full border ${theme.pillBg} px-3 py-0.5 text-xs font-semibold`}>
-                  <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
-                  {profile.verifiedBadgeText || "PortSide Verified Supporter"}
-                </span>
+                {isSupporter ? (
+                  <span className={`inline-flex items-center gap-1 rounded-full border ${theme.pillBg} px-3 py-0.5 text-xs font-semibold`}>
+                    <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                    Verified Supporter
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-800/60 px-2.5 py-0.5 text-xs font-medium text-slate-400">
+                    Developer
+                  </span>
+                )}
               </div>
 
               <p className={`text-base font-semibold ${theme.accentText}`}>

@@ -209,12 +209,15 @@ export async function getProfile(userParam?: SafeUser | null): Promise<PublicPro
 
   const handle = vanityDomain ? vanityDomain.split(".")[0] : (saved.handle || defaultProfile.handle);
   const website = vanityDomain ? `https://${vanityDomain}` : (saved.website || defaultProfile.website);
+  const isSupporter = user?.tier === "supporter";
+  const verifiedBadgeText = isSupporter ? "Verified Supporter" : "Developer";
 
   return {
     ...defaultProfile,
     ...saved,
     handle,
     website,
+    verifiedBadgeText,
     projectOverrides: {
       ...defaultProfile.projectOverrides,
       ...(saved.projectOverrides || {}),
@@ -233,16 +236,21 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
   }
 
   const current = await getProfile(user);
+  const isSupporter = user?.tier === "supporter";
 
+  // Security: URL, Handle, Website, and Verified Badge are strictly read-only and assigned by the server.
+  // A user cannot alter their handle, website, or verified badge to impersonate PortSide team or claim unearned status.
   const sanitizedInput = { ...data };
   delete (sanitizedInput as any).handle;
   delete (sanitizedInput as any).website;
+  delete (sanitizedInput as any).verifiedBadgeText;
 
   const updated: PublicProfile = {
     ...current,
     ...sanitizedInput,
     handle: current.handle,
     website: current.website,
+    verifiedBadgeText: isSupporter ? "Verified Supporter" : "Developer",
     projectOverrides: {
       ...(current.projectOverrides || {}),
       ...(sanitizedInput.projectOverrides || {}),

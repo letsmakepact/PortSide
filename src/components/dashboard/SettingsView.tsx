@@ -771,13 +771,19 @@ export function SettingsView() {
                     </div>
 
                     <div>
-                      <Label htmlFor="profBadge">Verified Badge Label</Label>
+                      <Label htmlFor="profBadge">Verified Badge</Label>
                       <Input
                         id="profBadge"
-                        value={profileVerifiedBadgeText}
-                        onChange={(e) => setProfileVerifiedBadgeText(e.target.value)}
-                        placeholder="e.g. PortSide Verified Supporter"
+                        value={isSupporter ? "Verified Supporter" : "Developer"}
+                        readOnly
+                        disabled
+                        className="cursor-not-allowed opacity-80 bg-slate-100 dark:bg-slate-800/60 font-medium"
                       />
+                      <p className="text-[11px] text-slate-500 mt-1">
+                        {isSupporter
+                          ? "Verified Supporter status confirmed on server."
+                          : "Read-only. Accounts receive Verified Supporter badge upon upgrade."}
+                      </p>
                     </div>
 
                     <div className="sm:col-span-2 space-y-2">
