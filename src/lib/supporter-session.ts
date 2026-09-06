@@ -31,7 +31,8 @@ declare global {
   var __PORTSIDE_LIVE_SESSION_PAYLOAD__: SessionTicketPayload | null | undefined;
 }
 
-const WEB_PORTAL_URL = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
+// Canonical sovereign portal URL (strictly hardcoded to prevent local env redirection attacks)
+const WEB_PORTAL_URL = "https://portside.lol";
 
 /**
  * Returns the currently active session ticket, or requests a fresh one from Portside-Web.

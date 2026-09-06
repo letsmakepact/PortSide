@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
   // Confirm with PortSide central server
   try {
-    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
+    const webPortalUrl = "https://portside.lol";
     const serverRes = await fetch(`${webPortalUrl}/api/account/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

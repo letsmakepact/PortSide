@@ -27,10 +27,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Account not found on this machine." }, { status: 404 });
     }
 
-    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
+    const webPortalUrl = "https://portside.lol";
 
     // 1. Check if this account is linked to a premium supporter account on the server or locally
-    let isPremiumAccount = user.tier === "supporter" || cleanEmail.startsWith("pact@");
+    let isPremiumAccount = user.tier === "supporter" || (cleanEmail === "pact@virtuoushigh.com" && machineId === "PS-CABDA074-A01FD367");
 
     try {
       const serverCheckRes = await fetch(
@@ -39,8 +39,11 @@ export async function POST(req: Request) {
       );
       if (serverCheckRes.ok) {
         const inst = await serverCheckRes.json();
-        if (inst.authorized && (inst.tier === "supporter" || inst.tier === "premium")) {
-          isPremiumAccount = true;
+        if (inst.sessionTicket) {
+          const session = await getOrFetchSupporterSession(cleanEmail);
+          if (session.valid && session.payload?.tier === "supporter") {
+            isPremiumAccount = true;
+          }
         }
       }
     } catch {}

@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
   // Sync to central Portside-Web server
   try {
-    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
+    const webPortalUrl = "https://portside.lol";
     fetch(`${webPortalUrl}/api/account/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
         name: user.name,
         machineId: getHardwareMachineId(),
         tier: user.tier,
-        isSupporter: user.tier === "supporter" || user.email.startsWith("pact@"),
+        isSupporter: user.tier === "supporter",
         action: "login",
       }),
     }).catch(() => {});
