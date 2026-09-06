@@ -48,6 +48,7 @@ export function SettingsView() {
   const [newPassword, setNewPassword] = useState("");
   const [savingPw, setSavingPw] = useState(false);
   const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [isOnApp, setIsOnApp] = useState(true);
   const [updateStatus, setUpdateStatus] = useState<string | null>(null);
   const [licenseKey, setLicenseKey] = useState("");
   const [activatingKey, setActivatingKey] = useState(false);
@@ -337,11 +338,32 @@ export function SettingsView() {
   function copyHotspotPassword() {
     navigator.clipboard.writeText(hotspotKey);
     setCopiedHotspotKey(true);
-    toast({ tone: "info", title: "Password copied to clipboard" });
+          toast({ tone: "info", title: "Password copied to clipboard" });
     setTimeout(() => setCopiedHotspotKey(false), 2000);
   }
 
   const example = services[0];
+  useEffect(() => {
+    const isLocal = typeof window !== "undefined" && (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.endsWith(".localhost") ||
+      window.location.hostname.endsWith(".local")
+    );
+    fetch("/api/updates/check")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.isExe !== undefined) {
+          setIsOnApp(Boolean(d.isExe || isLocal));
+        } else {
+          setIsOnApp(isLocal);
+        }
+      })
+      .catch(() => {
+        setIsOnApp(isLocal);
+      });
+  }, []);
+
   const portSuffix = appPort !== "80" ? `:${appPort}` : "";
 
   async function checkForUpdates() {
@@ -1742,15 +1764,25 @@ export function SettingsView() {
                 <Button variant="secondary" onClick={checkForUpdates} loading={checkingUpdate}>
                   Check for updates
                 </Button>
-                <a
-                  href="https://github.com/letsmakepact/PortSide/releases/latest/download/Portside.exe"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button>
-                    Get Portside (.exe)
+                {isOnApp ? (
+                  <Button
+                    variant="outline"
+                    className="border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-semibold cursor-default hover:bg-emerald-500/10 hover:text-emerald-400"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 mr-1.5" />
+                    You are on the app!
                   </Button>
-                </a>
+                ) : (
+                  <a
+                    href="https://github.com/letsmakepact/PortSide/releases/latest/download/Portside.exe"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Button>
+                      Get Portside (.exe)
+                    </Button>
+                  </a>
+                )}
               </div>
             </div>
           </Card>

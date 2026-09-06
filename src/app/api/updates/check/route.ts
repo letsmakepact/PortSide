@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import packageJson from "@/../package.json";
+import fs from "fs";
+import path from "path";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +26,28 @@ function isNewer(latest: string, current: string): boolean {
   return false;
 }
 
+function detectIsExe(): boolean {
+  try {
+    const cwd = process.cwd();
+    if (fs.existsSync(path.join(cwd, "Portside.exe")) || fs.existsSync(path.join(cwd, "Portside-Launcher.exe"))) {
+      return true;
+    }
+    if (path.basename(cwd).toLowerCase().includes(".exe")) {
+      return true;
+    }
+    if (process.env.PORTSIDE_EXE === "1" || process.env.PORTSIDE_APP === "1") {
+      return true;
+    }
+    if (process.platform === "win32" && !process.env.VERCEL) {
+      return true;
+    }
+  } catch {}
+  return false;
+}
+
 export async function GET() {
+  const isExe = detectIsExe();
+
   try {
     const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest`, {
       headers: {
@@ -45,11 +68,12 @@ export async function GET() {
           releaseNotes: "You are running the latest version.",
           publishedAt: new Date().toISOString(),
           checkedAt: new Date().toISOString(),
+          isExe,
         });
       }
 
       return NextResponse.json(
-        { error: `GitHub API error: ${res.statusText}`, currentVersion: CURRENT_VERSION, updateAvailable: false },
+        { error: `GitHub API error: ${res.statusText}`, currentVersion: CURRENT_VERSION, updateAvailable: false, isExe },
         { status: 200 }
       );
     }
@@ -77,6 +101,7 @@ export async function GET() {
       releaseNotes: data.body || "A new update is available with enhancements and bug fixes.",
       publishedAt: data.published_at,
       checkedAt: new Date().toISOString(),
+      isExe,
     });
   } catch (error) {
     return NextResponse.json({
@@ -85,6 +110,7 @@ export async function GET() {
       updateAvailable: false,
       error: error instanceof Error ? error.message : "Network error checking for updates",
       checkedAt: new Date().toISOString(),
+      isExe,
     });
   }
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
+import { CheckCircle2 } from "lucide-react";
 
 export interface UpdateInfo {
   currentVersion: string;
@@ -13,6 +14,7 @@ export interface UpdateInfo {
   releaseNotes?: string;
   publishedAt?: string;
   error?: string;
+  isExe?: boolean;
 }
 
 export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClose?: () => void }) {
@@ -125,11 +127,22 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
                     View on GitHub
                   </Button>
                 </a>
-                <a href={update.exeDownloadUrl} target="_blank" rel="noreferrer">
-                  <Button size="sm">
-                    Download Auto-Update (.exe)
+                {update.isExe ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold cursor-default hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-400"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-1.5" />
+                    You are on the app!
                   </Button>
-                </a>
+                ) : (
+                  <a href={update.exeDownloadUrl} target="_blank" rel="noreferrer">
+                    <Button size="sm">
+                      Download Auto-Update (.exe)
+                    </Button>
+                  </a>
+                )}
               </div>
             </div>
           </>
