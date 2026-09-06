@@ -147,7 +147,7 @@ export function ServiceCard({
       </div>
 
       <div className="mt-3 flex items-center justify-between border-t border-brand-bg dark:border-slate-800/80 pt-2.5 text-[10px] text-slate-400 dark:text-slate-500">
-        <span>
+        <span suppressHydrationWarning>
           {service.enabled
             ? service.lastCheckedAt
               ? `Checked ${formatRelative(service.lastCheckedAt)}`

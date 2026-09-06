@@ -200,7 +200,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
                   <ActivityIcon action={a.action} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-medium text-slate-800 dark:text-slate-200">{a.message}</p>
-                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{formatRelative(a.createdAt)}</p>
+                    <p suppressHydrationWarning className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{formatRelative(a.createdAt)}</p>
                   </div>
                 </li>
               ))}
