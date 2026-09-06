@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
+import { Laptop, Smartphone, Tv, QrCode, Wifi, ArrowRight, CheckCircle2, Sparkles, Navigation, Layers } from "lucide-react";
 
 interface TutorialModalProps {
   forceOpen?: boolean;
@@ -11,116 +12,221 @@ interface TutorialModalProps {
   servicesCount?: number;
 }
 
-const STEPS = [
+type DeviceMode = "desktop" | "mobile" | "tv";
+
+interface Step {
+  stepNumber: number;
+  badge: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  highlight: { label: string; value: string }[];
+  icon: any;
+}
+
+const DESKTOP_STEPS: Step[] = [
   {
     stepNumber: 1,
-    badge: "Welcome",
+    badge: "Desktop Cockpit",
     title: "Welcome to Portside",
-    subtitle: "Created by pact",
+    subtitle: "Reverse proxy for your dev workstation",
     description:
-      "Portside is your local development reverse proxy and cockpit. Instead of memorizing ports like :3000, :8080, and :5173, Portside automatically gives every local service its own clean *.localhost domain.",
+      "Stop memorizing random port numbers like :3000, :8080, and :5173. Portside routes every background process on your machine to a clean, memorable *.localhost domain automatically.",
     highlight: [
-      { label: "Modern Standard", value: "*.localhost automatically resolves locally without /etc/hosts changes" },
-      { label: "Zero Setup", value: "Works directly out of the box with your preferred browser" },
+      { label: "Modern Standard", value: "*.localhost resolves locally without modifying /etc/hosts" },
+      { label: "Zero Setup", value: "Works directly out of the box in Chrome, Firefox, Edge, and Safari" },
     ],
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-      </svg>
-    ),
+    icon: Laptop,
   },
   {
     stepNumber: 2,
-    badge: "Routing",
+    badge: "Local Proxy",
     title: "Instant Hostname Mapping",
-    subtitle: "Name your localhost processes",
+    subtitle: "Name your background dev servers",
     description:
-      "Map any local process to a custom hostname. When you navigate to shop.localhost or api.localhost, Portside seamlessly proxies requests directly to your background server.",
+      "Map your dev servers to custom hostnames like shop.localhost or api.localhost. Portside intercepts requests and proxies them with complete Host and Location header rewriting.",
     highlight: [
-      { label: "Example Route", value: "api.localhost:3000  →  127.0.0.1:8081" },
-      { label: "Header Rewriting", value: "Automatic Host & Location header translation for redirects" },
+      { label: "Example Route", value: "api.localhost:80  →  127.0.0.1:8081" },
+      { label: "Header Translation", value: "Seamless cookie and redirect handling across subdomains" },
     ],
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    ),
+    icon: Layers,
   },
   {
     stepNumber: 3,
-    badge: "Monitoring",
-    title: "Live Background Port Monitor",
-    subtitle: "Know what's running at a glance",
+    badge: "Socket Monitor",
+    title: "Proactive Port Health",
+    subtitle: "Instant crash and disconnect detection",
     description:
-      "Portside constantly probes your registered ports in the background. If a dev server crashes or stops listening, you'll immediately see its status change from online to offline with latency tracking.",
+      "Portside constantly probes registered ports in the background. If your Next.js or Vite server crashes, the status dot immediately turns offline with latency logging.",
     highlight: [
-      { label: "Proactive Probing", value: "Real-time socket checks with latency measurements" },
-      { label: "Configurable", value: "Toggle auto-checks or trigger manual refreshes anytime" },
+      { label: "Proactive Health", value: "Real-time socket probing with millisecond latency" },
+      { label: "Service Controls", value: "Pause, resume, or pin services with a single click" },
     ],
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-      </svg>
-    ),
+    icon: Sparkles,
   },
   {
     stepNumber: 4,
-    badge: "Controls",
-    title: "Pin, Pause & Filter",
-    subtitle: "Keep your workspace clutter-free",
-    description:
-      "Pin your most-used services so they are always one click away on the Overview screen. Need to take a service down? Pause its route with one click to show a friendly fallback screen.",
-    highlight: [
-      { label: "Pinned Favorites", value: "Quick launch panel for high-frequency servers" },
-      { label: "Graceful Fallbacks", value: "Paused routes show a polite explainer instead of connection drops" },
-    ],
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
-        <line x1="12" y1="17" x2="12" y2="22" />
-        <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.89A2 2 0 0 1 15 10.76V6a3 3 0 0 0-6 0v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
-      </svg>
-    ),
-  },
-  {
-    stepNumber: 5,
-    badge: "Organization",
-    title: "Projects & Activity Feed",
-    subtitle: "Organize microservices & monitor history",
-    description:
-      "Organize multiple services under color-coded Projects (e.g., E-Commerce, Microservices, Side Projects). Review the Activity tab to audit port changes and server status drops.",
-    highlight: [
-      { label: "Project Groups", value: "Filter services by stack or application suite" },
-      { label: "Audit Log", value: "Every service change and status fluctuation is logged" },
-    ],
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-  },
-  {
-    stepNumber: 6,
     badge: "Ready",
-    title: "You're All Set!",
-    subtitle: "Start building with clean hostnames",
+    title: "Ready to Build",
+    subtitle: "Add your first local service",
     description:
-      "Your database is completely fresh and ready. Click below to add your first local process or jump into your empty dashboard.",
+      "Your workstation cockpit is ready. Click below to add your first local process or jump straight into your dashboard.",
     highlight: [
-      { label: "Created By", value: "pact (github.com/letsmakepact · t.me/pactwithdevil)" },
-      { label: "Revisit Anytime", value: "You can reopen this tutorial anytime from the sidebar" },
+      { label: "Created By", value: "pact (github.com/letsmakepact · @pactwithdevil)" },
+      { label: "Revisit Anytime", value: "Switch device guides anytime from the sidebar" },
     ],
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2">
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-    ),
+    icon: CheckCircle2,
+  },
+];
+
+const MOBILE_STEPS: Step[] = [
+  {
+    stepNumber: 1,
+    badge: "Mobile Handheld",
+    title: "Portside on Your Phone",
+    subtitle: "Instant Wi-Fi access without cables",
+    description:
+      "Test responsive designs on real smartphones and tablets without cumbersome USB debugging or cloud deployments. Your phone can open any project running on your computer over local Wi-Fi.",
+    highlight: [
+      { label: "Zero-Config QR", value: "Point your phone camera to jump straight into your active app" },
+      { label: "Direct Redirects", value: "Free wildcard redirects via http://<project>.<ip>.nip.io" },
+    ],
+    icon: Smartphone,
+  },
+  {
+    stepNumber: 2,
+    badge: "Camera & QR",
+    title: "Scan & Open in Seconds",
+    subtitle: "No manual IP address typing",
+    description:
+      "Open the 'Mobile / TV LAN' modal on your desktop dashboard, scan the high-resolution QR code with your iOS or Android camera, and your phone opens the dev server immediately.",
+    highlight: [
+      { label: "Error Level H", value: "30% redundancy for instant camera recognition" },
+      { label: "Instant Clipboard", value: "One-tap copy button formatted for mobile messaging" },
+    ],
+    icon: QrCode,
+  },
+  {
+    stepNumber: 3,
+    badge: "Remote & Hotspot",
+    title: "Isolated Dev Hotspot & 5G",
+    subtitle: "Test in coffee shops or over cellular data",
+    description:
+      "Traveling without a router? Spawn a hardware-encrypted PortSide Wi-Fi hotspot from your PC, or use global 5G tunneling (*.portside.lol) to review builds away from home.",
+    highlight: [
+      { label: "Dev Wi-Fi Hotspot", value: "Dedicated PC hotspot for router-free testing" },
+      { label: "5G Cellular", value: "Permanent custom tunnel domain accessible anywhere" },
+    ],
+    icon: Wifi,
+  },
+  {
+    stepNumber: 4,
+    badge: "Mobile Ready",
+    title: "Phone Testing Ready",
+    subtitle: "Start previewing on mobile devices",
+    description:
+      "Add your local projects on desktop, open the Mobile LAN modal, and test on your phone with zero setup.",
+    highlight: [
+      { label: "PWA Support", value: "Add to home screen for full-screen standalone testing" },
+      { label: "Touch Ergonomics", value: "Optimized touch targets and safe-area notch insets" },
+    ],
+    icon: CheckCircle2,
+  },
+];
+
+const TV_STEPS: Step[] = [
+  {
+    stepNumber: 1,
+    badge: "Smart TV & 10-Foot",
+    title: "Portside on Big Screen TVs",
+    subtitle: "Presentations, dashboards & TV app testing",
+    description:
+      "Turn any Smart TV (LG webOS, Samsung Tizen, Android TV, Fire TV, Apple TV) into a live development monitor and interactive presentation kiosk without needing HDMI cables.",
+    highlight: [
+      { label: "10-Foot UI", value: "Large, high-contrast cards designed for viewing from across the room" },
+      { label: "Browser Friendly", value: "Works directly inside your TV's built-in web browser" },
+    ],
+    icon: Tv,
+  },
+  {
+    stepNumber: 2,
+    badge: "D-Pad Control",
+    title: "TV Remote D-Pad Navigation",
+    subtitle: "Navigate with Arrow keys without a mouse",
+    description:
+      "Portside features built-in spatial keyboard navigation. Use the Up, Down, Left, and Right directional arrows on your TV remote control to glide between service cards and press OK to launch.",
+    highlight: [
+      { label: "Spatial Arrow Keys", value: "Cycle focus seamlessly using physical TV remote buttons" },
+      { label: "Electric Focus Ring", value: "Glowing 4px sky-blue outline ensures clear visibility at 10 feet" },
+    ],
+    icon: Navigation,
+  },
+  {
+    stepNumber: 3,
+    badge: "TV Launchpad",
+    title: "The /lan TV Portal",
+    subtitle: "All your services in one directory",
+    description:
+      "Open your TV browser and navigate to http://<your-lan-ip>/lan. All running projects appear as high-contrast launch tiles ready for instant full-screen remote viewing.",
+    highlight: [
+      { label: "Kiosk Mode", value: "Keep continuous live dashboards running on wall-mounted displays" },
+      { label: "Direct Jumps", value: "Free tier users can bookmark http://<lan-ip>/s/<project>" },
+    ],
+    icon: QrCode,
+  },
+  {
+    stepNumber: 4,
+    badge: "TV Ready",
+    title: "Smart TV Setup Complete",
+    subtitle: "Ready to launch on the big screen",
+    description:
+      "Open your TV browser, enter your local Portside IP, and control your dev projects from your couch with your remote control.",
+    highlight: [
+      { label: "Input Method", value: "Supports physical D-pad remotes and TV air mice" },
+      { label: "Performance", value: "Lightweight zero-heavyweight CSS for fluid TV rendering" },
+    ],
+    icon: CheckCircle2,
   },
 ];
 
 export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount = 0 }: TutorialModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
+  const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
+
+  useEffect(() => {
+    // Detect device environment
+    if (typeof window !== "undefined") {
+      const ua = navigator.userAgent.toLowerCase();
+      const isTv =
+        ua.includes("smart-tv") ||
+        ua.includes("smarttv") ||
+        ua.includes("tizen") ||
+        ua.includes("webos") ||
+        ua.includes("appletv") ||
+        ua.includes("googletv") ||
+        ua.includes("android tv") ||
+        ua.includes("hbbtv") ||
+        ua.includes("crkey") ||
+        window.location.pathname.startsWith("/lan");
+
+      const isMobile =
+        !isTv &&
+        (ua.includes("iphone") ||
+          ua.includes("ipad") ||
+          ua.includes("android") ||
+          ua.includes("mobile") ||
+          window.innerWidth <= 768);
+
+      if (isTv) {
+        setDeviceMode("tv");
+      } else if (isMobile) {
+        setDeviceMode("mobile");
+      } else {
+        setDeviceMode("desktop");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (servicesCount > 0) {
@@ -149,73 +255,160 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
     if (onAddService) onAddService();
   }
 
-  const current = STEPS[step];
-  const isLast = step === STEPS.length - 1;
+  const steps = deviceMode === "mobile" ? MOBILE_STEPS : deviceMode === "tv" ? TV_STEPS : DESKTOP_STEPS;
+  const safeStep = Math.min(step, steps.length - 1);
+  const current = steps[safeStep];
+  const isLast = safeStep === steps.length - 1;
+  const CurrentIcon = current.icon;
 
   return (
     <Modal open={isOpen} onClose={closeTutorial} title="" size="lg">
-      <div className="relative pt-2">
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-            {current.badge} · Step {current.stepNumber} of {STEPS.length}
-          </span>
-          <div className="flex gap-1">
-            {STEPS.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setStep(i)}
-                className={`h-2 rounded-full transition-all ${i === step ? "w-6 bg-sky-600" : "w-2 bg-slate-200 hover:bg-slate-300"}`}
-                aria-label={`Go to step ${i + 1}`}
-              />
-            ))}
+      <div className="relative pt-1">
+        {/* Device Switcher Tabs */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3.5 mb-4">
+          <div className="flex items-center gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 p-1">
+            <button
+              type="button"
+              onClick={() => {
+                setDeviceMode("desktop");
+                setStep(0);
+              }}
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                deviceMode === "desktop"
+                  ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <Laptop className="h-3.5 w-3.5" />
+              <span>Laptop & PC</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDeviceMode("mobile");
+                setStep(0);
+              }}
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                deviceMode === "mobile"
+                  ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <Smartphone className="h-3.5 w-3.5" />
+              <span>Phone & Tablet</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDeviceMode("tv");
+                setStep(0);
+              }}
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                deviceMode === "tv"
+                  ? "bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <Tv className="h-3.5 w-3.5" />
+              <span>Smart TV</span>
+            </button>
           </div>
+
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-400">
+            Step {current.stepNumber} of {steps.length}
+          </span>
         </div>
 
-        <div className="mt-4 flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 shadow-lg shadow-sky-500/25 text-white">
-            {current.icon}
+        {/* Step Indicator Pills */}
+        <div className="flex gap-1.5 mb-5">
+          {steps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setStep(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === safeStep
+                  ? deviceMode === "mobile"
+                    ? "w-8 bg-emerald-500"
+                    : deviceMode === "tv"
+                    ? "w-8 bg-amber-500"
+                    : "w-8 bg-sky-500"
+                  : "w-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300"
+              }`}
+              aria-label={`Go to step ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Step Header */}
+        <div className="flex items-start gap-4">
+          <div
+            className={`flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl shadow-lg text-white ${
+              deviceMode === "mobile"
+                ? "bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 shadow-emerald-500/25"
+                : deviceMode === "tv"
+                ? "bg-gradient-to-br from-amber-400 via-orange-500 to-rose-600 shadow-orange-500/25"
+                : "bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 shadow-sky-500/25"
+            }`}
+          >
+            <CurrentIcon className="h-6 w-6 sm:h-7 sm:w-7" />
           </div>
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-900">{current.title}</h2>
-            <p className="text-xs font-medium text-sky-600">{current.subtitle}</p>
+            <span
+              className={`inline-block text-[11px] font-bold uppercase tracking-wider mb-0.5 ${
+                deviceMode === "mobile"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : deviceMode === "tv"
+                  ? "text-amber-600 dark:text-amber-400"
+                  : "text-sky-600 dark:text-sky-400"
+              }`}
+            >
+              {current.badge}
+            </span>
+            <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {current.title}
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{current.subtitle}</p>
           </div>
         </div>
 
-        <p className="mt-4 text-sm leading-relaxed text-slate-600">{current.description}</p>
+        <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          {current.description}
+        </p>
 
-        <div className="mt-5 space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/80 p-3.5">
+        {/* Highlights List */}
+        <div className="mt-4 space-y-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-3.5">
           {current.highlight.map((h, i) => (
-            <div key={i} className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-700">{h.label}</span>
-              <span className="font-mono text-indigo-600">{h.value}</span>
+            <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+              <span className="font-semibold text-slate-700 dark:text-slate-300">{h.label}:</span>
+              <span className="font-mono text-slate-600 dark:text-slate-400 break-all">{h.value}</span>
             </div>
           ))}
         </div>
 
-        <div className="mt-7 flex items-center justify-between border-t border-slate-100 pt-4">
+        {/* Modal Actions */}
+        <div className="mt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-4">
           <button
             type="button"
             onClick={closeTutorial}
-            className="text-xs font-medium text-slate-400 hover:text-slate-600 transition"
+            className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
           >
-            Skip tutorial
+            Skip guide
           </button>
 
           <div className="flex items-center gap-2">
-            {step > 0 && (
-              <Button variant="secondary" size="sm" onClick={() => setStep(step - 1)}>
+            {safeStep > 0 && (
+              <Button variant="secondary" size="sm" onClick={() => setStep(safeStep - 1)}>
                 Previous
               </Button>
             )}
 
             {!isLast ? (
-              <Button size="sm" onClick={() => setStep(step + 1)}>
-                Next
+              <Button size="sm" onClick={() => setStep(safeStep + 1)}>
+                Next <ArrowRight className="h-3 w-3 ml-1" />
               </Button>
             ) : (
               <Button size="sm" onClick={handleAddService}>
-                Add your first service
+                Get Started
               </Button>
             )}
           </div>
