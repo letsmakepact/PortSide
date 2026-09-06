@@ -125,18 +125,6 @@ export async function POST(req: Request) {
         }).catch(() => {});
       } catch {}
 
-      // Write local account.json for launcher persistence so launcher reflects (Linked)
-      try {
-        const homeDir = path.join(os.homedir(), "Portside");
-        fs.mkdirSync(homeDir, { recursive: true });
-        fs.writeFileSync(path.join(homeDir, "account.json"), JSON.stringify({ email: cleanEmail, linked: true }), "utf8");
-      } catch {}
-    } else {
-      try {
-        const homeDir = path.join(os.homedir(), "Portside");
-        fs.mkdirSync(homeDir, { recursive: true });
-        fs.writeFileSync(path.join(homeDir, "account.json"), JSON.stringify({ email: cleanEmail, linked: true }), "utf8");
-      } catch {}
     }
 
     await db.insert(activityLogs).values({
