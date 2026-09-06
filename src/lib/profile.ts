@@ -147,28 +147,38 @@ export async function getProfile(): Promise<PublicProfile> {
     }
   } catch {}
 
-  const handle = saved.handle || (vanityDomain ? vanityDomain.split(".")[0] : DEFAULT_PROFILE.handle);
+  const handle = vanityDomain ? vanityDomain.split(".")[0] : (saved.handle || DEFAULT_PROFILE.handle);
+  const website = vanityDomain ? `https://${vanityDomain}` : (saved.website || DEFAULT_PROFILE.website);
 
   return {
     ...DEFAULT_PROFILE,
     ...saved,
     handle,
+    website,
     projectOverrides: {
       ...DEFAULT_PROFILE.projectOverrides,
       ...(saved.projectOverrides || {}),
     },
-    website: saved.website || (vanityDomain ? `https://${vanityDomain}` : DEFAULT_PROFILE.website),
   };
 }
 
 export async function saveProfile(data: Partial<PublicProfile>): Promise<PublicProfile> {
   const current = await getProfile();
+
+  // Security: URL, Handle, and Website are strictly read-only and assigned by the server.
+  // A user cannot alter their handle or website to hijack someone else's domain or profile.
+  const sanitizedInput = { ...data };
+  delete (sanitizedInput as any).handle;
+  delete (sanitizedInput as any).website;
+
   const updated: PublicProfile = {
     ...current,
-    ...data,
+    ...sanitizedInput,
+    handle: current.handle,
+    website: current.website,
     projectOverrides: {
       ...(current.projectOverrides || {}),
-      ...(data.projectOverrides || {}),
+      ...(sanitizedInput.projectOverrides || {}),
     },
     updatedAt: new Date().toISOString(),
   };
