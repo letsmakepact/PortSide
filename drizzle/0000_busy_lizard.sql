@@ -27,7 +27,7 @@ CREATE TABLE "services" (
 	"port" integer NOT NULL,
 	"protocol" varchar(8) DEFAULT 'http' NOT NULL,
 	"description" text DEFAULT '' NOT NULL,
-	"icon" varchar(16) DEFAULT '🚀' NOT NULL,
+	"icon" varchar(16) DEFAULT '⌘' NOT NULL,
 	"tags" text[] DEFAULT '{}' NOT NULL,
 	"favorite" boolean DEFAULT false NOT NULL,
 	"enabled" boolean DEFAULT true NOT NULL,

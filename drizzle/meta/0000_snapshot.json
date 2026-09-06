@@ -263,7 +263,7 @@
           "type": "varchar(16)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'🚀'"
+          "default": "'⌘'"
         },
         "tags": {
           "name": "tags",
