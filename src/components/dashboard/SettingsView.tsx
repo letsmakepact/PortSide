@@ -1356,11 +1356,11 @@ export function SettingsView() {
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 shadow-xs">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" /></svg>
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg>
                 </span>
-                <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Mobile & Smart TV LAN</p>
+                <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">Global Encrypted Tunnels</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Instant QR code launchpad and wildcard .local routing for testing on phones, tablets, and TV browsers.
+                  Direct worldwide access to your local services on 5G, LTE, or remote networks with zero port forwarding.
                 </p>
                 <span className="mt-3 inline-block font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                   {isSupporter ? "Unlocked" : "Locked for Free tier"}

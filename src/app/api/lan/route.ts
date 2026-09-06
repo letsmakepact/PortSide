@@ -17,22 +17,6 @@ export async function GET(req: Request) {
   const lanIp = getLanIp();
   const port = process.env.PORT || "80";
 
-  // If not confirmed by the server as a supporter, do not compute or expose mobile/TV routing or QR codes
-  if (!isSupporter) {
-    return NextResponse.json({
-      lanIp,
-      port,
-      portalUrl: "",
-      urls: null,
-      qrDataUrl: "",
-      qrTarget: "",
-      isSupporter: false,
-      serverConfirmed: true,
-      requiresSupporter: true,
-      error: "Server confirmation required: Mobile & Smart TV LAN routing is a PortSide Supporter perk.",
-    });
-  }
-
   const urls = hostname ? getLanUrls(hostname, port, lanIp) : null;
   const portalUrl = `http://${lanIp}${port === "80" || port === "443" ? "" : `:${port}`}/lan`;
 
@@ -107,7 +91,7 @@ export async function GET(req: Request) {
     qrDataUrl,
     qrTarget,
     pairToken,
-    isSupporter: true,
+    isSupporter: Boolean(isSupporter),
     serverConfirmed: true,
   });
 }

@@ -73,59 +73,28 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
           </span>
         </div>
 
-        {lanData && !lanData.isSupporter && (
-          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200/80 bg-amber-50/70 dark:border-amber-900/30 dark:bg-amber-950/20 px-3.5 py-2.5">
-            <div className="flex items-center gap-2">
-              <span className="flex h-4 w-4 items-center justify-center text-amber-600 dark:text-amber-400">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-              </span>
-              <p className="text-xs text-amber-900 dark:text-amber-200">
-                <span className="font-semibold">Server Locked:</span> Mobile QR launchpad & wildcard LAN routing require confirmed Supporter status.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                openSupport();
-              }}
-              className="shrink-0 rounded-lg bg-amber-500 hover:bg-amber-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs transition"
-            >
-              Unlock Perks
-            </button>
-          </div>
-        )}
-
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
           <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/40 p-5 text-center">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
               Scan with Phone Camera
             </p>
-            {lanData?.isSupporter && lanData?.qrDataUrl ? (
+            {lanData?.qrDataUrl ? (
               <img
                 src={lanData.qrDataUrl}
                 alt="QR Code for mobile access"
                 className="h-48 w-48 rounded-xl border border-slate-200 dark:border-slate-800 bg-white p-2 shadow-sm"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-48 w-48 rounded-xl border border-dashed border-amber-300 dark:border-amber-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-400">
-                <span className="flex h-8 w-8 items-center justify-center text-amber-500 mb-1">
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                </span>
-                <span className="font-semibold text-slate-700 dark:text-slate-300 text-center">
-                  {loading ? "Checking server..." : "Supporter Locked"}
-                </span>
-                <span className="text-[10px] text-slate-400 mt-1 text-center">
-                  Server confirmation required
+              <div className="flex flex-col items-center justify-center h-48 w-48 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-xs text-slate-400">
+                <span className="text-xs font-medium text-slate-500">
+                  {loading ? "Generating QR code..." : "No local address detected"}
                 </span>
               </div>
             )}
             <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400 max-w-[240px]">
-              {lanData?.isSupporter
-                ? connectionMode === "tunnel" && lanData.publicTunnelUrl
-                  ? "Scan to open via Global Encrypted Tunnel. Works everywhere on 5G, LTE, or any Wi-Fi."
-                  : `Point your phone camera to open ${selectedService ? selectedService : "the mobile launchpad"} on your local Wi-Fi.`
-                : "Unlock PortSide Supporter perks to generate instant QR connection codes."}
+              {connectionMode === "tunnel" && lanData?.publicTunnelUrl
+                ? "Scan to open via Global Encrypted Tunnel. Works everywhere on 5G, LTE, or remote Wi-Fi."
+                : `Point your phone camera to open ${selectedService ? selectedService : "the mobile launchpad"} on your local Wi-Fi.`}
             </p>
           </div>
 
