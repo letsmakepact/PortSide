@@ -95,6 +95,7 @@ export function SettingsView() {
   const [originalProfileHandle, setOriginalProfileHandle] = useState("");
   const [vanityChangesRemaining, setVanityChangesRemaining] = useState(1);
   const [vanityChangesUsed, setVanityChangesUsed] = useState(0);
+  const [nextVanityCost, setNextVanityCost] = useState(10);
 
   // Hotspot states
   const [hotspotActive, setHotspotActive] = useState(false);
@@ -139,6 +140,9 @@ export function SettingsView() {
           setOriginalProfileHandle(p.handle || "");
           setVanityChangesUsed(d.vanityChangesUsed ?? p.vanityChangesUsed ?? 0);
           setVanityChangesRemaining(d.vanityChangesRemaining ?? 1);
+          if (typeof d.nextVanityCost === "number") {
+            setNextVanityCost(d.nextVanityCost);
+          }
           setProfileName(p.name || "");
           setProfileTitle(p.title || "");
           setProfileBio(p.bio || "");
@@ -240,6 +244,9 @@ export function SettingsView() {
         }
         if (typeof data.vanityChangesUsed === "number") {
           setVanityChangesUsed(data.vanityChangesUsed);
+        }
+        if (typeof data.nextVanityCost === "number") {
+          setNextVanityCost(data.nextVanityCost);
         }
         toast({ tone: "success", title: "Public Profile Saved", description: "Your custom showcase changes are live immediately." });
       } else {
@@ -736,7 +743,7 @@ export function SettingsView() {
                                 : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                             )}
                           >
-                            {vanityChangesRemaining > 0 ? "1 Free Change Remaining" : "0 Free Changes Left"}
+                            {vanityChangesRemaining > 0 ? "1 Free Change Remaining" : `0 Free Changes • Next: $${nextVanityCost}`}
                           </span>
                         )}
                       </div>
@@ -750,7 +757,9 @@ export function SettingsView() {
                       {isSupporter ? (
                         vanityChangesRemaining <= 0 ? (
                           <div className="mt-1 flex items-center justify-between text-[11px]">
-                            <span className="text-slate-400">1 free change used. Additional changes cost money.</span>
+                            <span className="text-slate-400">
+                              {vanityChangesUsed === 1 ? "1 free change used." : `${vanityChangesUsed} changes used.`} Next change costs ${nextVanityCost}.
+                            </span>
                             <a
                               href="https://buymeacoffee.com/pacts"
                               target="_blank"
@@ -758,12 +767,12 @@ export function SettingsView() {
                               className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1 underline"
                             >
                               <Lock className="h-3 w-3" />
-                              Unlock Extra Change ($5)
+                              Unlock Change (${nextVanityCost})
                             </a>
                           </div>
                         ) : (
                           <p className="mt-1 text-[11px] text-slate-400">
-                            Includes 1 free vanity subdomain change. Additional changes cost money ($5).
+                            1 free change included. Subsequent changes: 2nd is $10, 3rd is $15, 5th is $20.
                           </p>
                         )
                       ) : (

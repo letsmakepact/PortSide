@@ -31,6 +31,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     vanityChangesUsed?: number;
     extraVanityPurchased?: number;
     vanityChangesRemaining?: number;
+    nextVanityCost?: number;
   } | null>(null);
 
   const [selectedService, setSelectedService] = useState<string>("");
@@ -315,7 +316,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                           </button>
                         </div>
                         <p className="text-[10px] text-amber-300/90 font-medium">
-                          You have 1 free vanity change included. Additional vanity changes cost money ($5).
+                          1 free change included. Subsequent changes: 2nd is $10, 3rd is $15, 5th is $20.
                         </p>
                         {handleError && (
                           <p className="text-[10px] text-rose-400 font-semibold">{handleError}</p>
@@ -345,7 +346,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                             className="text-[10px] text-amber-400 hover:text-amber-300 font-semibold ml-2 shrink-0 inline-flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/20 transition"
                           >
                             <Lock className="h-2.5 w-2.5" />
-                            Change ($5)
+                            Change (${lanData?.nextVanityCost ?? 10})
                           </a>
                         )}
                       </div>

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getProfile, saveProfile } from "@/lib/profile";
+import { getProfile, saveProfile, getVanityChangeCost } from "@/lib/profile";
 import { getCurrentUser } from "@/lib/auth";
 import { isServerSupporter } from "@/lib/server-checks";
 import { listLanServices } from "@/lib/queries";
@@ -24,6 +24,7 @@ export async function GET() {
     const vanityChangesUsed = profile.vanityChangesUsed || 0;
     const extraVanityPurchased = profile.extraVanityPurchased || 0;
     const vanityChangesRemaining = Math.max(0, 1 + extraVanityPurchased - vanityChangesUsed);
+    const nextVanityCost = getVanityChangeCost(vanityChangesUsed);
 
     return NextResponse.json({
       profile,
@@ -32,6 +33,7 @@ export async function GET() {
       vanityChangesUsed,
       extraVanityPurchased,
       vanityChangesRemaining,
+      nextVanityCost,
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
@@ -46,6 +48,7 @@ export async function POST(req: Request) {
     const vanityChangesUsed = updated.vanityChangesUsed || 0;
     const extraVanityPurchased = updated.extraVanityPurchased || 0;
     const vanityChangesRemaining = Math.max(0, 1 + extraVanityPurchased - vanityChangesUsed);
+    const nextVanityCost = getVanityChangeCost(vanityChangesUsed);
 
     return NextResponse.json({
       ok: true,
@@ -53,6 +56,7 @@ export async function POST(req: Request) {
       vanityChangesUsed,
       extraVanityPurchased,
       vanityChangesRemaining,
+      nextVanityCost,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || String(error) }, { status: 400 });

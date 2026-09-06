@@ -7,7 +7,7 @@ import { requestPairToken } from "@/lib/supporter-session";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { getProfile } from "@/lib/profile";
+import { getProfile, getVanityChangeCost } from "@/lib/profile";
 
 export const dynamic = "force-dynamic";
 
@@ -138,6 +138,8 @@ export async function GET(req: Request) {
     } catch {}
   }
 
+  const nextVanityCost = getVanityChangeCost(vanityChangesUsed);
+
   return NextResponse.json({
     lanIp,
     port,
@@ -154,6 +156,7 @@ export async function GET(req: Request) {
     vanityChangesUsed,
     extraVanityPurchased,
     vanityChangesRemaining,
+    nextVanityCost,
     serverConfirmed: true,
   });
 }

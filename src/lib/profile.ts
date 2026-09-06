@@ -234,6 +234,17 @@ export async function getProfile(userParam?: SafeUser | null): Promise<PublicPro
   };
 }
 
+export function getVanityChangeCost(changesUsed: number): number {
+  // 1st change (changesUsed = 0) is free
+  if (changesUsed < 1) return 0;
+  // 2nd change (changesUsed = 1) is $10
+  if (changesUsed === 1) return 10;
+  // 3rd change (changesUsed = 2) is $15
+  if (changesUsed === 2) return 15;
+  // 4th change is $15 or $20, 5th change and subsequent are $20
+  return 20;
+}
+
 export async function saveProfile(data: Partial<PublicProfile>, userParam?: SafeUser | null): Promise<PublicProfile> {
   let user = userParam;
   if (user === undefined) {
@@ -285,9 +296,11 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
         throw new Error("Vanity handle must be at least 3 characters long.");
       }
 
-      // Rule: There should be one vanity change, and the rest cost money
+      // Rule: 1st change is free, 2nd is $10, 3rd is $15, 5th is $20
       if (!isPact && vanityChangesUsed >= maxAllowedChanges) {
-        throw new Error("You have already used your 1 free vanity change. Additional vanity changes cost money ($5).");
+        const nextCost = getVanityChangeCost(vanityChangesUsed);
+        const changeOrdinal = vanityChangesUsed === 1 ? "2nd" : vanityChangesUsed === 2 ? "3rd" : vanityChangesUsed === 3 ? "4th" : "5th";
+        throw new Error(`You have already used your ${vanityChangesUsed === 1 ? "1 free vanity change" : `${vanityChangesUsed} vanity changes`}. The ${changeOrdinal} vanity change costs $${nextCost}.`);
       }
 
       newHandle = rawInput;
