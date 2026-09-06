@@ -28,9 +28,12 @@ const perks = [
 
 export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { isSupporter, activateLicense } = useDashboard();
-  const [showKeyInput, setShowKeyInput] = useState(false);
+  const [activeSubMode, setActiveSubMode] = useState<"buttons" | "claim" | "manual">("buttons");
   const [key, setKey] = useState("");
   const [activating, setActivating] = useState(false);
+  const [claimInput, setClaimInput] = useState("");
+  const [claiming, setClaiming] = useState(false);
+  const [claimError, setClaimError] = useState<string | null>(null);
 
   async function handleActivate(e: FormEvent) {
     e.preventDefault();
@@ -40,8 +43,48 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
     setActivating(false);
     if (res.ok) {
       setKey("");
-      setShowKeyInput(false);
+      setActiveSubMode("buttons");
       onClose();
+    }
+  }
+
+  async function handleClaim(e: FormEvent) {
+    e.preventDefault();
+    if (!claimInput.trim()) return;
+    setClaiming(true);
+    setClaimError(null);
+
+    const isEmail = claimInput.includes("@");
+    const payload = isEmail
+      ? { email: claimInput.trim() }
+      : { transactionId: claimInput.trim() };
+
+    try {
+      // 1. Hit sovereign claim endpoint on portside.lol
+      const res = await fetch("https://portside.lol/api/license/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok && data.licenseKey) {
+        // 2. Automatically activate the minted license key locally
+        const actRes = await activateLicense(data.licenseKey);
+        if (actRes.ok) {
+          setClaimInput("");
+          setActiveSubMode("buttons");
+          onClose();
+          return;
+        } else {
+          setClaimError(actRes.error || "Failed to activate license key locally.");
+        }
+      } else {
+        setClaimError(data.error || "No active supporter payment was found. Please check your Buy Me a Coffee receipt.");
+      }
+    } catch {
+      setClaimError("Failed to reach verification server. You can also claim at portside.lol/claim");
+    } finally {
+      setClaiming(false);
     }
   }
 
@@ -113,7 +156,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
               Become a supporter for $4.99/mo on Buy Me a Coffee
             </a>
 
-            {!showKeyInput ? (
+            {activeSubMode === "buttons" && (
               <div className="flex flex-col gap-2 pt-1">
                 <button
                   type="button"
@@ -125,7 +168,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
                     if (data.isSupporter) {
                       onClose();
                     } else {
-                      setShowKeyInput(true);
+                      setActiveSubMode("claim");
                     }
                   }}
                   disabled={activating}
@@ -134,19 +177,74 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
                   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" /></svg>
                   Check / Refresh Monthly Supporter Status
                 </button>
-                <div className="text-center">
+
+                <div className="flex items-center justify-center gap-3 pt-1 text-xs">
                   <button
                     type="button"
-                    onClick={() => setShowKeyInput(true)}
-                    className="text-xs font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                    onClick={() => setActiveSubMode("claim")}
+                    className="font-medium text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 underline"
                   >
-                    Or activate with a manual license key
+                    Claim with Buy Me a Coffee receipt or email
+                  </button>
+                  <span className="text-slate-500">&bull;</span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSubMode("manual")}
+                    className="font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                  >
+                    Enter license key
                   </button>
                 </div>
               </div>
-            ) : (
+            )}
+
+            {activeSubMode === "claim" && (
+              <form onSubmit={handleClaim} className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3.5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold text-slate-900 dark:text-white">
+                    Auto-Claim from Buy Me a Coffee
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSubMode("buttons")}
+                    className="text-[11px] text-slate-400 hover:text-white"
+                  >
+                    Back
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-normal">
+                  Paid anonymously or with a different email? Enter the email or Receipt ID from your Buy Me a Coffee confirmation.
+                </p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="BMC Email or Transaction ID"
+                    value={claimInput}
+                    onChange={(e) => setClaimInput(e.target.value)}
+                    className="text-xs"
+                    required
+                  />
+                  <Button type="submit" size="sm" loading={claiming} disabled={!claimInput.trim()}>
+                    Claim & Unlock
+                  </Button>
+                </div>
+                {claimError && (
+                  <p className="text-[11px] text-rose-400 font-semibold">{claimError}</p>
+                )}
+              </form>
+            )}
+
+            {activeSubMode === "manual" && (
               <form onSubmit={handleActivate} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 space-y-2.5">
-                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Enter Cryptographic License Key</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Enter Cryptographic License Key</p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSubMode("buttons")}
+                    className="text-[11px] text-slate-400 hover:text-white"
+                  >
+                    Back
+                  </button>
+                </div>
                 <div className="flex gap-2">
                   <Input
                     placeholder="PSL1.eyJlbWFpbCI6..."
