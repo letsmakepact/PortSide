@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useDashboard } from "./DashboardProvider";
 import { StatusBadge } from "@/components/ui/Primitives";
+import { DevIconBadge } from "@/components/ui/DevIcon";
 import { useToast } from "@/components/ui/Toast";
 import type { ServiceDTO } from "@/lib/types";
 import { cn, colorFor, formatRelative, serviceUrl } from "@/lib/utils";
@@ -69,9 +70,7 @@ export function ServiceCard({
       )}
     >
       <div className="flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800/60 text-lg border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-200">
-          {service.icon}
-        </span>
+        <DevIconBadge icon={service.icon} size="md" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <h3 className="truncate text-sm font-bold text-slate-900 dark:text-white">{service.name}</h3>

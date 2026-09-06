@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Primitives";
 import { useDashboard } from "./DashboardProvider";
 import type { ServiceDTO } from "@/lib/types";
-import { SERVICE_ICONS, cn, isValidHostname, slugify } from "@/lib/utils";
+import { DEV_SERVICE_ICONS, LEGACY_SERVICE_ICONS, cn, isValidHostname, slugify } from "@/lib/utils";
+import { DevIcon, DEV_ICON_REGISTRY } from "@/components/ui/DevIcon";
 
 export function ServiceFormModal({
   open,
@@ -61,7 +62,7 @@ function ServiceFormContent({
   const [projectId, setProjectId] = useState<string>(
     service?.projectId ? String(service.projectId) : defaultProjectId ? String(defaultProjectId) : "",
   );
-  const [icon, setIcon] = useState(service?.icon ?? "⌘");
+  const [icon, setIcon] = useState(service?.icon ?? "server");
   const [tags, setTags] = useState(service?.tags.join(", ") ?? "");
   const [description, setDescription] = useState(service?.description ?? "");
   const [favorite, setFavorite] = useState(service?.favorite ?? false);
@@ -109,23 +110,60 @@ function ServiceFormContent({
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
+      <div className="space-y-4">
         <div>
-          <Label>Icon</Label>
-          <div className="grid w-[168px] grid-cols-6 gap-1 rounded-lg border border-slate-200 p-1.5">
-            {SERVICE_ICONS.map((ic) => (
-              <button
-                type="button"
-                key={ic}
-                onClick={() => setIcon(ic)}
-                className={cn("flex h-6 w-6 items-center justify-center rounded text-sm transition", icon === ic ? "bg-indigo-100 ring-2 ring-indigo-400" : "hover:bg-slate-100")}
-              >
-                {ic}
-              </button>
-            ))}
+          <div className="flex items-center justify-between mb-1.5">
+            <Label>Service Icon & Identity</Label>
+            <span className="text-[11px] font-mono text-slate-400 capitalize">
+              {DEV_ICON_REGISTRY[icon]?.name || icon}
+            </span>
+          </div>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-2">
+            <div className="grid grid-cols-8 sm:grid-cols-12 gap-1.5">
+              {DEV_SERVICE_ICONS.map((ic) => {
+                const meta = DEV_ICON_REGISTRY[ic];
+                const selected = icon === ic;
+                return (
+                  <button
+                    type="button"
+                    key={ic}
+                    onClick={() => setIcon(ic)}
+                    title={meta?.name || ic}
+                    className={cn(
+                      "flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-150",
+                      selected
+                        ? "border-sky-500 bg-sky-500/20 text-sky-400 shadow-xs ring-2 ring-sky-500/30 scale-105"
+                        : "border-transparent bg-white/40 dark:bg-slate-800/40 text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800",
+                    )}
+                  >
+                    <DevIcon icon={ic} className="h-4 w-4" />
+                  </button>
+                );
+              })}
+            </div>
+            {/* Legacy symbols accordion/toggle */}
+            <div className="mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center gap-1 overflow-x-auto py-0.5">
+              <span className="text-[10px] uppercase font-mono text-slate-400 font-semibold px-1">Glyphs:</span>
+              {LEGACY_SERVICE_ICONS.map((ic) => (
+                <button
+                  type="button"
+                  key={ic}
+                  onClick={() => setIcon(ic)}
+                  className={cn(
+                    "flex h-6 w-6 shrink-0 items-center justify-center rounded text-xs transition",
+                    icon === ic
+                      ? "bg-sky-500/20 text-sky-400 ring-1 ring-sky-400"
+                      : "text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800 hover:text-slate-200",
+                  )}
+                >
+                  {ic}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="space-y-4">
+
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="svc-name">Name</Label>
             <Input id="svc-name" value={name} onChange={(e) => handleNameChange(e.target.value)} placeholder="Storefront API" autoFocus required />

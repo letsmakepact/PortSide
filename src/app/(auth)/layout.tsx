@@ -12,13 +12,13 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
   if (user) redirect("/dashboard");
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-[1.1fr_1fr]">
-      <aside className="relative hidden overflow-hidden bg-slate-950 p-12 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
-        <div className="absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-cyan-600/15 blur-3xl" />
+    <div className="grid min-h-screen lg:grid-cols-[1.1fr_1fr] bg-slate-50 dark:bg-[#060b13] text-slate-900 dark:text-slate-100">
+      <aside className="relative hidden overflow-hidden bg-[#060b13] border-r border-slate-800/80 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-sky-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-cyan-600/10 blur-3xl pointer-events-none" />
         <div className="relative flex items-center gap-2.5">
           <Logo />
-          <span className="text-lg font-semibold tracking-tight">Portside</span>
+          <span className="text-lg font-bold tracking-tight text-white">Portside</span>
         </div>
         <div className="relative max-w-md">
           <h2 className="text-4xl font-semibold leading-tight tracking-tight">

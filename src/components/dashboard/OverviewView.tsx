@@ -5,10 +5,21 @@ import { useEffect, useState } from "react";
 import { useDashboard } from "./DashboardProvider";
 import { ServiceCard } from "./ServiceCard";
 import { ServiceFormModal } from "./ServiceFormModal";
-import { ActivityIcon } from "./ActivityFeed";
-import { PlusIcon, RefreshIcon } from "./ServicesView";
+import {
+  Server,
+  Activity,
+  Plus,
+  RefreshCw,
+  Zap,
+  AlertCircle,
+  PauseCircle,
+  Pin,
+  CheckCircle2,
+  Bookmark,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, EmptyState, StatusDot } from "@/components/ui/Primitives";
+import { ActivityIcon } from "./ActivityFeed";
 import type { ActivityDTO } from "@/lib/types";
 import { cn, colorFor, formatRelative, serviceUrl } from "@/lib/utils";
 
@@ -37,10 +48,38 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
   const pinned = services.filter((s) => s.favorite);
 
   const stats = [
-    { label: "Services", value: services.length, hint: `${projects.length} project${projects.length === 1 ? "" : "s"}`, tone: "text-slate-900" },
-    { label: "Online", value: online.length, hint: "responding now", tone: "text-emerald-600" },
-    { label: "Offline", value: offline.length, hint: "not listening", tone: offline.length ? "text-rose-600" : "text-slate-900" },
-    { label: "Paused", value: services.length - enabled.length, hint: "routes disabled", tone: "text-slate-900" },
+    {
+      label: "Services",
+      value: services.length,
+      hint: `${projects.length} project${projects.length === 1 ? "" : "s"}`,
+      icon: Server,
+      iconColor: "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      tone: "text-slate-900 dark:text-white",
+    },
+    {
+      label: "Online",
+      value: online.length,
+      hint: "responding now",
+      icon: Zap,
+      iconColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      tone: "text-emerald-600 dark:text-emerald-400",
+    },
+    {
+      label: "Offline",
+      value: offline.length,
+      hint: "not listening",
+      icon: AlertCircle,
+      iconColor: offline.length ? "text-rose-400 bg-rose-500/10 border-rose-500/20" : "text-slate-400 bg-slate-500/10 border-slate-500/20",
+      tone: offline.length ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-slate-100",
+    },
+    {
+      label: "Paused",
+      value: services.length - enabled.length,
+      hint: "routes disabled",
+      icon: PauseCircle,
+      iconColor: "text-slate-400 bg-slate-500/10 border-slate-500/20",
+      tone: "text-slate-900 dark:text-slate-100",
+    },
   ];
 
   return (
@@ -57,26 +96,34 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
         <div className="flex flex-wrap items-center gap-2">
           {services.length === 0 && (
             <Button variant="secondary" onClick={openTutorial}>
-              Feature Tour
+              <Bookmark className="h-3.5 w-3.5 mr-1 text-amber-400" /> Feature Tour
             </Button>
           )}
           <Button variant="secondary" onClick={runCheck} loading={checking}>
-            {!checking && <RefreshIcon />} Check now
+            {!checking && <RefreshCw className="h-3.5 w-3.5 mr-1" />} Check now
           </Button>
           <Button onClick={() => setFormOpen(true)}>
-            <PlusIcon /> Add service
+            <Plus className="h-3.5 w-3.5 mr-1" /> Add service
           </Button>
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
-          <Card key={s.label} className="p-3.5 sm:p-4 bg-brand-surface dark:bg-brand-surface-dark border-brand-bg dark:border-slate-800">
-            <p className="text-xs font-medium text-slate-400">{s.label}</p>
-            <p className={cn("mt-1 text-2xl font-bold tabular-nums", s.tone === "text-slate-900" ? "text-slate-900 dark:text-slate-100" : s.tone === "text-emerald-600" ? "text-emerald-600 dark:text-emerald-400" : s.tone === "text-rose-600" ? "text-rose-600 dark:text-rose-400" : s.tone)}>{s.value}</p>
-            <p className="mt-0.5 text-xs text-slate-500">{s.hint}</p>
-          </Card>
-        ))}
+        {stats.map((s) => {
+          const IconComp = s.icon;
+          return (
+            <Card key={s.label} className="p-3.5 sm:p-4 bg-brand-surface dark:bg-brand-surface-dark border-brand-bg dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 transition shadow-xs">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-slate-400">{s.label}</p>
+                <span className={cn("flex h-7 w-7 items-center justify-center rounded-lg border", s.iconColor)}>
+                  <IconComp className="h-3.5 w-3.5" />
+                </span>
+              </div>
+              <p className={cn("mt-1 text-2xl font-bold tabular-nums", s.tone)}>{s.value}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{s.hint}</p>
+            </Card>
+          );
+        })}
       </div>
 
       <section>
@@ -88,7 +135,7 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
         </div>
         {pinned.length === 0 ? (
           <EmptyState
-            icon={<svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="17" x2="12" y2="22" /><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" /></svg>}
+            icon={<Pin className="h-5 w-5 text-slate-400" />}
             title="Nothing pinned yet"
             description="Pin key services to keep them accessible directly on your overview dashboard."
             action={

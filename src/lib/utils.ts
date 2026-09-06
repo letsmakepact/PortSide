@@ -30,7 +30,36 @@ export function colorFor(color: string) {
   return colorClasses[color] ?? colorClasses.indigo;
 }
 
-export const SERVICE_ICONS = ["⌘", "◈", "◉", "⚙", "⌗", "✦", "◫", "▤", "⌥", "▣", "▲", "◆", "●", "⬡", "❖", "★"];
+export const DEV_SERVICE_ICONS = [
+  "server",
+  "globe",
+  "database",
+  "terminal",
+  "code",
+  "zap",
+  "layers",
+  "cpu",
+  "box",
+  "smartphone",
+  "radio",
+  "tv",
+  "shield",
+  "cloud",
+  "sparkles",
+  "lock",
+  "activity",
+  "qrcode",
+  "layout",
+  "webhook",
+  "harddrive",
+  "git",
+  "filecode",
+  "wifi",
+] as const;
+
+export const LEGACY_SERVICE_ICONS = ["⌘", "◈", "◉", "⚙", "⌗", "✦", "◫", "▤", "⌥", "▣", "▲", "◆", "●", "⬡", "❖", "★"];
+
+export const SERVICE_ICONS = [...DEV_SERVICE_ICONS, ...LEGACY_SERVICE_ICONS];
 
 export function slugify(input: string): string {
   return input

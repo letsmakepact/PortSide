@@ -1,6 +1,23 @@
 "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
+import {
+  Sliders,
+  User,
+  Sparkles,
+  Wifi,
+  Shield,
+  Network,
+  Info,
+  CheckCircle2,
+  XCircle,
+  QrCode,
+  Globe,
+  Server,
+  Lock,
+  Radio,
+  Tv,
+} from "lucide-react";
 import { useDashboard } from "./DashboardProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, Input, Label, PageHeader } from "@/components/ui/Primitives";
@@ -405,13 +422,13 @@ export function SettingsView() {
   }
 
   const tabs = [
-    { id: "general", label: "Preferences & Health" },
-    { id: "profile", label: "Public Profile & About Me" },
-    { id: "supporter", label: "Supporter & Perks" },
-    { id: "hotspot", label: "Dev Wi-Fi Hotspot" },
-    { id: "account", label: "Account & Security" },
-    { id: "routing", label: "Proxy & How Routing Works" },
-    { id: "about", label: "Updates & About" },
+    { id: "general", label: "Preferences & Health", icon: Sliders },
+    { id: "profile", label: "Public Profile & About Me", icon: User },
+    { id: "supporter", label: "Supporter & Perks", icon: Sparkles },
+    { id: "hotspot", label: "Dev Wi-Fi Hotspot", icon: Wifi },
+    { id: "account", label: "Account & Security", icon: Shield },
+    { id: "routing", label: "Proxy & How Routing Works", icon: Network },
+    { id: "about", label: "Updates & About", icon: Info },
   ] as const;
 
   return (
@@ -419,21 +436,26 @@ export function SettingsView() {
       <PageHeader title="Settings" subtitle="Manage your dashboard preferences, account security, and routing configuration." />
 
       {/* Tab Navigation Bar */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              "px-4 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-px",
-              activeTab === tab.id
-                ? "border-slate-900 text-slate-900 font-semibold dark:border-sky-400 dark:text-sky-400"
-                : "border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200",
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-800 scrollbar-none">
+        {tabs.map((tab) => {
+          const IconComp = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-px",
+                isActive
+                  ? "border-sky-500 text-sky-600 dark:text-sky-400 font-semibold"
+                  : "border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200",
+              )}
+            >
+              <IconComp className={cn("h-3.5 w-3.5", isActive ? "text-sky-500 dark:text-sky-400" : "text-slate-400 dark:text-slate-500")} />
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* TAB 1: GENERAL / PREFERENCES & HEALTH */}

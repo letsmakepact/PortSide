@@ -3,6 +3,18 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  LayoutDashboard,
+  Server,
+  Layers,
+  Activity,
+  Settings,
+  Sparkles,
+  Smartphone,
+  Compass,
+  LogOut,
+  Menu,
+} from "lucide-react";
 import { useDashboard } from "./DashboardProvider";
 import { TutorialModal } from "./TutorialModal";
 import { UpdateModal } from "./UpdateModal";
@@ -14,11 +26,11 @@ import { SupporterBadge } from "@/components/ui/SupporterBadge";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { href: "/dashboard", label: "Overview", icon: "M3 12l9-9 9 9M5 10v10h14V10" },
-  { href: "/dashboard/services", label: "Services", icon: "M4 6h16M4 12h16M4 18h10" },
-  { href: "/dashboard/projects", label: "Projects", icon: "M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" },
-  { href: "/dashboard/activity", label: "Activity", icon: "M3 12h4l3-8 4 16 3-8h4" },
-  { href: "/dashboard/settings", label: "Settings", icon: "M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/services", label: "Services", icon: Server },
+  { href: "/dashboard/projects", label: "Projects", icon: Layers },
+  { href: "/dashboard/activity", label: "Activity", icon: Activity },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {
@@ -69,24 +81,32 @@ export function Sidebar() {
       <nav className="mt-5 flex-1 space-y-0.5 px-2.5">
         {nav.map((item) => {
           const active = item.href === "/dashboard" ? pathname === item.href : pathname.startsWith(item.href);
+          const IconComp = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
               className={cn(
-                "group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors",
+                "group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium transition-colors",
                 active
-                  ? "bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/50"
+                  ? "bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/50 shadow-xs"
                   : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-slate-200",
               )}
             >
-              <svg viewBox="0 0 24 24" className={cn("h-4 w-4 shrink-0 transition-colors", active ? "text-sky-500 dark:text-sky-400" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300")} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d={item.icon} />
-              </svg>
+              <IconComp
+                className={cn(
+                  "h-4 w-4 shrink-0 transition-colors",
+                  active
+                    ? "text-sky-500 dark:text-sky-400"
+                    : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300",
+                )}
+              />
               {item.label}
               {item.label === "Services" && (
-                <span className="ml-auto rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-600 dark:text-slate-300">{services.length}</span>
+                <span className="ml-auto rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-600 dark:text-slate-300">
+                  {services.length}
+                </span>
               )}
             </Link>
           );
@@ -101,11 +121,9 @@ export function Sidebar() {
                 setOpen(false);
                 openSupport();
               }}
-              className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-slate-800/60 transition-colors"
+              className="group flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20 border border-transparent hover:border-amber-500/20 transition-colors"
             >
-              <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
-              </svg>
+              <Sparkles className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" />
               Become a Supporter
             </button>
           </>
@@ -117,13 +135,13 @@ export function Sidebar() {
             setOpen(false);
             openLan();
           }}
-          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
+          className="group flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
         >
-          <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-brand-primary" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" />
-          </svg>
+          <Smartphone className="h-4 w-4 shrink-0 text-sky-500 dark:text-sky-400" />
           Mobile / TV LAN
-          <span className="ml-auto rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 px-1.5 py-0.5 text-[9px] font-mono text-slate-500 dark:text-slate-300 uppercase">Wi-Fi</span>
+          <span className="ml-auto rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 px-1.5 py-0.5 text-[9px] font-mono text-slate-500 dark:text-slate-300 uppercase">
+            Wi-Fi
+          </span>
         </button>
 
         {services.length === 0 && (
@@ -133,11 +151,9 @@ export function Sidebar() {
               setOpen(false);
               openTutorial();
             }}
-            className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
+            className="group flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
           >
-            <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
+            <Compass className="h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" />
             Feature Tour
           </button>
         )}
@@ -166,10 +182,8 @@ export function Sidebar() {
             <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">{user.name}</p>
             <p className="truncate text-[10px] text-slate-500">{user.email}</p>
           </div>
-          <button onClick={signOut} disabled={signingOut} title="Sign out" className="rounded p-1 text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300 disabled:opacity-50">
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
-            </svg>
+          <button onClick={signOut} disabled={signingOut} title="Sign out" className="rounded-lg p-1.5 text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-50">
+            <LogOut className="h-3.5 w-3.5" />
           </button>
         </div>
         {user.email === "demo@portside.dev" && (
@@ -207,24 +221,24 @@ export function Sidebar() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#0b0f19]/90 px-4 py-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#060b13]/90 px-4 py-3 backdrop-blur lg:hidden">
         <div className="flex items-center gap-2">
           <AnchorIconBox size="sm" />
           <span className="font-semibold text-slate-900 dark:text-white">Portside</span>
         </div>
         <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white" aria-label="Open menu">
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <Menu className="h-5 w-5" />
         </button>
       </header>
 
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs" onClick={() => setOpen(false)} />
-          <aside className="animate-fade-up absolute inset-y-0 left-0 w-64 bg-white dark:bg-[#0b0f19]">{content}</aside>
+          <aside className="animate-fade-up absolute inset-y-0 left-0 w-64 bg-white dark:bg-[#060b13]">{content}</aside>
         </div>
       )}
 
-      <aside className="fixed inset-y-0 left-0 hidden w-60 bg-white dark:bg-[#0b0f19] lg:block">{content}</aside>
+      <aside className="fixed inset-y-0 left-0 hidden w-60 bg-white dark:bg-[#060b13] lg:block">{content}</aside>
       <TutorialModal forceOpen={tutorialOpen} onClose={closeTutorial} servicesCount={services.length} />
       <LanModal open={lanOpen} onClose={closeLan} />
       <DevHotspotModal open={hotspotOpen} onClose={closeHotspot} />
