@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# TypeScript build cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Misc & Cryptographic Keys
+.DS_Store
+*.pem
+*.key
+*.priv
+*.pub
+*license*.txt
+*license*.key
+*license*.json
+scripts/generate-license.js
+drizzle/.temp/
+*.exe
+Portside-Launcher*
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# Private desktop app modules and binaries (not published to public open-source repo)
+src/desktop/
+src/app/api/supporter/
+src/components/dashboard/SupporterModal.tsx
+src/lib/supporter.ts
+src/lib/desktop-client.ts
+src/lib/mdns.ts
+src/lib/hotspot.ts
+desktop-runtime/
+release_bundles/
+release_binaries/
+launcher/
+target/
