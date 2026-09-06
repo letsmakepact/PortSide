@@ -102,9 +102,13 @@ export async function getOrFetchSupporterSession(
       };
     }
 
-    // Cache valid session
+    // Cache valid session (deep-frozen as immutable and read-only)
+    const immutablePayload = Object.freeze({
+      ...verified.payload,
+      features: Object.freeze([...(verified.payload.features || [])]),
+    });
     global.__PORTSIDE_LIVE_SESSION_TICKET__ = ticket;
-    global.__PORTSIDE_LIVE_SESSION_PAYLOAD__ = verified.payload;
+    global.__PORTSIDE_LIVE_SESSION_PAYLOAD__ = immutablePayload;
 
     // Notify Go launcher of active session ticket
     try {
@@ -122,20 +126,20 @@ export async function getOrFetchSupporterSession(
       clearTimeout(launcherTimeout);
     } catch {}
 
-    return {
+    return Object.freeze({
       valid: true,
       sessionTicket: ticket,
-      payload: verified.payload,
-    };
+      payload: immutablePayload,
+    });
   } catch (err: any) {
     // If network error, check if we still have an unexpired cached ticket
     if (global.__PORTSIDE_LIVE_SESSION_TICKET__ && global.__PORTSIDE_LIVE_SESSION_PAYLOAD__) {
       if (Date.now() < global.__PORTSIDE_LIVE_SESSION_PAYLOAD__.expiresAt) {
-        return {
+        return Object.freeze({
           valid: true,
           sessionTicket: global.__PORTSIDE_LIVE_SESSION_TICKET__,
           payload: global.__PORTSIDE_LIVE_SESSION_PAYLOAD__,
-        };
+        });
       }
     }
 

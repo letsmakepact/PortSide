@@ -16,11 +16,6 @@ export class SupporterRequiredError extends Error {
  * Never relies on client-side state.
  */
 export async function isServerSupporter(userIdOrUser?: number | SafeUser | null): Promise<boolean> {
-  // Server-level environment override
-  if (process.env.PORTSIDE_SUPPORTER === "true") {
-    return true;
-  }
-
   let user: SafeUser | null = null;
 
   if (typeof userIdOrUser === "number") {
