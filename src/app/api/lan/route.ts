@@ -46,7 +46,32 @@ export async function GET(req: Request) {
     }
   }
 
-  let qrTarget = target || (urls ? urls.subdomainUrl : portalUrl);
+  let publicTunnelUrl = "";
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 400);
+    const launcherRes = await fetch("http://127.0.0.1:4242/api/pro/status", {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (launcherRes.ok) {
+      const data = await launcherRes.json();
+      if (data.publicTunnelUrl) {
+        publicTunnelUrl = data.publicTunnelUrl;
+      }
+    }
+  } catch {}
+
+  const mode = searchParams.get("mode") || (publicTunnelUrl ? "tunnel" : "lan");
+  let qrTarget = target;
+  if (!qrTarget) {
+    if (mode === "tunnel" && publicTunnelUrl) {
+      qrTarget = hostname ? `${publicTunnelUrl}/s/${hostname}` : `${publicTunnelUrl}/lan`;
+    } else {
+      qrTarget = urls ? urls.subdomainUrl : portalUrl;
+    }
+  }
+
   if (pairToken) {
     const delimiter = qrTarget.includes("?") ? "&" : "?";
     qrTarget = `${qrTarget}${delimiter}pst=${encodeURIComponent(pairToken)}`;
@@ -62,22 +87,6 @@ export async function GET(req: Request) {
         light: "#ffffff",
       },
     });
-  } catch {}
-
-  let publicTunnelUrl = "";
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 350);
-    const launcherRes = await fetch("http://127.0.0.1:4242/api/pro/status", {
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-    if (launcherRes.ok) {
-      const data = await launcherRes.json();
-      if (data.publicTunnelUrl) {
-        publicTunnelUrl = data.publicTunnelUrl;
-      }
-    }
   } catch {}
 
   return NextResponse.json({

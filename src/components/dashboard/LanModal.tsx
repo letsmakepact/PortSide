@@ -19,19 +19,22 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     serverConfirmed?: boolean;
   } | null>(null);
   const [selectedService, setSelectedService] = useState<string>("");
+  const [connectionMode, setConnectionMode] = useState<"tunnel" | "lan">("tunnel");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     setLoading(true);
-    const query = selectedService ? `?hostname=${encodeURIComponent(selectedService)}` : "";
-    fetch(`/api/lan${query}`)
+    const params = new URLSearchParams();
+    if (selectedService) params.set("hostname", selectedService);
+    params.set("mode", connectionMode);
+    fetch(`/api/lan?${params.toString()}`)
       .then((r) => r.json())
       .then((d) => setLanData(d))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [open, selectedService]);
+  }, [open, selectedService, connectionMode]);
 
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text);
@@ -117,12 +120,44 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
             )}
             <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400 max-w-[240px]">
               {lanData?.isSupporter
-                ? `Point your phone camera to open ${selectedService ? selectedService : "the mobile launchpad"} instantly.`
+                ? connectionMode === "tunnel" && lanData.publicTunnelUrl
+                  ? "Scan to open via Global Encrypted Tunnel. Works everywhere on 5G, LTE, or any Wi-Fi."
+                  : `Point your phone camera to open ${selectedService ? selectedService : "the mobile launchpad"} on your local Wi-Fi.`
                 : "Unlock PortSide Supporter perks to generate instant QR connection codes."}
             </p>
           </div>
 
           <div className="flex flex-col justify-between space-y-4">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Connection Mode
+              </label>
+              <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 dark:bg-slate-800/70 p-1">
+                <button
+                  type="button"
+                  onClick={() => setConnectionMode("tunnel")}
+                  className={`rounded-lg py-1.5 text-xs font-semibold transition ${
+                    connectionMode === "tunnel"
+                      ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  Global (5G / Remote)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConnectionMode("lan")}
+                  className={`rounded-lg py-1.5 text-xs font-semibold transition ${
+                    connectionMode === "lan"
+                      ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  Local Wi-Fi Only
+                </button>
+              </div>
+            </div>
+
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Target Service
