@@ -1,67 +1,91 @@
 # Portside
 
-Portside is a local development reverse proxy and management dashboard that gives every local service its own `*.localhost` domain without editing `/etc/hosts`.
+Portside is a local development reverse proxy, cockpit, and multi-device launchpad that gives every local service its own clean `*.localhost` domain without editing `/etc/hosts`.
 
 Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, [@pactwithdevil](https://t.me/pactwithdevil) on Telegram).
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-pacts-5F7FFF?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/pacts)
 
+---
+
+## Fully Supports All Devices
+
+Portside is engineered from the ground up to **fully support every device you build on or test with**:
+
+- **Smartphones (iOS & Android):** Zero-friction mobile access with Error Correction Level `H` camera QR codes, safe-area notch & gesture-bar insets, touch ergonomics (`>=44px` hit targets), and standalone PWA home screen installation.
+- **Tablets & Foldables (iPad, Android Tablets, Surface):** Fluid adaptive multi-column grid layouts with seamless landscape and portrait orientation transitions.
+- **Laptops & Workstations (macOS, Windows, Linux):** Full developer cockpit with fast keyboard navigation, port health probing, project grouping, and instant 1-click controls.
+- **Smart TVs & 10-Foot Displays (LG webOS, Samsung Tizen, Android TV, Fire TV, Apple TV):** Built-in spatial keyboard D-pad remote control (`ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`, `Enter`) with glowing 4px sky-blue focus rings for wireless testing from your couch without HDMI cables.
+
+---
+
 ## Features
 
-- **Clean `*.localhost` Routing on Port 80:** Maps subdomains (like `api.localhost` or `shop.localhost`) directly to your internal local ports (e.g., `:8081`, `:3001`) with zero port numbers in your browser address bar.
-- **Cross-Platform Standalone Launcher (Windows, macOS & Linux):** Automated zero-dependency setup tool that starts PostgreSQL, verifies dependencies, and automatically checks GitHub releases for updates on every run.
+- **Clean `*.localhost` Routing on Port 80:** Map subdomains (like `api.localhost` or `shop.localhost`) directly to your internal local ports (e.g., `:8081`, `:3001`) with zero port numbers in your address bar.
+- **Full Cross-Device Support:** Dedicated UI ergonomics for smartphones (320px–430px), tablets, laptops/desktops, and 10-foot Smart TV screens.
+- **Smart TV Remote & D-Pad Navigation:** Built-in spatial navigation using TV remote arrow keys and high-visibility electric focus rings for big-screen app testing.
+- **Device-Tailored Interactive Tutorial:** Automatically detects your active device (Laptop/PC, Phone/Tablet, Smart TV) and delivers customized onboarding tips with an interactive device switcher.
+- **High-Redundancy Brand QR Code:** Error Correction Level `H` (30% redundancy) QR code with center transparent anchor emblem for instant phone camera scanning.
+- **Cross-Platform Standalone Launcher (Windows, macOS & Linux):** Automated zero-dependency setup tool that starts PostgreSQL, verifies dependencies, and checks GitHub releases for updates on every run.
 - **Auto-Provisioned User Directory:** Automatically creates `~/Portside/updates` inside your user directory across Windows, macOS, and Linux to store downloads and launcher executables.
-- **Interactive First-Time Tutorial:** Built-in guided walkthrough demonstrating all features, routing mechanics, and shortcuts directly inside the dashboard.
-- **Update Tracking & Web Notifications:** Automatically detects new releases from GitHub and notifies users running on localhost with 1-click update options and changelogs.
-- **Live Background Monitor:** Periodically probes all active ports, checks latency, and logs online/offline state changes.
-- **Projects & Tags:** Organize related services into color-coded projects.
-- **Pin & Pause:** Pin critical routes to the top or temporarily pause traffic to specific ports with custom status pages.
-- **Redirect Rewriting:** Rewrites upstream redirect headers back to your clean `*.localhost` hostnames.
-- **Activity Feed:** Full audit log of service registrations, port updates, and connectivity changes.
+- **Live Background Port Monitor:** Probes all active ports in real-time, measures latency, and logs online/offline state changes with instant crash alerts.
+- **Projects & Color-Coded Groups:** Organize microservices and related processes into unified project suites.
+- **Pin & Pause Controls:** Pin high-frequency routes or temporarily pause traffic with polite fallback explainer screens.
+- **Header & Redirect Rewriting:** Rewrites upstream redirect and Host headers back to your clean `*.localhost` hostnames.
+- **Activity Feed & Audit Log:** Chronological audit log of service registrations, port updates, and connectivity fluctuations.
 
-## Supporter Features
+---
 
-PortSide Supporter unlocks specialized tools designed for mobile testing, multi-device workflows, and remote development:
+## Free vs. Supporter Tier
 
-- **Mobile & Smart TV Launchpad:** Access your active development services from mobile phones, tablets, and smart TVs on your local network.
-- **Global Remote Access:** Securely access your local environments from anywhere in the world on mobile data or external networks without manual router configurations.
-- **Private Dev Hotspot:** Broadcast a dedicated wireless access point directly from your development machine for isolated multi-device testing.
+Portside is 100% free for individual developers, with optional Supporter perks for advanced multi-device and remote workflows:
 
-## Mobile Testing
+| Feature | Free Tier | Supporter Perk |
+|---|:---:|:---:|
+| **Clean `*.localhost` on PC/Mac/Linux** | Yes (Unlimited) | Yes |
+| **Direct LAN Project Redirects (`/s/<project>`)** | Yes (Included) | Yes |
+| **Wildcard Subdomain Redirects (`<project>.<lan-ip>.nip.io`)** | Yes (Included) | Yes |
+| **Instant Scannable Project QR Code** | Yes (Included) | Yes |
+| **Full Device Support (Mobile, Tablet, Laptop, TV)** | Yes (Included) | Yes |
+| **Smart TV Remote D-Pad Navigation** | Yes (Included) | Yes |
+| **Device-Specific Guided Tutorial** | Yes (Included) | Yes |
+| **Personal Multi-Service Launchpad Dashboard (`/lan`)** | Jump Links | Full Interactive Dashboard |
+| **Clean `.local` / `.localhost` on OTHER Devices** | Raw IP / nip.io | Clean Zero-Config Names |
+| **Isolated Dev Wi-Fi Hotspot** | - | Yes |
+| **Global 5G / Cellular Tunneling (`*.portside.lol`)** | - | Yes |
 
-### Testing on iOS (iPhone & iPad)
+---
 
-To test your local projects directly on an iPhone or iPad:
+## Multi-Device Testing & Workflows
 
-1. Connect your device to the same Wi-Fi network as your computer.
-2. In Safari, navigate to:
-   ```
-   http://portside.local
-   ```
-3. You can also open your mapped services directly:
-   ```
-   http://<service-name>.local
-   ```
-   (For example: `http://shop.local`, `http://router.local`)
-4. Or open Mobile & TV Access in your dashboard to view your launchpad.
+### 1. Mobile Phones & Tablets (iOS & Android)
+- **Instant Camera Scan:** Open the **Mobile / TV LAN** modal in your dashboard and point your phone camera at the QR code.
+- **Free Direct Redirect:** Automatically jumps to `http://<lan-ip>/s/<project>` or `http://<project>.<lan-ip>.nip.io` over your local Wi-Fi with zero configuration.
+- **Clean Local Names (Supporters):** Open `http://<project>.local` directly in mobile Safari or Chrome without typing raw IP addresses.
+- **Home Screen PWA:** Tap "Add to Home Screen" to install Portside as a standalone mobile app with safe-area notch and home-bar padding.
 
-### Android Version (In Development)
+### 2. Smart TVs & Big Screen Displays (10-Foot UI)
+- **Wireless TV Testing:** Open the built-in web browser on your LG (webOS), Samsung (Tizen), Android TV, Fire TV, or Apple TV.
+- **Navigate to:**
+  ```
+  http://<your-lan-ip>/lan
+  ```
+- **Remote Control Navigation:** Use the physical arrow keys on your TV remote control to glide between launch cards with 4px glowing sky-blue focus rings. Press **OK / Enter** on the remote to launch full-screen.
 
-An Android version is currently in active development to bring seamless mobile workflows to Android devices.
+### 3. Laptops & Desktops (Workstation Cockpit)
+- Full-featured dashboard with searchable service lists, project filters, port probing latency metrics, and 1-click controls.
 
-If you want the Android version sooner, consider supporting the project on Buy Me a Coffee to help speed up development:
-
-[Support PortSide on Buy Me a Coffee](https://buymeacoffee.com/pacts)
-
+---
 
 ## Tech Stack
 
-- Next.js 16 (Turbopack, App Router)
-- React 19
-- Tailwind CSS v4
-- PostgreSQL + Drizzle ORM
-- TypeScript
-- Go (Native Multi-Platform Launcher for Windows, macOS, and Linux)
+- **Framework:** Next.js 16 (Turbopack, App Router)
+- **UI & Styling:** React 19, Tailwind CSS v4, Lucide Icons
+- **Database & ORM:** PostgreSQL + Drizzle ORM
+- **Language:** TypeScript
+- **Launcher:** Go (Native Multi-Platform Launcher for Windows, macOS, and Linux)
+
+---
 
 ## Quick Start
 
@@ -71,7 +95,7 @@ Download the pre-compiled launcher for your operating system from [GitHub Releas
 
 | Operating System | Binary Asset |
 |---|---|
-| **Windows** (x64) | `Portside.exe` (with embedded anchor icon) |
+| **Windows** (x64) | `Portside.exe` (with embedded anchor emblem) |
 | **macOS** (Apple Silicon M1/M2/M3/M4) | `Portside-darwin-arm64` / `Portside.app` |
 | **macOS** (Intel) | `Portside-darwin-amd64` / `Portside.app` |
 | **Linux** (x86_64) | `Portside-linux-amd64` / `Portside` |
@@ -83,19 +107,11 @@ Download the pre-compiled launcher for your operating system from [GitHub Releas
 curl -fsSL https://raw.githubusercontent.com/letsmakepact/PortSide/main/install.sh | bash
 ```
 
-**What the Launcher Does:**
-- Creates `~/Portside/updates` in your user home directory.
-- Checks GitHub for new releases and downloads updates automatically.
-- Starts the PostgreSQL Docker container if not already running.
-- Syncs schema tables and launches Portside on Port 80.
-- Opens `http://localhost` directly in your default browser.
-
 ---
 
-### Option B: Manual Localhost Setup (All Platforms)
+### Option B: Manual Setup
 
 #### 1. Clone & Install
-
 ```bash
 git clone https://github.com/letsmakepact/PortSide.git
 cd PortSide
@@ -103,49 +119,38 @@ npm install
 ```
 
 #### 2. Configure Environment
-
-Copy the example environment file:
-
 ```bash
 cp .env.example .env
 ```
 
-Default configuration runs on standard HTTP port 80:
-
+Default configuration:
 ```env
 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/portside_db
 PORT=80
 ```
 
 #### 3. Start PostgreSQL
-
-Use Docker Compose to start a local database:
-
 ```bash
 docker compose up -d
 ```
 
-#### 4. Initialize Database Schema
-
-Push the Drizzle schema to your database:
-
+#### 4. Push Database Schema
 ```bash
 npm run db:push
 ```
 
 #### 5. Run Development Server
-
 ```bash
 npm run dev
 ```
 
-*(On macOS or Linux, binding port 80 may require `sudo npm run dev` or configuring capabilities, otherwise set `PORT=3000` in `.env`).*
+*(On macOS or Linux, binding port 80 may require `sudo npm run dev` or setting `PORT=3000` in `.env`).*
 
-Open [http://localhost](http://localhost) in your browser.
-
-A default demo account is ready:
+Open [http://localhost](http://localhost) in your browser. Default demo account:
 - **Email:** `demo@portside.dev`
 - **Password:** `demo1234`
+
+---
 
 ## Clean URLs Without Ports
 
@@ -157,16 +162,7 @@ Because Portside runs on standard HTTP port 80, modern browsers resolve any `*.l
 
 No `/etc/hosts` modifications, port suffixes, or reverse proxy certificates required.
 
-## Available Scripts
-
-- `npm run dev`: Start Next.js on Port 80 with Turbopack.
-- `npm run build`: Build for production.
-- `npm run start`: Start production server.
-- `npm run lint`: Run ESLint checks.
-- `npm run typecheck`: Validate TypeScript types without emitting files.
-- `npm run db:generate`: Generate migration files from schema changes.
-- `npm run db:push`: Push schema definitions directly to PostgreSQL.
-- `npm run db:studio`: Launch Drizzle Studio database viewer.
+---
 
 ## License & Terms of Use
 
@@ -175,7 +171,7 @@ PortSide is licensed under the **Portside Non-Commercial Public License (PNC-1.0
 - **100% Free Forever for Single Users:** PortSide is completely free for individual developers, hobbyists, and personal development workflows. It will **never** be paid or monetized for single users.
 - **No Reselling or Profiting:** Anyone is free to use and modify PortSide, but you may **NOT** sell, rent, sublicense, or distribute PortSide or its derivatives for a fee.
 - **No Rebranding:** You may **NOT** rebrand, white-label, or remove creator attribution (`pact`) to generate profit.
-- **Commercial & Company Inquiries:** Companies, corporations, and enterprise entities seeking commercial integration, deployment, or custom licensing must contact the creator:
+- **Commercial & Company Inquiries:** Companies seeking commercial integration or custom licensing must contact the creator:
   - Telegram: [@pactwithdevil](https://t.me/pactwithdevil)
   - GitHub: [@letsmakepact](https://github.com/letsmakepact)
 
