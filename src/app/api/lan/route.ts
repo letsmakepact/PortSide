@@ -7,6 +7,7 @@ import { requestPairToken } from "@/lib/supporter-session";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { getProfile } from "@/lib/profile";
 
 export const dynamic = "force-dynamic";
 
@@ -68,12 +69,17 @@ export async function GET(req: Request) {
     }
   } catch {}
 
+  const profile = await getProfile(user);
+  const vanityChangesUsed = profile.vanityChangesUsed || 0;
+  const extraVanityPurchased = profile.extraVanityPurchased || 0;
+  const vanityChangesRemaining = Math.max(0, 1 + extraVanityPurchased - vanityChangesUsed);
+
   // Supporter domain resolution: guaranteed portside.lol domain ONLY for supporters
   if (isSupporter && !vanityDomain) {
     if (requestedDomain) {
       vanityDomain = requestedDomain.includes(".") ? requestedDomain : `${requestedDomain}.portside.lol`;
     } else {
-      const handle = (user?.name || user?.email?.split("@")[0] || "pact")
+      const handle = (profile.handle || user?.name || user?.email?.split("@")[0] || "pact")
         .toLowerCase()
         .replace(/[^a-z0-9-]/g, "");
       vanityDomain = `${handle || "pact"}.portside.lol`;
@@ -145,6 +151,9 @@ export async function GET(req: Request) {
     pairToken,
     requiresCustomUrl,
     isSupporter: Boolean(isSupporter),
+    vanityChangesUsed,
+    extraVanityPurchased,
+    vanityChangesRemaining,
     serverConfirmed: true,
   });
 }

@@ -21,7 +21,18 @@ export async function GET() {
       profile.verifiedBadgeText = "Verified Supporter";
     }
 
-    return NextResponse.json({ profile, services, isSupporter });
+    const vanityChangesUsed = profile.vanityChangesUsed || 0;
+    const extraVanityPurchased = profile.extraVanityPurchased || 0;
+    const vanityChangesRemaining = Math.max(0, 1 + extraVanityPurchased - vanityChangesUsed);
+
+    return NextResponse.json({
+      profile,
+      services,
+      isSupporter,
+      vanityChangesUsed,
+      extraVanityPurchased,
+      vanityChangesRemaining,
+    });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
@@ -32,8 +43,18 @@ export async function POST(req: Request) {
     const user = await getCurrentUser();
     const body = await req.json().catch(() => ({}));
     const updated = await saveProfile(body, user);
-    return NextResponse.json({ ok: true, profile: updated });
-  } catch (error) {
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const vanityChangesUsed = updated.vanityChangesUsed || 0;
+    const extraVanityPurchased = updated.extraVanityPurchased || 0;
+    const vanityChangesRemaining = Math.max(0, 1 + extraVanityPurchased - vanityChangesUsed);
+
+    return NextResponse.json({
+      ok: true,
+      profile: updated,
+      vanityChangesUsed,
+      extraVanityPurchased,
+      vanityChangesRemaining,
+    });
+  } catch (error: any) {
+    return NextResponse.json({ error: error?.message || String(error) }, { status: 400 });
   }
 }

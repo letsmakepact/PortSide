@@ -28,6 +28,9 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     qrTarget: string;
     requiresCustomUrl?: boolean;
     isSupporter?: boolean;
+    vanityChangesUsed?: number;
+    extraVanityPurchased?: number;
+    vanityChangesRemaining?: number;
   } | null>(null);
 
   const [selectedService, setSelectedService] = useState<string>("");
@@ -35,6 +38,8 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [customHandle, setCustomHandle] = useState<string>("");
   const [isEditingHandle, setIsEditingHandle] = useState(false);
+  const [savingHandle, setSavingHandle] = useState(false);
+  const [handleError, setHandleError] = useState<string | null>(null);
   const [, setLoading] = useState(false);
 
   useEffect(() => {
@@ -45,8 +50,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
 
   const activeHostname = selectedService === "__lan__" ? "" : selectedService;
 
-  useEffect(() => {
-    if (!open) return;
+  const refreshLan = () => {
     setLoading(true);
     const params = new URLSearchParams();
     if (activeHostname) params.set("hostname", activeHostname);
@@ -64,7 +68,36 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [open, activeHostname, connectionMode, customHandle]);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    refreshLan();
+  }, [open, activeHostname, connectionMode]);
+
+  async function handleSaveVanity() {
+    if (!customHandle) return;
+    setSavingHandle(true);
+    setHandleError(null);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: customHandle }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setHandleError(data.error || "Failed to update vanity subdomain.");
+      } else {
+        setIsEditingHandle(false);
+        refreshLan();
+      }
+    } catch (err: any) {
+      setHandleError(err?.message || "Failed to update vanity subdomain.");
+    } finally {
+      setSavingHandle(false);
+    }
+  }
 
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text);
@@ -248,37 +281,73 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                       Custom portside.lol Link
                     </span>
                     <span className="rounded bg-sky-500/20 px-2 py-0.5 text-[10px] font-bold text-sky-300 border border-sky-400/30">
-                      PERMANENT
+                      {(lanData?.vanityChangesRemaining ?? 1) > 0 ? "1 FREE CHANGE" : "PERMANENT"}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-2">
                     {isEditingHandle ? (
-                      <div className="flex items-center gap-1.5 w-full">
-                        <input
-                          type="text"
-                          value={customHandle}
-                          onChange={(e) => setCustomHandle(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-                          placeholder="your-subdomain"
-                          className="flex-1 rounded-lg border border-sky-500/40 bg-slate-900 px-2.5 py-1 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-sky-400"
-                        />
-                        <span className="text-xs font-mono text-slate-400">.portside.lol</span>
-                        <Button size="sm" onClick={() => setIsEditingHandle(false)} className="h-7 px-2.5 text-xs">
-                          Save
-                        </Button>
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-1.5 w-full">
+                          <input
+                            type="text"
+                            value={customHandle}
+                            onChange={(e) => {
+                              setCustomHandle(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+                              setHandleError(null);
+                            }}
+                            placeholder="your-subdomain"
+                            className="flex-1 rounded-lg border border-sky-500/40 bg-slate-900 px-2.5 py-1 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-sky-400"
+                          />
+                          <span className="text-xs font-mono text-slate-400">.portside.lol</span>
+                          <Button size="sm" onClick={handleSaveVanity} loading={savingHandle} className="h-7 px-2.5 text-xs">
+                            Save
+                          </Button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsEditingHandle(false);
+                              setHandleError(null);
+                            }}
+                            className="text-xs text-slate-400 hover:text-white px-1.5"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                        <p className="text-[10px] text-amber-300/90 font-medium">
+                          You have 1 free vanity change included. Additional vanity changes cost money ($5).
+                        </p>
+                        {handleError && (
+                          <p className="text-[10px] text-rose-400 font-semibold">{handleError}</p>
+                        )}
                       </div>
                     ) : (
                       <div className="flex items-center justify-between w-full">
                         <span className="font-mono text-xs text-sky-300 font-semibold break-all">
                           {portsideRedirectUrl}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => setIsEditingHandle(true)}
-                          className="text-[11px] text-sky-400 hover:text-sky-300 underline font-medium ml-2 shrink-0"
-                        >
-                          Edit
-                        </button>
+                        {(lanData?.vanityChangesRemaining ?? 1) > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsEditingHandle(true);
+                              setHandleError(null);
+                            }}
+                            className="text-[11px] text-sky-400 hover:text-sky-300 underline font-medium ml-2 shrink-0"
+                          >
+                            Edit (1 Free Left)
+                          </button>
+                        ) : (
+                          <a
+                            href="https://buymeacoffee.com/pacts"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10px] text-amber-400 hover:text-amber-300 font-semibold ml-2 shrink-0 inline-flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/20 transition"
+                          >
+                            <Lock className="h-2.5 w-2.5" />
+                            Change ($5)
+                          </a>
+                        )}
                       </div>
                     )}
                   </div>

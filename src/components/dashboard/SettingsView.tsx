@@ -92,6 +92,9 @@ export function SettingsView() {
   const [profileSubTab, setProfileSubTab] = useState<"identity" | "theme" | "skills" | "socials" | "projects" | "links" | "cta">("identity");
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [originalProfileHandle, setOriginalProfileHandle] = useState("");
+  const [vanityChangesRemaining, setVanityChangesRemaining] = useState(1);
+  const [vanityChangesUsed, setVanityChangesUsed] = useState(0);
 
   // Hotspot states
   const [hotspotActive, setHotspotActive] = useState(false);
@@ -133,6 +136,9 @@ export function SettingsView() {
         if (d.profile) {
           const p = d.profile;
           setProfileHandle(p.handle || "");
+          setOriginalProfileHandle(p.handle || "");
+          setVanityChangesUsed(d.vanityChangesUsed ?? p.vanityChangesUsed ?? 0);
+          setVanityChangesRemaining(d.vanityChangesRemaining ?? 1);
           setProfileName(p.name || "");
           setProfileTitle(p.title || "");
           setProfileBio(p.bio || "");
@@ -223,13 +229,24 @@ export function SettingsView() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        if (data.profile?.handle) {
+          setProfileHandle(data.profile.handle);
+          setOriginalProfileHandle(data.profile.handle);
+        }
+        if (typeof data.vanityChangesRemaining === "number") {
+          setVanityChangesRemaining(data.vanityChangesRemaining);
+        }
+        if (typeof data.vanityChangesUsed === "number") {
+          setVanityChangesUsed(data.vanityChangesUsed);
+        }
         toast({ tone: "success", title: "Public Profile Saved", description: "Your custom showcase changes are live immediately." });
       } else {
-        toast({ tone: "error", title: "Failed to save profile" });
+        toast({ tone: "error", title: "Save Failed", description: data.error || "Failed to save profile changes." });
       }
-    } catch {
-      toast({ tone: "error", title: "Failed to save profile" });
+    } catch (err: any) {
+      toast({ tone: "error", title: "Save Failed", description: err?.message || "Failed to save profile." });
     } finally {
       setSavingProfile(false);
     }
@@ -706,16 +723,54 @@ export function SettingsView() {
                     </div>
 
                     <div>
-                      <Label htmlFor="profHandle">
-                        Vanity Subdomain Handle {!isSupporter && <span className="text-[10px] text-amber-400 font-semibold">(Supporter Feature)</span>}
-                      </Label>
+                      <div className="flex items-center justify-between mb-1">
+                        <Label htmlFor="profHandle" className="mb-0">
+                          Vanity Subdomain Handle {!isSupporter && <span className="text-[10px] text-amber-400 font-semibold">(Supporter Feature)</span>}
+                        </Label>
+                        {isSupporter && (
+                          <span
+                            className={cn(
+                              "text-[10px] font-semibold px-2 py-0.5 rounded-full border",
+                              vanityChangesRemaining > 0
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                            )}
+                          >
+                            {vanityChangesRemaining > 0 ? "1 Free Change Remaining" : "0 Free Changes Left"}
+                          </span>
+                        )}
+                      </div>
                       <Input
                         id="profHandle"
                         value={isSupporter ? profileHandle : ""}
-                        onChange={(e) => setProfileHandle(e.target.value)}
+                        onChange={(e) => setProfileHandle(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
                         placeholder={isSupporter ? "e.g. your-name" : "Supporter plan required for custom domain"}
-                        disabled={!isSupporter}
+                        disabled={!isSupporter || (vanityChangesRemaining <= 0 && profileHandle === originalProfileHandle)}
                       />
+                      {isSupporter ? (
+                        vanityChangesRemaining <= 0 ? (
+                          <div className="mt-1 flex items-center justify-between text-[11px]">
+                            <span className="text-slate-400">1 free change used. Additional changes cost money.</span>
+                            <a
+                              href="https://buymeacoffee.com/pacts"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1 underline"
+                            >
+                              <Lock className="h-3 w-3" />
+                              Unlock Extra Change ($5)
+                            </a>
+                          </div>
+                        ) : (
+                          <p className="mt-1 text-[11px] text-slate-400">
+                            Includes 1 free vanity subdomain change. Additional changes cost money ($5).
+                          </p>
+                        )
+                      ) : (
+                        <p className="mt-1 text-[11px] text-slate-400">
+                          Supporter plan required to claim a custom subdomain (*.portside.lol).
+                        </p>
+                      )}
                     </div>
 
                     <div className="sm:col-span-2">
