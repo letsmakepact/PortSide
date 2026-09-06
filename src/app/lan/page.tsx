@@ -45,7 +45,7 @@ export default async function LanPortalPage() {
           </p>
           <div className="mt-6 pt-5 border-t border-white/10">
             <a
-              href="https://buymeacoffee.com/letsmakepact"
+              href="https://buymeacoffee.com/pacts"
               target="_blank"
               rel="noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 transition"

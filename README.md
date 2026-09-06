@@ -1,4 +1,4 @@
-﻿# ⚓ Portside
+# Portside
 
 Portside is a local development reverse proxy and management dashboard that gives every local service its own `*.localhost` domain without editing `/etc/hosts`.
 
@@ -18,6 +18,43 @@ Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, 
 - **Pin & Pause:** Pin critical routes to the top or temporarily pause traffic to specific ports with custom status pages.
 - **Redirect Rewriting:** Rewrites upstream redirect headers back to your clean `*.localhost` hostnames.
 - **Activity Feed:** Full audit log of service registrations, port updates, and connectivity changes.
+
+## Supporter Features
+
+PortSide Supporter unlocks specialized hardware, network orchestration, and remote testing capabilities designed for mobile devices, smart displays, and distributed development:
+
+- **Zero-Config Mobile & Smart TV LAN Routing:** Access your services from mobile phones, tablets, and Smart TVs on your local Wi-Fi with zero DNS or router changes.
+- **Global Remote Access (5G / Cellular / Anywhere):** Automatic encrypted outbound tunnel (`cloudflared`) allowing you to test your localhost services from anywhere in the world on mobile data or external networks. Completely bypasses NAT, router firewalls, and active VPNs (such as Mullvad).
+- **Private Dev Wi-Fi Hotspot:** Spin up an isolated, hardware-encrypted wireless access point directly from Windows without touching your home or office router.
+- **Cryptographic Fleet Security:** Employs Ed25519-signed ephemeral session tickets (`PST1`) and 5-minute single-use pairing tokens (`PAIR1`) to keep your network secure.
+
+## Testing on Mobile Devices
+
+### Using Portside on iOS (iPhone & iPad)
+
+Because Apple WebKit and iOS enforce RFC 6761, typing `localhost` in mobile Safari resolves strictly to the iPhone itself (`127.0.0.1`), not your development PC. PortSide makes local testing on iOS seamless with native zero-configuration mDNS (Bonjour):
+
+1. Connect your iPhone or iPad to the same Wi-Fi network as your host computer.
+2. In mobile Safari, navigate directly to:
+   ```
+   http://portside.local
+   ```
+   Apple Bonjour natively resolves `.local` hostnames across your local network with zero configuration required.
+3. You can also directly open any mapped service subdomain:
+   ```
+   http://<service-name>.local
+   ```
+   (For example: `http://shop.local`, `http://router.local`)
+4. Alternatively, open the **Mobile & TV Access** modal in your desktop dashboard and scan the instant QR code with your iPhone camera to open your services immediately.
+
+### Android Version (In Active Development)
+
+Unlike iOS, Android does not ship with universal mDNS resolution across all browser engines. We are actively engineering a dedicated Android companion client to enable seamless one-click reverse port mapping, so Android developers can type `http://localhost` directly into mobile Chrome and immediately hit their PC's running services.
+
+Want the Android version sooner? Supporting the project on Buy Me a Coffee directly funds development and helps bring the Android companion and expanded mobile tooling to life faster:
+
+[Support PortSide on Buy Me a Coffee](https://buymeacoffee.com/pacts)
+
 
 ## Tech Stack
 

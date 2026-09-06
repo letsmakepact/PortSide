@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Primitives";
 import { useDashboard } from "./DashboardProvider";
 
-const BMC_URL = "https://buymeacoffee.com/letsmakepact";
+const BMC_URL = "https://buymeacoffee.com/pacts";
 
 const perks = [
   {
