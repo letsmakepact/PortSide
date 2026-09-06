@@ -11,26 +11,7 @@ import { eq } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  let user = await getCurrentUser();
-  if (!user) {
-    try {
-      const supporterRows = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          name: users.name,
-          tier: users.tier,
-          supporterSince: users.supporterSince,
-        })
-        .from(users)
-        .where(eq(users.tier, "supporter"))
-        .limit(1);
-      if (supporterRows[0]) {
-        user = supporterRows[0] as any;
-      }
-    } catch {}
-  }
-
+  const user = await getCurrentUser();
   const isSupporter = await isServerSupporter(user);
   const { searchParams } = new URL(req.url);
   const hostname = searchParams.get("hostname") || "";
@@ -57,8 +38,8 @@ export async function GET(req: Request) {
 
   // Optional server-signed pairing token if supporter session is present
   let pairToken: string | null = null;
-  const supporterEmail = user?.email || (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email || "pact@virtuoushigh.com";
-  if (supporterEmail && isSupporter) {
+  const supporterEmail = isSupporter && user?.email ? user.email : null;
+  if (supporterEmail) {
     try {
       const pairRes = await requestPairToken(supporterEmail);
       if (pairRes.valid) {

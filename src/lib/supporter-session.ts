@@ -46,8 +46,13 @@ export async function getOrFetchSupporterSession(
 ): Promise<{ valid: boolean; sessionTicket: string | null; payload: SessionTicketPayload | null; error?: string }> {
   const machineId = getHardwareMachineId();
 
-  // Return cached session if still fresh (> 2 min remaining)
-  if (!forceRefresh && global.__PORTSIDE_LIVE_SESSION_TICKET__ && global.__PORTSIDE_LIVE_SESSION_PAYLOAD__) {
+  // Return cached session if still fresh (> 2 min remaining) and matches requested email
+  if (
+    !forceRefresh &&
+    global.__PORTSIDE_LIVE_SESSION_TICKET__ &&
+    global.__PORTSIDE_LIVE_SESSION_PAYLOAD__ &&
+    global.__PORTSIDE_LIVE_SESSION_PAYLOAD__.email?.toLowerCase() === email.trim().toLowerCase()
+  ) {
     const remaining = global.__PORTSIDE_LIVE_SESSION_PAYLOAD__.expiresAt - Date.now();
     if (remaining > 2 * 60 * 1000) {
       return {
@@ -133,8 +138,12 @@ export async function getOrFetchSupporterSession(
       payload: immutablePayload,
     });
   } catch (err: any) {
-    // If network error, check if we still have an unexpired cached ticket
-    if (global.__PORTSIDE_LIVE_SESSION_TICKET__ && global.__PORTSIDE_LIVE_SESSION_PAYLOAD__) {
+    // If network error, check if we still have an unexpired cached ticket for this email
+    if (
+      global.__PORTSIDE_LIVE_SESSION_TICKET__ &&
+      global.__PORTSIDE_LIVE_SESSION_PAYLOAD__ &&
+      global.__PORTSIDE_LIVE_SESSION_PAYLOAD__.email?.toLowerCase() === email.trim().toLowerCase()
+    ) {
       if (Date.now() < global.__PORTSIDE_LIVE_SESSION_PAYLOAD__.expiresAt) {
         return Object.freeze({
           valid: true,

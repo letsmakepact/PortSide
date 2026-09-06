@@ -72,7 +72,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     setTimeout(() => setCopiedKey(null), 2000);
   }
 
-  const isSupporter = Boolean(lanData?.isSupporter ?? contextIsSupporter);
+  const isSupporter = lanData ? Boolean(lanData.isSupporter) : Boolean(contextIsSupporter);
   const lanIp = lanData?.lanIp || "127.0.0.1";
   const port = lanData?.port || "80";
   const portSuffix = port === "80" || port === "443" ? "" : `:${port}`;
@@ -83,10 +83,12 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     ? `http://${activeHostname}.local${portSuffix}`
     : `http://portside.local${portSuffix}`;
 
-  const vanityDomain = lanData?.vanityDomain || (customHandle ? `${customHandle}.portside.lol` : "pact.portside.lol");
-  const portsideRedirectUrl = activeHostname
-    ? `https://${vanityDomain}/s/${activeHostname}`
-    : `https://${vanityDomain}/lan`;
+  const vanityDomain = isSupporter
+    ? lanData?.vanityDomain || (customHandle ? `${customHandle}.portside.lol` : "")
+    : "";
+  const portsideRedirectUrl = vanityDomain
+    ? (activeHostname ? `https://${vanityDomain}/s/${activeHostname}` : `https://${vanityDomain}/lan`)
+    : directSvcUrl;
 
   const activeQrTarget = lanData?.qrTarget ? lanData.qrTarget.split("?")[0] : "";
 

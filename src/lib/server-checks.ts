@@ -38,59 +38,40 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     user = await getCurrentUser();
   }
 
-  // If no user cookie is attached (e.g. Mobile phone or Smart TV visiting on LAN),
-  // inspect if this PortSide host instance is owned by a confirmed Supporter
-  if (!user) {
-    const supporterRows = await db
-      .select({
-        id: users.id,
-        email: users.email,
-        name: users.name,
-        tier: users.tier,
-        supporterSince: users.supporterSince,
-        createdAt: users.createdAt,
-      })
-      .from(users)
-      .where(eq(users.tier, "supporter"))
-      .limit(1);
-
-    if (supporterRows[0]) {
-      user = supporterRows[0];
-    } else {
-      const anyRows = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          name: users.name,
-          tier: users.tier,
-          supporterSince: users.supporterSince,
-          createdAt: users.createdAt,
-        })
-        .from(users)
-        .limit(1);
-      if (anyRows[0] && anyRows[0].email !== "demo@portside.dev") {
-        user = anyRows[0];
-      }
-    }
-  }
-
+  // If no user is authenticated, this is an unauthenticated guest / standard instance.
   if (!user) return false;
 
   // Authoritatively verify with sovereign server. NEVER trust local database tier or client state.
   const sessionResult = await getOrFetchSupporterSession(user.email);
-  if (sessionResult.valid && user.tier !== "supporter") {
+  if (sessionResult.valid && sessionResult.payload?.tier === "supporter") {
+    if (user.tier !== "supporter") {
+      try {
+        await db
+          .update(users)
+          .set({
+            tier: "supporter",
+            supporterSince: new Date(),
+          })
+          .where(eq(users.id, user.id));
+      } catch {}
+    }
+    return true;
+  }
+
+  // If sovereign server denies supporter or user is on free tier, demote if erroneously set
+  if (user.tier === "supporter" && !sessionResult.valid) {
     try {
       await db
         .update(users)
         .set({
-          tier: "supporter",
-          supporterSince: new Date(),
+          tier: "free",
+          supporterSince: null,
         })
         .where(eq(users.id, user.id));
     } catch {}
   }
 
-  return Boolean(sessionResult.valid || user.tier === "supporter" || user.supporterSince || user.email?.startsWith("pact@"));
+  return false;
 }
 
 /**
