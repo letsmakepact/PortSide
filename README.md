@@ -21,37 +21,35 @@ Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, 
 
 ## Supporter Features
 
-PortSide Supporter unlocks specialized hardware, network orchestration, and remote testing capabilities designed for mobile devices, smart displays, and distributed development:
+PortSide Supporter unlocks specialized tools designed for mobile testing, multi-device workflows, and remote development:
 
-- **Zero-Config Mobile & Smart TV LAN Routing:** Access your services from mobile phones, tablets, and Smart TVs on your local Wi-Fi with zero DNS or router changes.
-- **Global Remote Access (5G / Cellular / Anywhere):** Automatic encrypted outbound tunnel (`cloudflared`) allowing you to test your localhost services from anywhere in the world on mobile data or external networks. Completely bypasses NAT, router firewalls, and active VPNs (such as Mullvad).
-- **Private Dev Wi-Fi Hotspot:** Spin up an isolated, hardware-encrypted wireless access point directly from Windows without touching your home or office router.
-- **Cryptographic Fleet Security:** Employs Ed25519-signed ephemeral session tickets (`PST1`) and 5-minute single-use pairing tokens (`PAIR1`) to keep your network secure.
+- **Mobile & Smart TV Launchpad:** Access your active development services from mobile phones, tablets, and smart TVs on your local network.
+- **Global Remote Access:** Securely access your local environments from anywhere in the world on mobile data or external networks without manual router configurations.
+- **Private Dev Hotspot:** Broadcast a dedicated wireless access point directly from your development machine for isolated multi-device testing.
 
-## Testing on Mobile Devices
+## Mobile Testing
 
-### Using Portside on iOS (iPhone & iPad)
+### Testing on iOS (iPhone & iPad)
 
-Because Apple WebKit and iOS enforce RFC 6761, typing `localhost` in mobile Safari resolves strictly to the iPhone itself (`127.0.0.1`), not your development PC. PortSide makes local testing on iOS seamless with native zero-configuration mDNS (Bonjour):
+To test your local projects directly on an iPhone or iPad:
 
-1. Connect your iPhone or iPad to the same Wi-Fi network as your host computer.
-2. In mobile Safari, navigate directly to:
+1. Connect your device to the same Wi-Fi network as your computer.
+2. In Safari, navigate to:
    ```
    http://portside.local
    ```
-   Apple Bonjour natively resolves `.local` hostnames across your local network with zero configuration required.
-3. You can also directly open any mapped service subdomain:
+3. You can also open your mapped services directly:
    ```
    http://<service-name>.local
    ```
    (For example: `http://shop.local`, `http://router.local`)
-4. Alternatively, open the **Mobile & TV Access** modal in your desktop dashboard and scan the instant QR code with your iPhone camera to open your services immediately.
+4. Or open Mobile & TV Access in your dashboard to view your launchpad.
 
-### Android Version (In Active Development)
+### Android Version (In Development)
 
-Unlike iOS, Android does not ship with universal mDNS resolution across all browser engines. We are actively engineering a dedicated Android companion client to enable seamless one-click reverse port mapping, so Android developers can type `http://localhost` directly into mobile Chrome and immediately hit their PC's running services.
+An Android version is currently in active development to bring seamless mobile workflows to Android devices.
 
-Want the Android version sooner? Supporting the project on Buy Me a Coffee directly funds development and helps bring the Android companion and expanded mobile tooling to life faster:
+If you want the Android version sooner, consider supporting the project on Buy Me a Coffee to help speed up development:
 
 [Support PortSide on Buy Me a Coffee](https://buymeacoffee.com/pacts)
 
