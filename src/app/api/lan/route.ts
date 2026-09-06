@@ -53,36 +53,44 @@ export async function GET(req: Request) {
 
   const brandedUrl = vanityDomain ? `https://${vanityDomain}` : "";
   const mode = searchParams.get("mode") || (brandedUrl ? "branded" : publicTunnelUrl ? "tunnel" : "lan");
+  const hasCustomUrl = Boolean(vanityDomain || publicTunnelUrl);
+  const requiresCustomUrl = mode === "tunnel" && !hasCustomUrl;
+
   let qrTarget = target;
   if (!qrTarget) {
     if (mode === "branded" && brandedUrl) {
       qrTarget = hostname ? `${brandedUrl}/s/${hostname}` : `${brandedUrl}/lan`;
     } else if (mode === "tunnel" && publicTunnelUrl) {
       qrTarget = hostname ? `${publicTunnelUrl}/s/${hostname}` : `${publicTunnelUrl}/lan`;
+    } else if (mode === "tunnel" && !hasCustomUrl) {
+      // 5G remote requires a custom permanent domain (*.portside.lol) or active tunnel
+      qrTarget = "";
     } else {
       qrTarget = urls ? urls.subdomainUrl : portalUrl;
     }
   }
 
-  if (pairToken) {
+  if (pairToken && qrTarget) {
     const delimiter = qrTarget.includes("?") ? "&" : "?";
     qrTarget = `${qrTarget}${delimiter}pst=${encodeURIComponent(pairToken)}`;
   }
 
   let qrDataUrl = "";
-  try {
-    // Generate high-resolution QR with Error Correction Level 'H' (30% redundancy)
-    // to ensure instantaneous phone camera scannability with the center PortSide anchor emblem
-    qrDataUrl = await QRCode.toDataURL(qrTarget, {
-      errorCorrectionLevel: "H",
-      margin: 2,
-      width: 320,
-      color: {
-        dark: "#0369a1",
-        light: "#ffffff",
-      },
-    });
-  } catch {}
+  if (qrTarget) {
+    try {
+      // Generate high-resolution QR with Error Correction Level 'H' (30% redundancy)
+      // to ensure instantaneous phone camera scannability with the center PortSide anchor emblem
+      qrDataUrl = await QRCode.toDataURL(qrTarget, {
+        errorCorrectionLevel: "H",
+        margin: 2,
+        width: 320,
+        color: {
+          dark: "#0369a1",
+          light: "#ffffff",
+        },
+      });
+    } catch {}
+  }
 
   return NextResponse.json({
     lanIp,
@@ -95,6 +103,7 @@ export async function GET(req: Request) {
     qrDataUrl,
     qrTarget,
     pairToken,
+    requiresCustomUrl,
     isSupporter: Boolean(isSupporter),
     serverConfirmed: true,
   });
