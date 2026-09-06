@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import os from "os";
+import { getCurrentUser, type SafeUser } from "./auth";
 
 export interface ProjectOverride {
   title?: string;
@@ -69,7 +70,7 @@ export interface PublicProfile {
   updatedAt?: string;
 }
 
-export const DEFAULT_PROFILE: PublicProfile = {
+export const PACT_DEFAULT_PROFILE: PublicProfile = {
   handle: "pact",
   name: "pact",
   title: "Full-Stack Developer & Systems Architect",
@@ -92,7 +93,7 @@ export const DEFAULT_PROFILE: PublicProfile = {
   discord: "",
   telegram: "https://t.me/pactwithdevil",
   linkedin: "",
-  email: "",
+  email: "pact@virtuoushigh.com",
   customLinks: [],
   showProjects: true,
   projectsTitle: "Live Hosted Projects",
@@ -106,7 +107,50 @@ export const DEFAULT_PROFILE: PublicProfile = {
   ctaButtonUrl: "https://buymeacoffee.com/pacts",
 };
 
-export function getProfileFilePath(): string {
+export function getBlankProfile(user?: SafeUser | null): PublicProfile {
+  const cleanHandle = (user?.name || user?.email?.split("@")[0] || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "");
+
+  return {
+    handle: cleanHandle,
+    name: user?.name || "Developer",
+    title: "",
+    bio: "",
+    avatarUrl: "",
+    bannerUrl: "",
+    bannerPreset: "cyber-mesh",
+    accentColor: "sky",
+    location: "",
+    pronouns: "",
+    organization: "",
+    statusText: "Node Online & Active",
+    statusIndicator: "online",
+    verifiedBadgeText: user?.tier === "supporter" ? "PortSide Verified Supporter" : "Developer",
+    skills: [],
+    github: "",
+    twitter: "",
+    buymeacoffee: "",
+    website: "",
+    discord: "",
+    telegram: "",
+    linkedin: "",
+    email: user?.email || "",
+    customLinks: [],
+    showProjects: true,
+    projectsTitle: "Live Hosted Projects",
+    projectsSubtitle: "Active projects hosted directly through PortSide.",
+    visibleServices: [],
+    projectOverrides: {},
+    showCta: false,
+    ctaTitle: "",
+    ctaDescription: "",
+    ctaButtonText: "",
+    ctaButtonUrl: "",
+  };
+}
+
+export function getProfileFilePath(userId?: number | string | null): string {
   const home = os.homedir();
   const dir = path.join(home, "Portside");
   if (!fs.existsSync(dir)) {
@@ -114,11 +158,26 @@ export function getProfileFilePath(): string {
       fs.mkdirSync(dir, { recursive: true });
     } catch {}
   }
+  if (userId) {
+    return path.join(dir, `profile_${userId}.json`);
+  }
   return path.join(dir, "profile.json");
 }
 
-export async function getProfile(): Promise<PublicProfile> {
-  const filePath = getProfileFilePath();
+export async function getProfile(userParam?: SafeUser | null): Promise<PublicProfile> {
+  let user = userParam;
+  if (user === undefined) {
+    try {
+      user = await getCurrentUser();
+    } catch {
+      user = null;
+    }
+  }
+
+  const isPact = user?.email === "pact@virtuoushigh.com";
+  const defaultProfile = isPact ? PACT_DEFAULT_PROFILE : getBlankProfile(user);
+
+  const filePath = getProfileFilePath(user?.id);
   let saved: Partial<PublicProfile> = {};
 
   if (fs.existsSync(filePath)) {
@@ -126,47 +185,55 @@ export async function getProfile(): Promise<PublicProfile> {
       const content = fs.readFileSync(filePath, "utf-8");
       saved = JSON.parse(content);
     } catch (err) {
-      console.error("Failed to parse profile.json", err);
+      console.error("Failed to parse profile JSON", err);
     }
   }
 
-  // Fetch launcher status to sync vanity domain or supporter handle if available
   let vanityDomain = "";
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 350);
-    const res = await fetch("http://127.0.0.1:4242/api/pro/status", {
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-    if (res.ok) {
-      const data = await res.json();
-      if (data.vanityDomain) {
-        vanityDomain = data.vanityDomain;
+  if (user?.tier === "supporter") {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 350);
+      const res = await fetch("http://127.0.0.1:4242/api/pro/status", {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.vanityDomain) {
+          vanityDomain = data.vanityDomain;
+        }
       }
-    }
-  } catch {}
+    } catch {}
+  }
 
-  const handle = vanityDomain ? vanityDomain.split(".")[0] : (saved.handle || DEFAULT_PROFILE.handle);
-  const website = vanityDomain ? `https://${vanityDomain}` : (saved.website || DEFAULT_PROFILE.website);
+  const handle = vanityDomain ? vanityDomain.split(".")[0] : (saved.handle || defaultProfile.handle);
+  const website = vanityDomain ? `https://${vanityDomain}` : (saved.website || defaultProfile.website);
 
   return {
-    ...DEFAULT_PROFILE,
+    ...defaultProfile,
     ...saved,
     handle,
     website,
     projectOverrides: {
-      ...DEFAULT_PROFILE.projectOverrides,
+      ...defaultProfile.projectOverrides,
       ...(saved.projectOverrides || {}),
     },
   };
 }
 
-export async function saveProfile(data: Partial<PublicProfile>): Promise<PublicProfile> {
-  const current = await getProfile();
+export async function saveProfile(data: Partial<PublicProfile>, userParam?: SafeUser | null): Promise<PublicProfile> {
+  let user = userParam;
+  if (user === undefined) {
+    try {
+      user = await getCurrentUser();
+    } catch {
+      user = null;
+    }
+  }
 
-  // Security: URL, Handle, and Website are strictly read-only and assigned by the server.
-  // A user cannot alter their handle or website to hijack someone else's domain or profile.
+  const current = await getProfile(user);
+
   const sanitizedInput = { ...data };
   delete (sanitizedInput as any).handle;
   delete (sanitizedInput as any).website;
@@ -183,7 +250,7 @@ export async function saveProfile(data: Partial<PublicProfile>): Promise<PublicP
     updatedAt: new Date().toISOString(),
   };
 
-  const filePath = getProfileFilePath();
+  const filePath = getProfileFilePath(user?.id);
   fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), "utf-8");
   return updated;
 }

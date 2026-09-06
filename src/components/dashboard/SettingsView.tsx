@@ -83,12 +83,12 @@ export function SettingsView() {
   const [profileCustomLinks, setProfileCustomLinks] = useState<Array<{ id: string; label: string; url: string; description?: string }>>([]);
   const [profileShowProjects, setProfileShowProjects] = useState(true);
   const [profileProjectsTitle, setProfileProjectsTitle] = useState("Live Hosted Projects");
-  const [profileProjectsSubtitle, setProfileProjectsSubtitle] = useState("Active projects hosted directly through PortSide. Open and test in real-time.");
-  const [profileShowCta, setProfileShowCta] = useState(true);
-  const [profileCtaTitle, setProfileCtaTitle] = useState("Sovereign Local Hosting via PortSide");
-  const [profileCtaDescription, setProfileCtaDescription] = useState("Every project listed here is connected directly through PortSide. Zero third-party cloud hosting required.");
-  const [profileCtaButtonText, setProfileCtaButtonText] = useState("Get PortSide");
-  const [profileCtaButtonUrl, setProfileCtaButtonUrl] = useState("https://buymeacoffee.com/pacts");
+  const [profileProjectsSubtitle, setProfileProjectsSubtitle] = useState("Active projects hosted directly through PortSide.");
+  const [profileShowCta, setProfileShowCta] = useState(false);
+  const [profileCtaTitle, setProfileCtaTitle] = useState("");
+  const [profileCtaDescription, setProfileCtaDescription] = useState("");
+  const [profileCtaButtonText, setProfileCtaButtonText] = useState("");
+  const [profileCtaButtonUrl, setProfileCtaButtonUrl] = useState("");
   const [profileSubTab, setProfileSubTab] = useState<"identity" | "theme" | "skills" | "socials" | "projects" | "links" | "cta">("identity");
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
@@ -911,7 +911,7 @@ export function SettingsView() {
                         id="profAvatar"
                         value={profileAvatarUrl}
                         onChange={(e) => setProfileAvatarUrl(e.target.value)}
-                        placeholder="https://github.com/letsmakepact.png"
+                        placeholder="https://github.com/your-username.png"
                       />
                       <p className="text-[11px] text-slate-500">Supports GitHub avatar URLs or any image URL.</p>
                       {profileAvatarUrl && (
@@ -999,7 +999,7 @@ export function SettingsView() {
                         id="profBmc"
                         value={profileBmc}
                         onChange={(e) => setProfileBmc(e.target.value)}
-                        placeholder="https://buymeacoffee.com/pacts"
+                        placeholder="https://buymeacoffee.com/your-username"
                       />
                     </div>
 
@@ -1029,7 +1029,7 @@ export function SettingsView() {
                         id="profWebsite"
                         value={profileWebsite}
                         onChange={(e) => setProfileWebsite(e.target.value)}
-                        placeholder="https://pact.portside.lol"
+                        placeholder="https://your-domain.com"
                       />
                     </div>
 
@@ -1350,7 +1350,7 @@ export function SettingsView() {
                           id="ctaBtnUrl"
                           value={profileCtaButtonUrl}
                           onChange={(e) => setProfileCtaButtonUrl(e.target.value)}
-                          placeholder="https://buymeacoffee.com/pacts"
+                          placeholder="https://your-link.com"
                         />
                       </div>
                     </div>
