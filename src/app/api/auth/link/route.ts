@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Account not found on this machine." }, { status: 404 });
     }
 
-    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
 
     // 1. Check if this account is linked to a premium supporter account on the server or locally
     let isPremiumAccount = user.tier === "supporter" || cleanEmail.startsWith("pact@");
@@ -125,11 +125,17 @@ export async function POST(req: Request) {
         }).catch(() => {});
       } catch {}
 
-      // Write local account.json for launcher persistence
+      // Write local account.json for launcher persistence so launcher reflects (Linked)
       try {
         const homeDir = path.join(os.homedir(), "Portside");
         fs.mkdirSync(homeDir, { recursive: true });
-        fs.writeFileSync(path.join(homeDir, "account.json"), JSON.stringify({ email: cleanEmail }), "utf8");
+        fs.writeFileSync(path.join(homeDir, "account.json"), JSON.stringify({ email: cleanEmail, linked: true }), "utf8");
+      } catch {}
+    } else {
+      try {
+        const homeDir = path.join(os.homedir(), "Portside");
+        fs.mkdirSync(homeDir, { recursive: true });
+        fs.writeFileSync(path.join(homeDir, "account.json"), JSON.stringify({ email: cleanEmail, linked: true }), "utf8");
       } catch {}
     }
 

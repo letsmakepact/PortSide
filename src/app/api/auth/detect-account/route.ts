@@ -28,7 +28,7 @@ export async function GET() {
 
       // Verify authoritative status on sovereign server
       try {
-        const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+        const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
         const checkRes = await fetch(
           `${webPortalUrl}/api/device/instructions?email=${encodeURIComponent(user.email)}&machineId=${machineId}`,
           { signal: AbortSignal.timeout(3000) }
@@ -41,13 +41,30 @@ export async function GET() {
         }
       } catch {}
 
+      let isLinked = false;
+      try {
+        const fs = await import("fs");
+        const path = await import("path");
+        const os = await import("os");
+        const accPath = path.join(os.homedir(), "Portside", "account.json");
+        if (fs.existsSync(accPath)) {
+          const raw = fs.readFileSync(accPath, "utf8");
+          const parsed = JSON.parse(raw);
+          if (parsed.email && parsed.email.toLowerCase() === user.email.toLowerCase()) {
+            isLinked = true;
+          }
+        }
+      } catch {}
+
       return NextResponse.json({
         detected: true,
+        isLinked,
         user: {
           email: user.email,
           name: user.name,
           tier: isPremium ? "supporter" : user.tier,
           isPremium,
+          isLinked,
         },
       });
     }

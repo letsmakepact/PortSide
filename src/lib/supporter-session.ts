@@ -31,7 +31,7 @@ declare global {
   var __PORTSIDE_LIVE_SESSION_PAYLOAD__: SessionTicketPayload | null | undefined;
 }
 
-const WEB_PORTAL_URL = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+const WEB_PORTAL_URL = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
 
 /**
  * Returns the currently active session ticket, or requests a fresh one from Portside-Web.

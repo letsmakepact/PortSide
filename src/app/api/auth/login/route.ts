@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
   // Sync to central Portside-Web server
   try {
-    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside-theta.vercel.app";
+    const webPortalUrl = process.env.PORTSIDE_WEB_URL || "https://portside.lol";
     fetch(`${webPortalUrl}/api/account/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,6 +33,16 @@ export async function POST(req: Request) {
         action: "login",
       }),
     }).catch(() => {});
+  } catch {}
+
+  // Write local account.json for launcher persistence so it shows (Linked)
+  try {
+    const fs = await import("fs");
+    const path = await import("path");
+    const os = await import("os");
+    const homeDir = path.join(os.homedir(), "Portside");
+    fs.mkdirSync(homeDir, { recursive: true });
+    fs.writeFileSync(path.join(homeDir, "account.json"), JSON.stringify({ email: user.email, linked: true }), "utf8");
   } catch {}
 
   await createSession(user.id);

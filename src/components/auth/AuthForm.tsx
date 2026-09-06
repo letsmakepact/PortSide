@@ -12,6 +12,7 @@ interface DetectedUser {
   name: string;
   tier: string;
   isPremium?: boolean;
+  isLinked?: boolean;
 }
 
 export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { email: string; password: string } }) {
@@ -139,7 +140,7 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
             </div>
           </div>
           <span className="inline-flex items-center rounded-full bg-sky-100 dark:bg-sky-900/50 px-2.5 py-0.5 text-xs font-medium text-sky-800 dark:text-sky-200">
-            Detected
+            {detectedUser.isLinked ? "Linked" : "Detected"}
           </span>
         </div>
 
@@ -164,6 +165,8 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {isPremiumAccount
                   ? "Enter your password to verify on server and unlock supporter perks."
+                  : detectedUser.isLinked
+                  ? "Enter your password to sign into your linked account."
                   : "Sign in with your password to link this device and sync your hosts."}
               </p>
             </div>

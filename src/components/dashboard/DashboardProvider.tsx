@@ -156,7 +156,7 @@ export function DashboardProvider({
         installId = "inst_" + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
         window.localStorage.setItem("portside:install_id", installId);
       }
-      fetch("https://portside-theta.vercel.app/api/install", {
+      fetch("https://portside.lol/api/install", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ installId, platform: "windows", appVersion: "1.0.0" }),
