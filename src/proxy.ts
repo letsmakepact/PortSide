@@ -5,6 +5,19 @@ export function proxy(request: NextRequest) {
   const hostname = host.split(":")[0];
   const { pathname } = request.nextUrl;
 
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/opengraph-image") ||
+    pathname.startsWith("/twitter-image") ||
+    pathname.startsWith("/icon") ||
+    pathname.startsWith("/apple-icon") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.startsWith("/manifest") ||
+    /\.(?:svg|png|jpg|jpeg|gif|webp|ico|webmanifest)$/.test(pathname)
+  ) {
+    return NextResponse.next();
+  }
+
   if (pathname.startsWith("/portside-proxy")) {
     return new NextResponse("Not found", { status: 404 });
   }
@@ -89,5 +102,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon\\.ico|icon|apple-icon|opengraph-image|twitter-image|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|webmanifest)).*)",
+  ],
 };
