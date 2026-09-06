@@ -1469,8 +1469,8 @@ export function SettingsView() {
                 </p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {isSupporter
-                    ? "All perks are unlocked: zero-config Mobile & TV LAN access, Dev Wi-Fi hotspot broadcasting, and unlimited routes."
-                    : "Support PortSide with any monthly amount on Buy Me a Coffee to unlock all supporter perks, or enter a license key below."}
+                    ? "All perks are unlocked: dedicated custom subdomain, remote global hosting, zero-config Mobile & TV LAN access, Dev Wi-Fi hotspot, and unlimited routes."
+                    : "Support PortSide for $4.99/mo on Buy Me a Coffee to unlock custom subdomains (*.portside.lol), remote global hosting, and all supporter perks, or enter a license key below."}
                 </p>
                 <div className="mt-4 flex items-center gap-2">
                   {!isSupporter ? (
@@ -1479,7 +1479,7 @@ export function SettingsView() {
                       onClick={openSupport}
                       className="inline-flex items-center gap-2 rounded-lg bg-amber-500 hover:bg-amber-600 px-3 py-2 text-xs font-semibold text-white shadow-xs transition"
                     >
-                      Become a Supporter on Buy Me a Coffee
+                      Become a Supporter for $4.99/mo on Buy Me a Coffee
                     </button>
                   ) : null}
                   <Button

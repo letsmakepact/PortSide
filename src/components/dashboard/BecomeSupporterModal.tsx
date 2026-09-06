@@ -10,6 +10,11 @@ const BMC_URL = "https://buymeacoffee.com/pacts";
 
 const perks = [
   {
+    iconType: "domain",
+    title: "Custom Subdomain",
+    body: "Dedicated *.portside.lol subdomain and live developer showcase link with zero cloud setup.",
+  },
+  {
     iconType: "lan",
     title: "Zero-config local domains",
     body: "Open your projects from phones, tablets, and TVs on the same network with no setup. They resolve instantly.",
@@ -18,11 +23,6 @@ const perks = [
     iconType: "hotspot",
     title: "Dev Wi-Fi hotspot",
     body: "Spin up a dedicated PortSide network from your PC so any device can connect directly — even without a router.",
-  },
-  {
-    iconType: "app",
-    title: "Official desktop app",
-    body: "Supporter perks live in the PortSide desktop app. After you donate monthly, download the app and they unlock automatically.",
   },
 ];
 
@@ -50,7 +50,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
       open={open}
       onClose={onClose}
       title="Become a Supporter"
-      description="Any amount, once a month. Every perk unlocks."
+      description="$4.99/mo. Every perk unlocks instantly."
       size="lg"
     >
       <div className="space-y-5">
@@ -60,9 +60,9 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" /></svg>
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-900 dark:text-white">Support PortSide monthly</p>
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">Support PortSide monthly — $4.99/mo</p>
               <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                Pick any amount on Buy Me a Coffee and donate once a month. That is the whole requirement — there is no minimum and no extra tier.
+                Unlock your custom vanity subdomain (*.portside.lol), instant mobile & TV device access, dev Wi-Fi hotspot broadcasting, and unlimited routes for $4.99/mo on Buy Me a Coffee.
               </p>
             </div>
           </div>
@@ -75,6 +75,9 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
               <div key={perk.title} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-brand-surface dark:bg-brand-surface-dark p-4 shadow-sm">
                 <div className="flex items-center gap-2">
                   <span className="flex h-6 w-6 items-center justify-center rounded text-amber-500">
+                    {perk.iconType === "domain" && (
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                    )}
                     {perk.iconType === "lan" && (
                       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" /></svg>
                     )}
@@ -107,7 +110,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
               rel="noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-amber-500/25 transition hover:bg-amber-600"
             >
-              Become a supporter on Buy Me a Coffee
+              Become a supporter for $4.99/mo on Buy Me a Coffee
             </a>
 
             {!showKeyInput ? (
