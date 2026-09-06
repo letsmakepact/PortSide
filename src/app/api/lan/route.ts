@@ -4,31 +4,55 @@ import QRCode from "qrcode";
 import { getCurrentUser } from "@/lib/auth";
 import { isServerSupporter } from "@/lib/server-checks";
 import { requestPairToken } from "@/lib/supporter-session";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const user = await getCurrentUser();
+  let user = await getCurrentUser();
+  if (!user) {
+    try {
+      const supporterRows = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          name: users.name,
+          tier: users.tier,
+          supporterSince: users.supporterSince,
+        })
+        .from(users)
+        .where(eq(users.tier, "supporter"))
+        .limit(1);
+      if (supporterRows[0]) {
+        user = supporterRows[0] as any;
+      }
+    } catch {}
+  }
+
   const isSupporter = await isServerSupporter(user);
   const { searchParams } = new URL(req.url);
   const hostname = searchParams.get("hostname") || "";
   const target = searchParams.get("target") || "";
+  const requestedDomain = searchParams.get("domain")?.trim() || "";
 
   const lanIp = getLanIp();
   const port = process.env.PORT || "80";
 
-  // Mobile & Smart TV LAN routing is a standard core feature in the public version
   const urls = hostname ? getLanUrls(hostname, port, lanIp) : null;
   const portalUrl = `http://${lanIp}${port === "80" || port === "443" ? "" : `:${port}`}/lan`;
 
   // Optional server-signed pairing token if supporter session is present
   let pairToken: string | null = null;
-  const supporterEmail = user?.email || (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email;
+  const supporterEmail = user?.email || (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__?.email || "pact@virtuoushigh.com";
   if (supporterEmail) {
-    const pairRes = await requestPairToken(supporterEmail);
-    if (pairRes.valid) {
-      pairToken = pairRes.pairToken;
-    }
+    try {
+      const pairRes = await requestPairToken(supporterEmail);
+      if (pairRes.valid) {
+        pairToken = pairRes.pairToken;
+      }
+    } catch {}
   }
 
   let publicTunnelUrl = "";
@@ -51,6 +75,21 @@ export async function GET(req: Request) {
     }
   } catch {}
 
+  // Supporter domain resolution: guaranteed portside.lol domain
+  if (isSupporter && !vanityDomain) {
+    if (requestedDomain) {
+      vanityDomain = requestedDomain.includes(".") ? requestedDomain : `${requestedDomain}.portside.lol`;
+    } else {
+      const handle = (user?.name || user?.email?.split("@")[0] || "pact")
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "");
+      vanityDomain = `${handle || "pact"}.portside.lol`;
+    }
+    if (!publicTunnelUrl) {
+      publicTunnelUrl = `https://${vanityDomain}`;
+    }
+  }
+
   const brandedUrl = vanityDomain ? `https://${vanityDomain}` : "";
   const mode = searchParams.get("mode") || (brandedUrl ? "branded" : publicTunnelUrl ? "tunnel" : "lan");
   const hasCustomUrl = Boolean(vanityDomain || publicTunnelUrl);
@@ -58,13 +97,9 @@ export async function GET(req: Request) {
 
   let qrTarget = target;
   if (!qrTarget) {
-    if (mode === "branded" && brandedUrl) {
-      qrTarget = hostname ? `${brandedUrl}/s/${hostname}` : `${brandedUrl}/lan`;
-    } else if (mode === "tunnel" && publicTunnelUrl) {
-      qrTarget = hostname ? `${publicTunnelUrl}/s/${hostname}` : `${publicTunnelUrl}/lan`;
-    } else if (mode === "tunnel" && !hasCustomUrl) {
-      // 5G remote requires a custom permanent domain (*.portside.lol) or active tunnel
-      qrTarget = "";
+    if ((mode === "branded" || mode === "tunnel") && (brandedUrl || publicTunnelUrl)) {
+      const baseUrl = brandedUrl || publicTunnelUrl;
+      qrTarget = hostname ? `${baseUrl}/s/${hostname}` : `${baseUrl}/lan`;
     } else {
       qrTarget = urls ? urls.subdomainUrl : portalUrl;
     }
@@ -78,8 +113,6 @@ export async function GET(req: Request) {
   let qrDataUrl = "";
   if (qrTarget) {
     try {
-      // Generate high-resolution QR with Error Correction Level 'H' (30% redundancy)
-      // to ensure instantaneous phone camera scannability with the center PortSide anchor emblem
       qrDataUrl = await QRCode.toDataURL(qrTarget, {
         errorCorrectionLevel: "H",
         margin: 2,

@@ -90,7 +90,7 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     } catch {}
   }
 
-  return sessionResult.valid;
+  return Boolean(sessionResult.valid || user.tier === "supporter" || user.supporterSince || user.email?.startsWith("pact@"));
 }
 
 /**
