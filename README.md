@@ -9,7 +9,6 @@ Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, 
 ## Features
 
 - **Clean `*.localhost` Routing on Port 80:** Maps subdomains (like `api.localhost` or `shop.localhost`) directly to your internal local ports (e.g., `:8081`, `:3001`) with zero port numbers in your browser address bar.
-- **Mobile & Smart TV Launchpad:** Instant QR camera scanning and wildcard `*.local` mDNS resolution for testing directly on iPhones, iPads, Androids, and Smart TV browsers across your local Wi-Fi.
 - **Cross-Platform Standalone Launcher (Windows, macOS & Linux):** Automated zero-dependency setup tool that starts PostgreSQL, verifies dependencies, and automatically checks GitHub releases for updates on every run.
 - **Auto-Provisioned User Directory:** Automatically creates `~/Portside/updates` inside your user directory across Windows, macOS, and Linux to store downloads and launcher executables.
 - **Interactive First-Time Tutorial:** Built-in guided walkthrough demonstrating all features, routing mechanics, and shortcuts directly inside the dashboard.
@@ -22,12 +21,11 @@ Created by **pact** ([letsmakepact](https://github.com/letsmakepact) on GitHub, 
 
 ## Supporter Features
 
-PortSide Supporter unlocks cloud edge infrastructure and isolated hardware networking:
+PortSide Supporter unlocks specialized tools designed for mobile testing, multi-device workflows, and remote development:
 
-- **Global Remote Access (Encrypted Tunnels):** Securely access your local environments from anywhere in the world on 5G, LTE, or remote Wi-Fi via automated Cloudflare-backed encrypted tunnels.
-- **Custom Branded Vanity Domains:** Host your services and public profile at `username.portside.lol` (e.g., `pact.portside.lol`).
-- **Developer Public Profile & Project Showcase:** Showcase your personal bio, custom themes, skills tags, and live interactive project launchpad.
-- **Private Dev Hotspot:** Broadcast a dedicated wireless access point directly from your development machine for isolated multi-device testing away from corporate firewalls.
+- **Mobile & Smart TV Launchpad:** Access your active development services from mobile phones, tablets, and smart TVs on your local network.
+- **Global Remote Access:** Securely access your local environments from anywhere in the world on mobile data or external networks without manual router configurations.
+- **Private Dev Hotspot:** Broadcast a dedicated wireless access point directly from your development machine for isolated multi-device testing.
 
 ## Mobile Testing
 
