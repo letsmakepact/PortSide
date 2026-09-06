@@ -228,8 +228,12 @@ export default async function ProfilePage() {
                     <div>
                       {/* Top bar: icon & status */}
                       <div className="flex items-start justify-between gap-3">
-                        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-xl font-mono text-sky-400 group-hover:scale-105 transition">
-                          {svc.icon || "⌘"}
+                        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-500/10 border border-sky-400/20 text-sky-400 group-hover:scale-105 transition shadow-xs">
+                          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                          </svg>
                         </span>
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${

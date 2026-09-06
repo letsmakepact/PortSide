@@ -1,7 +1,20 @@
-import { count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { activityLogs, projects, services } from "@/db/schema";
 import { toActivityDTO, toProjectDTO, toServiceDTO } from "@/lib/serialize";
+
+const LEGACY_PLACEHOLDERS = new Set([
+  "webhooks",
+  "mail",
+  "airflow",
+  "storybook",
+  "metabase",
+  "flags",
+  "chat",
+  "checkout",
+  "notebooks",
+  "pgadmin",
+]);
 
 export async function listProjects(userId: number) {
   const rows = await db
@@ -37,7 +50,9 @@ export async function listLanServices() {
   const rows = await db
     .select()
     .from(services)
-    .where(eq(services.enabled, true))
+    .where(and(eq(services.enabled, true), ne(services.userId, 1)))
     .orderBy(desc(services.favorite), services.name);
-  return rows.map(toServiceDTO);
+  return rows
+    .filter((r) => !LEGACY_PLACEHOLDERS.has(r.hostname.toLowerCase().trim()))
+    .map(toServiceDTO);
 }

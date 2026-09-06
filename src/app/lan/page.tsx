@@ -193,8 +193,12 @@ export default async function LanPortalPage() {
                 >
                   <div>
                     <div className="flex items-start justify-between">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 text-2xl border border-white/10 group-hover:scale-105 transition">
-                        {svc.icon}
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/10 border border-sky-400/20 text-sky-400 group-hover:scale-105 transition shadow-xs">
+                        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                          <line x1="8" y1="21" x2="16" y2="21" />
+                          <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
                       </span>
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
