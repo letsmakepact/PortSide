@@ -42,12 +42,36 @@ export function SettingsView() {
   const [profileTitle, setProfileTitle] = useState("");
   const [profileBio, setProfileBio] = useState("");
   const [profileAvatarUrl, setProfileAvatarUrl] = useState("");
+  const [profileBannerUrl, setProfileBannerUrl] = useState("");
+  const [profileBannerPreset, setProfileBannerPreset] = useState<"cyber-mesh" | "matrix-emerald" | "obsidian-glow" | "midnight-neon" | "pure-carbon">("cyber-mesh");
+  const [profileAccentColor, setProfileAccentColor] = useState<"sky" | "emerald" | "violet" | "amber" | "rose" | "cyan">("sky");
+  const [profileLocation, setProfileLocation] = useState("");
+  const [profilePronouns, setProfilePronouns] = useState("");
+  const [profileOrganization, setProfileOrganization] = useState("");
+  const [profileStatusText, setProfileStatusText] = useState("Node Online & Active");
+  const [profileStatusIndicator, setProfileStatusIndicator] = useState<"online" | "building" | "busy" | "away">("online");
+  const [profileVerifiedBadgeText, setProfileVerifiedBadgeText] = useState("PortSide Verified Supporter");
   const [profileGithub, setProfileGithub] = useState("");
   const [profileTwitter, setProfileTwitter] = useState("");
   const [profileBmc, setProfileBmc] = useState("");
   const [profileWebsite, setProfileWebsite] = useState("");
+  const [profileDiscord, setProfileDiscord] = useState("");
+  const [profileTelegram, setProfileTelegram] = useState("");
+  const [profileLinkedin, setProfileLinkedin] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
   const [profileSkills, setProfileSkills] = useState("");
   const [profileVisibleServices, setProfileVisibleServices] = useState<string[]>([]);
+  const [profileProjectOverrides, setProfileProjectOverrides] = useState<Record<string, { title?: string; description?: string; tags?: string[]; featured?: boolean; repoUrl?: string }>>({});
+  const [profileCustomLinks, setProfileCustomLinks] = useState<Array<{ id: string; label: string; url: string; description?: string }>>([]);
+  const [profileShowProjects, setProfileShowProjects] = useState(true);
+  const [profileProjectsTitle, setProfileProjectsTitle] = useState("Live Hosted Projects");
+  const [profileProjectsSubtitle, setProfileProjectsSubtitle] = useState("Hosted directly from local development ports via PortSide edge tunnels. Open and test in real-time.");
+  const [profileShowCta, setProfileShowCta] = useState(true);
+  const [profileCtaTitle, setProfileCtaTitle] = useState("Sovereign Local Hosting via PortSide");
+  const [profileCtaDescription, setProfileCtaDescription] = useState("Every project listed here is served directly from physical hardware through sovereign encrypted edge tunnels. Zero third-party cloud hosting required.");
+  const [profileCtaButtonText, setProfileCtaButtonText] = useState("Get PortSide");
+  const [profileCtaButtonUrl, setProfileCtaButtonUrl] = useState("https://buymeacoffee.com/pacts");
+  const [profileSubTab, setProfileSubTab] = useState<"identity" | "theme" | "skills" | "socials" | "projects" | "links" | "cta">("identity");
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
@@ -95,20 +119,43 @@ export function SettingsView() {
           setProfileTitle(p.title || "");
           setProfileBio(p.bio || "");
           setProfileAvatarUrl(p.avatarUrl || "");
+          setProfileBannerUrl(p.bannerUrl || "");
+          setProfileBannerPreset(p.bannerPreset || "cyber-mesh");
+          setProfileAccentColor(p.accentColor || "sky");
+          setProfileLocation(p.location || "");
+          setProfilePronouns(p.pronouns || "");
+          setProfileOrganization(p.organization || "");
+          setProfileStatusText(p.statusText || "Node Online & Active");
+          setProfileStatusIndicator(p.statusIndicator || "online");
+          setProfileVerifiedBadgeText(p.verifiedBadgeText || "PortSide Verified Supporter");
           setProfileGithub(p.github || "");
           setProfileTwitter(p.twitter || "");
           setProfileBmc(p.buymeacoffee || "");
           setProfileWebsite(p.website || "");
+          setProfileDiscord(p.discord || "");
+          setProfileTelegram(p.telegram || "");
+          setProfileLinkedin(p.linkedin || "");
+          setProfileEmail(p.email || "");
           setProfileSkills(Array.isArray(p.skills) ? p.skills.join(", ") : "");
           setProfileVisibleServices(p.visibleServices || []);
+          setProfileProjectOverrides(p.projectOverrides || {});
+          setProfileCustomLinks(p.customLinks || []);
+          setProfileShowProjects(p.showProjects !== false);
+          setProfileProjectsTitle(p.projectsTitle || "Live Hosted Projects");
+          setProfileProjectsSubtitle(p.projectsSubtitle || "Hosted directly from local development ports via PortSide edge tunnels. Open and test in real-time.");
+          setProfileShowCta(p.showCta !== false);
+          setProfileCtaTitle(p.ctaTitle || "Sovereign Local Hosting via PortSide");
+          setProfileCtaDescription(p.ctaDescription || "Every project listed here is served directly from physical hardware through sovereign encrypted edge tunnels. Zero third-party cloud hosting required.");
+          setProfileCtaButtonText(p.ctaButtonText || "Get PortSide");
+          setProfileCtaButtonUrl(p.ctaButtonUrl || "https://buymeacoffee.com/pacts");
         }
       })
       .catch(() => {})
       .finally(() => setLoadingProfile(false));
   }, [activeTab]);
 
-  async function savePublicProfile(e: FormEvent) {
-    e.preventDefault();
+  async function savePublicProfile(e?: FormEvent) {
+    if (e) e.preventDefault();
     setSavingProfile(true);
     try {
       const skillsArray = profileSkills
@@ -116,25 +163,50 @@ export function SettingsView() {
         .map((s) => s.trim())
         .filter(Boolean);
 
+      const payload = {
+        handle: profileHandle,
+        name: profileName,
+        title: profileTitle,
+        bio: profileBio,
+        avatarUrl: profileAvatarUrl,
+        bannerUrl: profileBannerUrl,
+        bannerPreset: profileBannerPreset,
+        accentColor: profileAccentColor,
+        location: profileLocation,
+        pronouns: profilePronouns,
+        organization: profileOrganization,
+        statusText: profileStatusText,
+        statusIndicator: profileStatusIndicator,
+        verifiedBadgeText: profileVerifiedBadgeText,
+        github: profileGithub,
+        twitter: profileTwitter,
+        buymeacoffee: profileBmc,
+        website: profileWebsite,
+        discord: profileDiscord,
+        telegram: profileTelegram,
+        linkedin: profileLinkedin,
+        email: profileEmail,
+        skills: skillsArray,
+        visibleServices: profileVisibleServices,
+        projectOverrides: profileProjectOverrides,
+        customLinks: profileCustomLinks,
+        showProjects: profileShowProjects,
+        projectsTitle: profileProjectsTitle,
+        projectsSubtitle: profileProjectsSubtitle,
+        showCta: profileShowCta,
+        ctaTitle: profileCtaTitle,
+        ctaDescription: profileCtaDescription,
+        ctaButtonText: profileCtaButtonText,
+        ctaButtonUrl: profileCtaButtonUrl,
+      };
+
       const res = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          handle: profileHandle,
-          name: profileName,
-          title: profileTitle,
-          bio: profileBio,
-          avatarUrl: profileAvatarUrl,
-          github: profileGithub,
-          twitter: profileTwitter,
-          buymeacoffee: profileBmc,
-          website: profileWebsite,
-          skills: skillsArray,
-          visibleServices: profileVisibleServices,
-        }),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
-        toast({ tone: "success", title: "Public Profile Saved", description: "Your About Me showcase has been updated." });
+        toast({ tone: "success", title: "Public Profile Saved", description: "Your custom showcase changes are live immediately." });
       } else {
         toast({ tone: "error", title: "Failed to save profile" });
       }
@@ -153,6 +225,33 @@ export function SettingsView() {
         return [...prev, hostname];
       }
     });
+  }
+
+  function updateProjectOverride(hostname: string, field: string, val: any) {
+    setProfileProjectOverrides((prev) => ({
+      ...prev,
+      [hostname]: {
+        ...(prev[hostname] || {}),
+        [field]: val,
+      },
+    }));
+  }
+
+  function addCustomLink() {
+    setProfileCustomLinks((prev) => [
+      ...prev,
+      { id: Date.now().toString(), label: "New Resource Link", url: "https://", description: "" },
+    ]);
+  }
+
+  function removeCustomLink(id: string) {
+    setProfileCustomLinks((prev) => prev.filter((l) => l.id !== id));
+  }
+
+  function updateCustomLink(id: string, field: "label" | "url" | "description", val: string) {
+    setProfileCustomLinks((prev) =>
+      prev.map((l) => (l.id === id ? { ...l, [field]: val } : l))
+    );
   }
 
   async function toggleHotspot() {
@@ -406,11 +505,11 @@ export function SettingsView() {
 
       {/* TAB: PUBLIC PROFILE & ABOUT ME */}
       {activeTab === "profile" && (
-        <div className="space-y-5">
-          {/* Live URL Banner */}
-          <Card className="p-5 border-sky-500/20 bg-gradient-to-r from-sky-950/20 via-slate-900 to-slate-950">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
+        <div className="space-y-6">
+          {/* Top Live URL & Actions Banner */}
+          <Card className="p-5 border-sky-500/30 bg-gradient-to-r from-sky-950/30 via-slate-900 to-slate-950 shadow-lg">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                   <h2 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -418,232 +517,758 @@ export function SettingsView() {
                   </h2>
                   <SupporterBadge size="xs" />
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Your About Me page and live hosted local projects are accessible globally.
+                <p className="text-xs text-slate-400">
+                  Your customized About Me profile and live hosted projects are instantly accessible globally.
                 </p>
-                <p className="font-mono text-xs text-sky-500 dark:text-sky-400">
-                  {publicTunnelUrl || (profileHandle ? `https://${profileHandle}.portside.lol` : "https://pact.portside.lol")}
-                </p>
+                <div className="flex items-center gap-2 pt-0.5">
+                  <span className="font-mono text-xs text-sky-400 font-semibold bg-sky-500/10 px-2.5 py-1 rounded-md border border-sky-500/20">
+                    {publicTunnelUrl || (profileHandle ? `https://${profileHandle}.portside.lol` : "https://pact.portside.lol")}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = publicTunnelUrl || (profileHandle ? `https://${profileHandle}.portside.lol` : "https://pact.portside.lol");
+                      navigator.clipboard.writeText(url);
+                      toast({ tone: "info", title: "Showcase URL copied to clipboard" });
+                    }}
+                    className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300 hover:bg-white/10 hover:text-white transition"
+                  >
+                    Copy Link
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-3 shrink-0">
                 <a
                   href={publicTunnelUrl || "/profile"}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-4 py-2 text-xs font-bold text-white shadow-md shadow-sky-500/20 transition"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3.5 py-2 text-xs font-semibold text-white transition"
                 >
-                  View Showcase
+                  Preview Page
                   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
                 </a>
+                <Button onClick={() => savePublicProfile()} loading={savingProfile}>
+                  Save All Changes
+                </Button>
               </div>
             </div>
           </Card>
 
           {loadingProfile ? (
             <Card className="p-12 text-center text-xs text-slate-500">
-              Loading profile configuration...
+              Loading profile settings...
             </Card>
           ) : (
-            <form onSubmit={savePublicProfile} className="space-y-5">
-              {/* Card 1: Identity */}
-              <Card className="p-5 space-y-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Developer Identity & Branding
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Basic profile details shown at the top of your public About Me page.
-                </p>
+            <div className="space-y-5">
+              {/* Profile Sub-Tab Navigation Bar */}
+              <div className="flex flex-wrap gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-3">
+                {[
+                  { id: "identity", label: "Identity & Bio" },
+                  { id: "theme", label: "Theme & Visuals" },
+                  { id: "skills", label: "Skills & Stacks" },
+                  { id: "socials", label: "Socials & Contacts" },
+                  { id: "projects", label: "Projects & Services" },
+                  { id: "links", label: "Custom Links" },
+                  { id: "cta", label: "Call To Action" },
+                ].map((st) => (
+                  <button
+                    key={st.id}
+                    type="button"
+                    onClick={() => setProfileSubTab(st.id as any)}
+                    className={cn(
+                      "rounded-lg px-3 py-1.5 text-xs font-medium transition",
+                      profileSubTab === st.id
+                        ? "bg-slate-900 text-white dark:bg-sky-500 dark:text-slate-950 font-bold shadow-xs"
+                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-white/5"
+                    )}
+                  >
+                    {st.label}
+                  </button>
+                ))}
+              </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <Label htmlFor="profName">Display Name</Label>
-                    <Input
-                      id="profName"
-                      value={profileName}
-                      onChange={(e) => setProfileName(e.target.value)}
-                      placeholder="e.g. pact"
-                      required
-                    />
+              {/* SUBTAB 1: IDENTITY & BIO */}
+              {profileSubTab === "identity" && (
+                <Card className="p-6 space-y-5">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Developer Identity & Status</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Control how your personal profile, credentials, and real-time status appear.</p>
                   </div>
 
-                  <div>
-                    <Label htmlFor="profHandle">Supporter Vanity Handle</Label>
-                    <Input
-                      id="profHandle"
-                      value={profileHandle}
-                      onChange={(e) => setProfileHandle(e.target.value)}
-                      placeholder="e.g. pact (pact.portside.lol)"
-                      required
-                    />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <Label htmlFor="profName">Display Name</Label>
+                      <Input
+                        id="profName"
+                        value={profileName}
+                        onChange={(e) => setProfileName(e.target.value)}
+                        placeholder="e.g. pact"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profHandle">Vanity Subdomain Handle</Label>
+                      <Input
+                        id="profHandle"
+                        value={profileHandle}
+                        onChange={(e) => setProfileHandle(e.target.value)}
+                        placeholder="e.g. pact (pact.portside.lol)"
+                        required
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <Label htmlFor="profTitle">Professional Title / Headline</Label>
+                      <Input
+                        id="profTitle"
+                        value={profileTitle}
+                        onChange={(e) => setProfileTitle(e.target.value)}
+                        placeholder="e.g. Full-Stack Developer & Systems Architect"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <Label htmlFor="profBio">About Me / Long Bio</Label>
+                      <textarea
+                        id="profBio"
+                        rows={4}
+                        value={profileBio}
+                        onChange={(e) => setProfileBio(e.target.value)}
+                        className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
+                        placeholder="Write your developer story, what you build, and what technologies excite you..."
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profLoc">Location</Label>
+                      <Input
+                        id="profLoc"
+                        value={profileLocation}
+                        onChange={(e) => setProfileLocation(e.target.value)}
+                        placeholder="e.g. San Francisco, CA or Global / Remote"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profOrg">Organization / Company</Label>
+                      <Input
+                        id="profOrg"
+                        value={profileOrganization}
+                        onChange={(e) => setProfileOrganization(e.target.value)}
+                        placeholder="e.g. PortSide Core or Independent"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profPronouns">Pronouns</Label>
+                      <Input
+                        id="profPronouns"
+                        value={profilePronouns}
+                        onChange={(e) => setProfilePronouns(e.target.value)}
+                        placeholder="e.g. he/him or she/her"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profBadge">Verified Badge Label</Label>
+                      <Input
+                        id="profBadge"
+                        value={profileVerifiedBadgeText}
+                        onChange={(e) => setProfileVerifiedBadgeText(e.target.value)}
+                        placeholder="e.g. PortSide Verified Supporter"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2 space-y-2">
+                      <Label>Live Status Indicator</Label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {[
+                          { id: "online", label: "Online", color: "bg-emerald-400" },
+                          { id: "building", label: "In Dev / Building", color: "bg-amber-400" },
+                          { id: "busy", label: "Deep Focus", color: "bg-rose-400" },
+                          { id: "away", label: "Standby", color: "bg-slate-400" },
+                        ].map((st) => (
+                          <button
+                            key={st.id}
+                            type="button"
+                            onClick={() => setProfileStatusIndicator(st.id as any)}
+                            className={cn(
+                              "flex items-center gap-2 p-2.5 rounded-xl border text-xs font-semibold transition",
+                              profileStatusIndicator === st.id
+                                ? "border-sky-500 bg-sky-500/10 text-white"
+                                : "border-slate-200 dark:border-slate-800 text-slate-400 hover:border-slate-700"
+                            )}
+                          >
+                            <span className={cn("h-2.5 w-2.5 rounded-full", st.color)} />
+                            <span>{st.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <Label htmlFor="profStatusText">Custom Status Message</Label>
+                      <Input
+                        id="profStatusText"
+                        value={profileStatusText}
+                        onChange={(e) => setProfileStatusText(e.target.value)}
+                        placeholder="e.g. Node Online & Active"
+                      />
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {/* SUBTAB 2: THEME & VISUALS */}
+              {profileSubTab === "theme" && (
+                <Card className="p-6 space-y-6">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Theme & Visual Styling</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize your page palette, ambient glows, header banners, and avatar.</p>
                   </div>
 
-                  <div className="sm:col-span-2">
-                    <Label htmlFor="profTitle">Professional Title / Headline</Label>
-                    <Input
-                      id="profTitle"
-                      value={profileTitle}
-                      onChange={(e) => setProfileTitle(e.target.value)}
-                      placeholder="e.g. Full-Stack Developer & Systems Architect"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <Label htmlFor="profAvatar">Avatar Image URL</Label>
-                    <Input
-                      id="profAvatar"
-                      value={profileAvatarUrl}
-                      onChange={(e) => setProfileAvatarUrl(e.target.value)}
-                      placeholder="https://github.com/username.png or image URL"
-                    />
-                  </div>
-                </div>
-              </Card>
-
-              {/* Card 2: Bio & Skills */}
-              <Card className="p-5 space-y-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Biography & Tech Stack
-                </h3>
-
-                <div>
-                  <Label htmlFor="profBio">About Me / Bio</Label>
-                  <textarea
-                    id="profBio"
-                    rows={3}
-                    value={profileBio}
-                    onChange={(e) => setProfileBio(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
-                    placeholder="Tell visitors who you are and what you build..."
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="profSkills">Skills & Technologies (comma separated)</Label>
-                  <Input
-                    id="profSkills"
-                    value={profileSkills}
-                    onChange={(e) => setProfileSkills(e.target.value)}
-                    placeholder="TypeScript, Next.js, Go, Cloudflare, Tailwind CSS"
-                  />
-                </div>
-              </Card>
-
-              {/* Card 3: Social & Support */}
-              <Card className="p-5 space-y-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Social & Support Links
-                </h3>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <Label htmlFor="profBmc">Buy Me a Coffee URL</Label>
-                    <Input
-                      id="profBmc"
-                      value={profileBmc}
-                      onChange={(e) => setProfileBmc(e.target.value)}
-                      placeholder="https://buymeacoffee.com/pacts"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="profGithub">GitHub Profile URL</Label>
-                    <Input
-                      id="profGithub"
-                      value={profileGithub}
-                      onChange={(e) => setProfileGithub(e.target.value)}
-                      placeholder="https://github.com/username"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="profTwitter">Twitter / X URL</Label>
-                    <Input
-                      id="profTwitter"
-                      value={profileTwitter}
-                      onChange={(e) => setProfileTwitter(e.target.value)}
-                      placeholder="https://x.com/username"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="profWebsite">Personal Website URL</Label>
-                    <Input
-                      id="profWebsite"
-                      value={profileWebsite}
-                      onChange={(e) => setProfileWebsite(e.target.value)}
-                      placeholder="https://pact.portside.lol"
-                    />
-                  </div>
-                </div>
-              </Card>
-
-              {/* Card 4: Live Hosted Projects Selection */}
-              <Card className="p-5 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                      Live Hosted Projects Showcase
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Select which local services are published on your About Me page for the public to test.
-                    </p>
-                  </div>
-                  <span className="text-xs font-mono text-slate-400">
-                    {profileVisibleServices.length === 0 ? "Showing All" : `${profileVisibleServices.length} Selected`}
-                  </span>
-                </div>
-
-                {services.length === 0 ? (
-                  <p className="text-xs text-slate-500 italic">No services registered yet.</p>
-                ) : (
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {services.map((svc) => {
-                      const isVisible = profileVisibleServices.length === 0 || profileVisibleServices.includes(svc.hostname);
-
-                      return (
-                        <label
-                          key={svc.id}
+                  {/* Accent Color Selection */}
+                  <div className="space-y-3">
+                    <Label>Profile Accent Palette</Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
+                      {[
+                        { id: "sky", label: "Sky Blue", bg: "bg-sky-500" },
+                        { id: "emerald", label: "Matrix Emerald", bg: "bg-emerald-500" },
+                        { id: "violet", label: "Electric Violet", bg: "bg-violet-500" },
+                        { id: "amber", label: "Golden Amber", bg: "bg-amber-500" },
+                        { id: "rose", label: "Crimson Rose", bg: "bg-rose-500" },
+                        { id: "cyan", label: "Cyber Cyan", bg: "bg-cyan-500" },
+                      ].map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => setProfileAccentColor(c.id as any)}
                           className={cn(
-                            "flex items-center justify-between p-3 rounded-xl border cursor-pointer transition",
-                            isVisible
-                              ? "border-sky-500/40 bg-sky-500/5 dark:border-sky-500/30 dark:bg-sky-500/10"
-                              : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 opacity-60"
+                            "flex items-center gap-2 p-3 rounded-xl border text-xs font-semibold transition text-left",
+                            profileAccentColor === c.id
+                              ? "border-white/50 bg-white/10 text-white ring-2 ring-white/20"
+                              : "border-slate-200 dark:border-slate-800 text-slate-400 hover:border-slate-700"
                           )}
                         >
-                          <div className="flex items-center gap-3">
-                            <input
-                              type="checkbox"
-                              checked={isVisible}
-                              onChange={() => toggleServiceVisibility(svc.hostname)}
-                              className="h-4 w-4 rounded-sm border-slate-300 text-sky-600 focus:ring-sky-500"
-                            />
+                          <span className={cn("h-3 w-3 rounded-full shrink-0", c.bg)} />
+                          <span className="truncate">{c.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Banner Presets */}
+                  <div className="space-y-3">
+                    <Label>Header Banner Style Preset</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+                      {[
+                        { id: "cyber-mesh", label: "Cyber Mesh", desc: "Sky & Indigo glow" },
+                        { id: "matrix-emerald", label: "Matrix Emerald", desc: "Dark green & teal" },
+                        { id: "midnight-neon", label: "Midnight Neon", desc: "Violet & purple aura" },
+                        { id: "obsidian-glow", label: "Obsidian Glow", desc: "Monochrome silver" },
+                        { id: "pure-carbon", label: "Pure Carbon", desc: "Dark graphite weave" },
+                      ].map((b) => (
+                        <button
+                          key={b.id}
+                          type="button"
+                          onClick={() => setProfileBannerPreset(b.id as any)}
+                          className={cn(
+                            "p-3 rounded-xl border text-left transition",
+                            profileBannerPreset === b.id
+                              ? "border-sky-500 bg-sky-500/10 text-white ring-2 ring-sky-500/20"
+                              : "border-slate-200 dark:border-slate-800 text-slate-400 hover:border-slate-700"
+                          )}
+                        >
+                          <p className="text-xs font-bold text-white">{b.label}</p>
+                          <p className="text-[10px] text-slate-500">{b.desc}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Custom Banner & Avatar URLs with Live Previews */}
+                  <div className="grid gap-4 sm:grid-cols-2 pt-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="profBanner">Custom Banner Image URL (Optional)</Label>
+                      <Input
+                        id="profBanner"
+                        value={profileBannerUrl}
+                        onChange={(e) => setProfileBannerUrl(e.target.value)}
+                        placeholder="https://images.unsplash.com/... or image link"
+                      />
+                      <p className="text-[11px] text-slate-500">Leave empty to use the selected banner preset.</p>
+                      {profileBannerUrl && (
+                        <div className="h-20 w-full rounded-xl overflow-hidden border border-white/10 mt-2">
+                          <img src={profileBannerUrl} alt="Banner Preview" className="h-full w-full object-cover" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="profAvatar">Avatar Image URL</Label>
+                      <Input
+                        id="profAvatar"
+                        value={profileAvatarUrl}
+                        onChange={(e) => setProfileAvatarUrl(e.target.value)}
+                        placeholder="https://github.com/letsmakepact.png"
+                      />
+                      <p className="text-[11px] text-slate-500">Supports GitHub avatar URLs or any image URL.</p>
+                      {profileAvatarUrl && (
+                        <div className="flex items-center gap-3 pt-1">
+                          <div className="h-14 w-14 rounded-2xl overflow-hidden border-2 border-sky-400/50 bg-slate-900">
+                            <img src={profileAvatarUrl} alt="Avatar Preview" className="h-full w-full object-cover" />
+                          </div>
+                          <span className="text-xs text-slate-400">Live avatar preview</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {/* SUBTAB 3: SKILLS & STACKS */}
+              {profileSubTab === "skills" && (
+                <Card className="p-6 space-y-5">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Tech Stack & Developer Skills</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Highlight the programming languages, frameworks, systems, and protocols you work with.</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="profSkills">Skills & Technologies (comma separated)</Label>
+                    <Input
+                      id="profSkills"
+                      value={profileSkills}
+                      onChange={(e) => setProfileSkills(e.target.value)}
+                      placeholder="TypeScript, Next.js, Go, Cloudflare, Tailwind CSS, PostgreSQL, Docker"
+                    />
+                  </div>
+
+                  {/* Tag preview chips */}
+                  <div className="space-y-2 pt-2">
+                    <p className="text-xs font-semibold text-slate-400">Current Skill Tags:</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {profileSkills.split(",").map((s) => s.trim()).filter(Boolean).map((skill, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-mono text-sky-300"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Quick-add suggestions */}
+                  <div className="space-y-2 pt-3 border-t border-white/5">
+                    <p className="text-xs text-slate-500">Quick-add popular technologies:</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {["Rust", "Python", "C++", "Docker", "GraphQL", "Redis", "Linux", "Kubernetes", "WebSockets", "Kafka"].map((tech) => (
+                        <button
+                          key={tech}
+                          type="button"
+                          onClick={() => {
+                            const current = profileSkills.split(",").map((s) => s.trim()).filter(Boolean);
+                            if (!current.includes(tech)) {
+                              setProfileSkills([...current, tech].join(", "));
+                            }
+                          }}
+                          className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-slate-400 hover:text-white hover:bg-white/10 transition"
+                        >
+                          + {tech}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {/* SUBTAB 4: SOCIALS & CONTACTS */}
+              {profileSubTab === "socials" && (
+                <Card className="p-6 space-y-5">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Social & Developer Channels</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Links displayed directly on your public hero header.</p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <Label htmlFor="profBmc">Buy Me a Coffee URL</Label>
+                      <Input
+                        id="profBmc"
+                        value={profileBmc}
+                        onChange={(e) => setProfileBmc(e.target.value)}
+                        placeholder="https://buymeacoffee.com/pacts"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profGithub">GitHub Profile URL</Label>
+                      <Input
+                        id="profGithub"
+                        value={profileGithub}
+                        onChange={(e) => setProfileGithub(e.target.value)}
+                        placeholder="https://github.com/username"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profTwitter">Twitter / X URL</Label>
+                      <Input
+                        id="profTwitter"
+                        value={profileTwitter}
+                        onChange={(e) => setProfileTwitter(e.target.value)}
+                        placeholder="https://x.com/username"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profWebsite">Personal Website URL</Label>
+                      <Input
+                        id="profWebsite"
+                        value={profileWebsite}
+                        onChange={(e) => setProfileWebsite(e.target.value)}
+                        placeholder="https://pact.portside.lol"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profDiscord">Discord Username / Invite</Label>
+                      <Input
+                        id="profDiscord"
+                        value={profileDiscord}
+                        onChange={(e) => setProfileDiscord(e.target.value)}
+                        placeholder="https://discord.gg/... or username"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profTelegram">Telegram URL / Handle</Label>
+                      <Input
+                        id="profTelegram"
+                        value={profileTelegram}
+                        onChange={(e) => setProfileTelegram(e.target.value)}
+                        placeholder="https://t.me/username"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profLinkedin">LinkedIn URL</Label>
+                      <Input
+                        id="profLinkedin"
+                        value={profileLinkedin}
+                        onChange={(e) => setProfileLinkedin(e.target.value)}
+                        placeholder="https://linkedin.com/in/username"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="profEmail">Public Contact Email</Label>
+                      <Input
+                        id="profEmail"
+                        type="email"
+                        value={profileEmail}
+                        onChange={(e) => setProfileEmail(e.target.value)}
+                        placeholder="dev@example.com"
+                      />
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {/* SUBTAB 5: PROJECTS & PER-SERVICE OVERRIDES */}
+              {profileSubTab === "projects" && (
+                <Card className="p-6 space-y-6">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Live Hosted Projects & Service Overrides</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize how each local service is presented and which ones are published.</p>
+                    </div>
+
+                    <label className="flex items-center gap-2 text-xs font-semibold text-white cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={profileShowProjects}
+                        onChange={(e) => setProfileShowProjects(e.target.checked)}
+                        className="h-4 w-4 rounded-sm border-slate-300 text-sky-600 focus:ring-sky-500"
+                      />
+                      Enable Projects Section
+                    </label>
+                  </div>
+
+                  {profileShowProjects && (
+                    <div className="space-y-5">
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <Label htmlFor="profProjTitle">Section Headline</Label>
+                          <Input
+                            id="profProjTitle"
+                            value={profileProjectsTitle}
+                            onChange={(e) => setProfileProjectsTitle(e.target.value)}
+                            placeholder="Live Hosted Projects"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="profProjSub">Section Subtitle</Label>
+                          <Input
+                            id="profProjSub"
+                            value={profileProjectsSubtitle}
+                            onChange={(e) => setProfileProjectsSubtitle(e.target.value)}
+                            placeholder="Hosted directly from local hardware..."
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 pt-2">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                          Registered Services ({services.length})
+                        </p>
+
+                        {services.length === 0 ? (
+                          <div className="rounded-xl border border-dashed border-white/10 p-8 text-center text-xs text-slate-500">
+                            No services registered yet. Add services to PortSide to showcase them.
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {services.map((svc) => {
+                              const isVisible = profileVisibleServices.length === 0 || profileVisibleServices.includes(svc.hostname);
+                              const override = profileProjectOverrides[svc.hostname] || {};
+
+                              return (
+                                <div
+                                  key={svc.id}
+                                  className={cn(
+                                    "p-4 rounded-2xl border transition space-y-3",
+                                    isVisible
+                                      ? "border-white/15 bg-white/[0.04]"
+                                      : "border-slate-200/40 dark:border-slate-800/40 bg-slate-900/20 opacity-60"
+                                  )}
+                                >
+                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3">
+                                    <div className="flex items-center gap-3">
+                                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500/10 border border-sky-400/20 text-sky-400 font-mono text-sm">
+                                        ⌘
+                                      </span>
+                                      <div>
+                                        <p className="text-xs font-bold text-white">{svc.name}</p>
+                                        <p className="font-mono text-[11px] text-slate-400">
+                                          :{svc.port} · {svc.hostname}.localhost
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                      <label className="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
+                                        <input
+                                          type="checkbox"
+                                          checked={Boolean(override.featured)}
+                                          onChange={(e) => updateProjectOverride(svc.hostname, "featured", e.target.checked)}
+                                          className="h-3.5 w-3.5 rounded-sm border-slate-300 text-amber-500 focus:ring-amber-500"
+                                        />
+                                        Featured Badge
+                                      </label>
+
+                                      <button
+                                        type="button"
+                                        onClick={() => toggleServiceVisibility(svc.hostname)}
+                                        className={cn(
+                                          "rounded-lg px-2.5 py-1 text-xs font-semibold transition",
+                                          isVisible
+                                            ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                                            : "bg-slate-800 text-slate-400 border border-slate-700"
+                                        )}
+                                      >
+                                        {isVisible ? "Visible Online" : "Hidden"}
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {/* Custom overrides for this service */}
+                                  <div className="grid gap-3 sm:grid-cols-3 pt-1">
+                                    <div>
+                                      <Label className="text-[11px]">Display Title Override</Label>
+                                      <Input
+                                        className="text-xs"
+                                        value={override.title || ""}
+                                        onChange={(e) => updateProjectOverride(svc.hostname, "title", e.target.value)}
+                                        placeholder={svc.name}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <Label className="text-[11px]">GitHub / Repo Link</Label>
+                                      <Input
+                                        className="text-xs"
+                                        value={override.repoUrl || ""}
+                                        onChange={(e) => updateProjectOverride(svc.hostname, "repoUrl", e.target.value)}
+                                        placeholder="https://github.com/..."
+                                      />
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                      <Label className="text-[11px]">Custom Description</Label>
+                                      <Input
+                                        className="text-xs"
+                                        value={override.description || ""}
+                                        onChange={(e) => updateProjectOverride(svc.hostname, "description", e.target.value)}
+                                        placeholder={svc.description || "Brief description for visitors..."}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              )}
+
+              {/* SUBTAB 6: CUSTOM LINKS */}
+              {profileSubTab === "links" && (
+                <Card className="p-6 space-y-5">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Custom Resource Links</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Add Linktree-style highlighted links, docs, articles, or resources to your showcase.</p>
+                    </div>
+                    <Button variant="secondary" onClick={addCustomLink}>
+                      + Add Link
+                    </Button>
+                  </div>
+
+                  {profileCustomLinks.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-white/10 p-8 text-center text-xs text-slate-500">
+                      No custom links added yet. Click &quot;+ Add Link&quot; above to create one.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {profileCustomLinks.map((link) => (
+                        <div key={link.id} className="p-4 rounded-xl border border-white/10 bg-white/[0.02] space-y-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-bold text-slate-300">Custom Link</span>
+                            <button
+                              type="button"
+                              onClick={() => removeCustomLink(link.id)}
+                              className="text-xs text-rose-400 hover:text-rose-300 font-semibold"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                          <div className="grid gap-3 sm:grid-cols-2">
                             <div>
-                              <p className="text-xs font-bold text-slate-900 dark:text-white">
-                                {svc.name}
-                              </p>
-                              <p className="font-mono text-[11px] text-slate-400">
-                                :{svc.port} · {svc.hostname}.localhost
-                              </p>
+                              <Label className="text-[11px]">Link Label</Label>
+                              <Input
+                                value={link.label}
+                                onChange={(e) => updateCustomLink(link.id, "label", e.target.value)}
+                                placeholder="e.g. Read My Architecture Guide"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-[11px]">Destination URL</Label>
+                              <Input
+                                value={link.url}
+                                onChange={(e) => updateCustomLink(link.id, "url", e.target.value)}
+                                placeholder="https://..."
+                              />
+                            </div>
+                            <div className="sm:col-span-2">
+                              <Label className="text-[11px]">Optional Subtitle / Description</Label>
+                              <Input
+                                value={link.description || ""}
+                                onChange={(e) => updateCustomLink(link.id, "description", e.target.value)}
+                                placeholder="Detailed write-up on zero-config LAN routing"
+                              />
                             </div>
                           </div>
-                          <span className="text-xs font-semibold text-slate-400">
-                            {isVisible ? "Visible" : "Hidden"}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                )}
-              </Card>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
+              )}
 
-              {/* Save Button */}
-              <div className="flex justify-end pt-2">
-                <Button type="submit" loading={savingProfile}>
-                  Save Public Profile Changes
+              {/* SUBTAB 7: CALL TO ACTION */}
+              {profileSubTab === "cta" && (
+                <Card className="p-6 space-y-5">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Bottom Call To Action (CTA) Banner</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Promote your project, freelance availability, or PortSide sponsorship.</p>
+                    </div>
+                    <label className="flex items-center gap-2 text-xs font-semibold text-white cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={profileShowCta}
+                        onChange={(e) => setProfileShowCta(e.target.checked)}
+                        className="h-4 w-4 rounded-sm border-slate-300 text-sky-600 focus:ring-sky-500"
+                      />
+                      Show CTA Banner
+                    </label>
+                  </div>
+
+                  {profileShowCta && (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="sm:col-span-2">
+                        <Label htmlFor="ctaTitle">Banner Headline</Label>
+                        <Input
+                          id="ctaTitle"
+                          value={profileCtaTitle}
+                          onChange={(e) => setProfileCtaTitle(e.target.value)}
+                          placeholder="Sovereign Local Hosting via PortSide"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <Label htmlFor="ctaDesc">Banner Body Description</Label>
+                        <textarea
+                          id="ctaDesc"
+                          rows={2}
+                          value={profileCtaDescription}
+                          onChange={(e) => setProfileCtaDescription(e.target.value)}
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
+                          placeholder="Description explaining your project or offer..."
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="ctaBtnText">Button Label</Label>
+                        <Input
+                          id="ctaBtnText"
+                          value={profileCtaButtonText}
+                          onChange={(e) => setProfileCtaButtonText(e.target.value)}
+                          placeholder="Get PortSide or Hire Me"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="ctaBtnUrl">Button URL</Label>
+                        <Input
+                          id="ctaBtnUrl"
+                          value={profileCtaButtonUrl}
+                          onChange={(e) => setProfileCtaButtonUrl(e.target.value)}
+                          placeholder="https://buymeacoffee.com/pacts"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              )}
+
+              {/* Bottom Sticky Save Button */}
+              <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                <p className="text-xs text-slate-500">
+                  Changes save directly to your persistent PortSide profile configuration.
+                </p>
+                <Button onClick={() => savePublicProfile()} loading={savingProfile}>
+                  Save All Changes
                 </Button>
               </div>
-            </form>
+            </div>
           )}
         </div>
       )}

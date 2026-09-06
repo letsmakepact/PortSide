@@ -1,42 +1,112 @@
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { listLanServices } from "./queries";
+
+export interface ProjectOverride {
+  title?: string;
+  description?: string;
+  tags?: string[];
+  featured?: boolean;
+  repoUrl?: string;
+  docsUrl?: string;
+}
+
+export interface CustomLink {
+  id: string;
+  label: string;
+  url: string;
+  description?: string;
+  icon?: string;
+}
 
 export interface PublicProfile {
+  // Identity & Branding
   handle: string;
   name: string;
   title: string;
   bio: string;
   avatarUrl: string;
+  bannerUrl: string;
+  bannerPreset: "cyber-mesh" | "matrix-emerald" | "obsidian-glow" | "midnight-neon" | "pure-carbon";
+  accentColor: "sky" | "emerald" | "violet" | "amber" | "rose" | "cyan";
   location: string;
+  pronouns: string;
+  organization: string;
+  statusText: string;
+  statusIndicator: "online" | "building" | "busy" | "away";
+  verifiedBadgeText: string;
+
+  // Skills
   skills: string[];
+
+  // Social & Contact
   github: string;
   twitter: string;
   buymeacoffee: string;
   website: string;
-  visibleServices: string[]; // empty means all enabled services are visible
-  customLinks: { label: string; url: string }[];
+  discord: string;
+  telegram: string;
+  linkedin: string;
+  email: string;
+
+  // Custom links
+  customLinks: CustomLink[];
+
+  // Project showcase controls
+  showProjects: boolean;
+  projectsTitle: string;
+  projectsSubtitle: string;
+  visibleServices: string[];
+  projectOverrides: Record<string, ProjectOverride>;
+
+  // Call to Action
+  showCta: boolean;
+  ctaTitle: string;
+  ctaDescription: string;
+  ctaButtonText: string;
+  ctaButtonUrl: string;
+
   updatedAt?: string;
 }
 
-const DEFAULT_PROFILE: PublicProfile = {
+export const DEFAULT_PROFILE: PublicProfile = {
   handle: "pact",
   name: "pact",
   title: "Full-Stack Developer & Systems Architect",
   bio: "Building sovereign local infrastructure, distributed network routing, and modern web applications. Powered by PortSide.",
   avatarUrl: "https://github.com/letsmakepact.png",
+  bannerUrl: "",
+  bannerPreset: "cyber-mesh",
+  accentColor: "sky",
   location: "Global / Remote",
-  skills: ["TypeScript", "Next.js", "Go", "Cloudflare", "Tailwind CSS", "PostgreSQL", "Edge Tunnels"],
+  pronouns: "he/him",
+  organization: "PortSide",
+  statusText: "Node Online & Active",
+  statusIndicator: "online",
+  verifiedBadgeText: "PortSide Verified Supporter",
+  skills: ["TypeScript", "Next.js", "Go", "Cloudflare", "Tailwind CSS", "PostgreSQL", "Edge Tunnels", "Docker"],
   github: "https://github.com/letsmakepact",
   twitter: "https://x.com/pactwithdevil",
   buymeacoffee: "https://buymeacoffee.com/pacts",
   website: "https://pact.portside.lol",
-  visibleServices: [],
+  discord: "",
+  telegram: "https://t.me/pactwithdevil",
+  linkedin: "",
+  email: "",
   customLinks: [],
+  showProjects: true,
+  projectsTitle: "Live Hosted Projects",
+  projectsSubtitle: "Hosted directly from local development ports via PortSide edge tunnels. Open and test in real-time.",
+  visibleServices: [],
+  projectOverrides: {},
+  showCta: true,
+  ctaTitle: "Sovereign Local Hosting via PortSide",
+  ctaDescription: "Every project listed here is served directly from the developer's physical machine through sovereign encrypted edge tunnels. Zero third-party cloud hosting required.",
+  ctaButtonText: "Get PortSide",
+  ctaButtonUrl: "https://buymeacoffee.com/pacts",
 };
 
-function getProfileFilePath(): string {
+export function getProfileFilePath(): string {
   const home = os.homedir();
   const dir = path.join(home, "Portside");
   if (!fs.existsSync(dir)) {
@@ -55,7 +125,9 @@ export async function getProfile(): Promise<PublicProfile> {
     try {
       const content = fs.readFileSync(filePath, "utf-8");
       saved = JSON.parse(content);
-    } catch {}
+    } catch (err) {
+      console.error("Failed to parse profile.json", err);
+    }
   }
 
   // Fetch launcher status to sync vanity domain or supporter handle if available
@@ -81,6 +153,10 @@ export async function getProfile(): Promise<PublicProfile> {
     ...DEFAULT_PROFILE,
     ...saved,
     handle,
+    projectOverrides: {
+      ...DEFAULT_PROFILE.projectOverrides,
+      ...(saved.projectOverrides || {}),
+    },
     website: saved.website || (vanityDomain ? `https://${vanityDomain}` : DEFAULT_PROFILE.website),
   };
 }
@@ -90,6 +166,10 @@ export async function saveProfile(data: Partial<PublicProfile>): Promise<PublicP
   const updated: PublicProfile = {
     ...current,
     ...data,
+    projectOverrides: {
+      ...(current.projectOverrides || {}),
+      ...(data.projectOverrides || {}),
+    },
     updatedAt: new Date().toISOString(),
   };
 
