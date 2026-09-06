@@ -18,6 +18,25 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Known host validation: protect against DNS rebinding attacks from malicious websites
+  const isKnownHost =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1" ||
+    hostname.endsWith(".localhost") ||
+    hostname.endsWith(".local") ||
+    hostname.endsWith(".portside.lol") ||
+    hostname.endsWith(".trycloudflare.com") ||
+    /\.(?:nip\.io|sslip\.io)$/.test(hostname) ||
+    hostname.startsWith("192.168.") ||
+    hostname.startsWith("10.") ||
+    hostname.startsWith("127.") ||
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
+
+  if (!isKnownHost) {
+    return new NextResponse("Forbidden: Host not recognized by PortSide.", { status: 403 });
+  }
+
   if (pathname.startsWith("/portside-proxy")) {
     return new NextResponse("Not found", { status: 404 });
   }
