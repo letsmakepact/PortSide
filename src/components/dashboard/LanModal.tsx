@@ -20,23 +20,36 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
     requiresCustomUrl?: boolean;
     isSupporter?: boolean;
   } | null>(null);
+  
+  // Default to the first service so free users get instant direct QR redirects
   const [selectedService, setSelectedService] = useState<string>("");
   const [connectionMode, setConnectionMode] = useState<"tunnel" | "lan">("lan");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (open && !selectedService && services.length > 0) {
+      if (!isSupporter) {
+        setSelectedService(services[0].hostname);
+      }
+    }
+  }, [open, services, isSupporter, selectedService]);
+
+  const isLanDashboardSelected = selectedService === "__lan__" || (!selectedService && isSupporter);
+  const activeHostname = selectedService === "__lan__" ? "" : selectedService;
+
+  useEffect(() => {
     if (!open) return;
     setLoading(true);
     const params = new URLSearchParams();
-    if (selectedService) params.set("hostname", selectedService);
+    if (activeHostname) params.set("hostname", activeHostname);
     params.set("mode", connectionMode);
     fetch(`/api/lan?${params.toString()}`)
       .then((r) => r.json())
       .then((d) => setLanData(d))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [open, selectedService, connectionMode]);
+  }, [open, activeHostname, connectionMode]);
 
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text);
@@ -48,8 +61,9 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
   const port = lanData?.port || "80";
   const portSuffix = port === "80" || port === "443" ? "" : `:${port}`;
   const portalUrl = lanData?.portalUrl || `http://${lanIp}${portSuffix}/lan`;
-  const directSvcUrl = selectedService ? `http://${lanIp}${portSuffix}/s/${selectedService}` : "";
-  const localMdnsUrl = selectedService ? `http://${selectedService}.local${portSuffix}` : `http://portside.local${portSuffix}`;
+  const directSvcUrl = activeHostname ? `http://${lanIp}${portSuffix}/s/${activeHostname}` : "";
+  const wildcardSvcUrl = activeHostname ? `http://${activeHostname}.${lanIp}.nip.io${portSuffix}` : "";
+  const localMdnsUrl = activeHostname ? `http://${activeHostname}.local${portSuffix}` : `http://portside.local${portSuffix}`;
 
   const hasCustomUrl = Boolean(lanData?.vanityDomain || lanData?.publicTunnelUrl);
   const is5GUnlocked = Boolean(isSupporter || lanData?.isSupporter || hasCustomUrl);
@@ -101,6 +115,27 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   Get Custom 5G URL
                 </button>
               </div>
+            ) : isLanDashboardSelected && !isSupporter ? (
+              <div className="flex flex-col items-center justify-center h-48 w-48 rounded-xl border border-dashed border-sky-400/50 bg-sky-50/50 dark:bg-sky-950/20 p-4 text-center">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 mb-2 border border-sky-500/20">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                </span>
+                <span className="font-bold text-xs text-slate-800 dark:text-slate-200">
+                  Dashboard is a Supporter Perk
+                </span>
+                <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                  Free tier includes direct project redirects below.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (services.length > 0) setSelectedService(services[0].hostname);
+                  }}
+                  className="mt-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 px-3 py-1 text-[11px] font-semibold text-white shadow-xs transition"
+                >
+                  Use Free Project Redirect
+                </button>
+              </div>
             ) : lanData?.qrDataUrl ? (
               <div className="relative inline-flex items-center justify-center">
                 <img
@@ -126,8 +161,10 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               {connectionMode === "tunnel"
                 ? is5GUnlocked
                   ? "Scan to open via Global Encrypted Tunnel. Works everywhere on 5G, LTE, or remote Wi-Fi."
-                  : "Local Wi-Fi QR scanning remains 100% free with zero locks."
-                : `Point your phone camera to open ${selectedService ? selectedService : "the mobile launchpad"} on your local Wi-Fi.`}
+                  : "Local Wi-Fi QR scanning remains 100% free with direct project redirects."
+                : activeHostname
+                ? `Scan to open ${activeHostname} directly on your phone or TV.`
+                : `Point your phone camera to open the mobile launchpad on your local Wi-Fi.`}
             </p>
           </div>
 
@@ -167,19 +204,21 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
 
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Target Service
+                Target Project / Service
               </label>
               <select
                 value={selectedService}
                 onChange={(e) => setSelectedService(e.target.value)}
                 className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100"
               >
-                <option value="">Full Mobile Launchpad (/lan)</option>
                 {services.map((s) => (
                   <option key={s.id} value={s.hostname}>
-                    {s.name} ({s.hostname})
+                    {s.name} ({s.hostname}) &mdash; Free Direct Redirect
                   </option>
                 ))}
+                <option value="__lan__">
+                  Personal Launchpad Dashboard (/lan) {isSupporter ? "(Active)" : "[Supporter Perk]"}
+                </option>
               </select>
             </div>
 
@@ -222,14 +261,14 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                         </label>
                         <button
                           type="button"
-                          onClick={() => copy(`https://${lanData.vanityDomain}${selectedService ? `/s/${selectedService}` : "/lan"}`, "vanity")}
+                          onClick={() => copy(`https://${lanData.vanityDomain}${activeHostname ? `/s/${activeHostname}` : "/lan"}`, "vanity")}
                           className="text-[11px] text-sky-700 dark:text-sky-400 hover:underline font-semibold"
                         >
                           {copiedKey === "vanity" ? "Copied!" : "Copy"}
                         </button>
                       </div>
                       <p className="mt-1 font-mono text-xs text-sky-800 dark:text-sky-300 break-all">
-                        https://${lanData.vanityDomain}${selectedService ? `/s/${selectedService}` : "/lan"}
+                        https://${lanData.vanityDomain}${activeHostname ? `/s/${activeHostname}` : "/lan"}
                       </p>
                       <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                         Your personal permanent address. Works globally on 5G and any network.
@@ -256,9 +295,9 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                     </div>
                   )}
                 </>
-              ) : (
+              ) : isLanDashboardSelected ? (
                 <>
-                  {!selectedService ? (
+                  {isSupporter ? (
                     <div>
                       <div className="flex items-center justify-between">
                         <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -273,45 +312,86 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                         </button>
                       </div>
                       <p className="mt-1 font-mono text-xs text-sky-600 dark:text-sky-400 break-all">{portalUrl}</p>
-                      <p className="mt-1 text-[11px] text-slate-400">Mobile-friendly directory of all running services.</p>
+                      <p className="mt-1 text-[11px] text-slate-400">Supporter feature: Full multi-service interactive launchpad.</p>
                     </div>
                   ) : (
-                    <>
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                            Zero-Config LAN URL
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => copy(localMdnsUrl, "mdns")}
-                            className="text-[11px] text-sky-600 hover:underline font-medium"
-                          >
-                            {copiedKey === "mdns" ? "Copied!" : "Copy"}
-                          </button>
-                        </div>
-                        <p className="mt-1 font-mono text-xs text-emerald-600 dark:text-emerald-400 break-all">{localMdnsUrl}</p>
-                        <p className="mt-1 text-[11px] text-slate-400">Requires zero router or DNS setup on your local network.</p>
+                    <div className="rounded-xl border border-sky-500/30 bg-sky-50/50 dark:bg-sky-950/20 p-3.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400">
+                          Personal Dashboard (Supporter Perk)
+                        </span>
+                        <span className="rounded bg-sky-600/10 px-1.5 py-0.5 text-[10px] font-bold text-sky-600 dark:text-sky-400 border border-sky-500/30">
+                          SUPPORTERS
+                        </span>
                       </div>
-
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                            Fallback Direct IP URL
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => copy(directSvcUrl, "direct")}
-                            className="text-[11px] text-sky-600 hover:underline font-medium"
-                          >
-                            {copiedKey === "direct" ? "Copied!" : "Copy"}
-                          </button>
-                        </div>
-                        <p className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400 break-all">{directSvcUrl}</p>
-                        <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Direct fallback if your Wi-Fi is offline from the internet.</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-300">
+                        The multi-service mobile launchpad dashboard is reserved for Supporters. Free tier users get unlimited direct project redirects.
+                      </p>
+                      <div className="pt-1">
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            onClose();
+                            openSupport();
+                          }}
+                          className="w-full text-xs"
+                        >
+                          Unlock Personal Dashboard
+                        </Button>
                       </div>
-                    </>
+                    </div>
                   )}
+                </>
+              ) : (
+                <>
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                        Free Direct Project URL
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => copy(directSvcUrl, "direct")}
+                        className="text-[11px] text-sky-600 hover:underline font-medium"
+                      >
+                        {copiedKey === "direct" ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+                    <p className="mt-1 font-mono text-xs text-emerald-600 dark:text-emerald-400 break-all">{directSvcUrl}</p>
+                    <p className="mt-1 text-[11px] text-slate-400">Direct project redirect on your local Wi-Fi. 100% Free.</p>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                        Wildcard Subdomain Redirect
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => copy(wildcardSvcUrl, "wildcard")}
+                        className="text-[11px] text-sky-600 hover:underline font-medium"
+                      >
+                        {copiedKey === "wildcard" ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+                    <p className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400 break-all">{wildcardSvcUrl}</p>
+                    <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">Works directly in any mobile or Smart TV browser.</p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-900/60 p-2.5 text-xs text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Clean Domain on Other Devices (.local / .localhost)</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                        {isSupporter ? "Active" : "Supporter Perk"}
+                      </span>
+                    </div>
+                    <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">{localMdnsUrl}</p>
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      {isSupporter
+                        ? "Active! Zero-config local domain works across all devices on your Wi-Fi."
+                        : "Supporters can use clean .local / .localhost domains on other devices without typing IP numbers."}
+                    </p>
+                  </div>
                 </>
               )}
             </div>
@@ -319,9 +399,9 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
             <div className="rounded-xl border border-sky-100 bg-sky-50/60 p-3 text-xs text-sky-950">
               <span className="font-semibold">On Smart TVs:</span> Open the TV browser and visit{" "}
               <code className="rounded bg-sky-100/80 px-1 font-mono text-[11px] font-semibold text-sky-900">
-                http://${lanIp}${portSuffix}
+                http://${lanIp}${portSuffix}/s/${activeHostname || "your-project"}
               </code>{" "}
-              to browse and launch all your custom web projects with your remote control.
+              to launch your project directly with your remote control.
             </div>
           </div>
         </div>
