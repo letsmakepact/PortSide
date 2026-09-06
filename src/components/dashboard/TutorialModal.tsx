@@ -114,7 +114,7 @@ const MOBILE_STEPS: Step[] = [
     description:
       "Traveling without a router? Spawn a hardware-encrypted PortSide Wi-Fi hotspot from your PC, or use global 5G tunneling (*.portside.lol) to review builds away from home.",
     highlight: [
-      { label: "Dev Wi-Fi Hotspot", value: "Dedicated PC hotspot for router-free testing" },
+      { label: "Dev Wi-Fi Hotspot", value: "Dedicated PC hotspot  for router-free testing" },
       { label: "5G Cellular", value: "Permanent custom tunnel domain accessible anywhere" },
     ],
     icon: Wifi,
