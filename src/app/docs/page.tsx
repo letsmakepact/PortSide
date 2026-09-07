@@ -209,9 +209,7 @@ export default function DocsPage() {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-400">
-            <Link href="/" className="hover:text-white transition">Home</Link>
-          </nav>
+
 
           <div className="flex items-center gap-3">
             <div className="flex items-center min-h-[34px]">
