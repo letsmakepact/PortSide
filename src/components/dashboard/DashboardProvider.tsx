@@ -62,9 +62,44 @@ interface DashboardContextValue {
 
 const Ctx = createContext<DashboardContextValue | null>(null);
 
-const POLL_MS = 15_000;
+const autoCheckListeners = new Set<() => void>();
+function subscribeAutoCheck(callback: () => void) {
+  autoCheckListeners.add(callback);
+  if (typeof window !== "undefined") {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "portside:autoCheck") callback();
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      autoCheckListeners.delete(callback);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }
+  return () => {
+    autoCheckListeners.delete(callback);
+  };
+}
 
-const subscribe = () => () => {};
+const themeListeners = new Set<() => void>();
+function subscribeTheme(callback: () => void) {
+  themeListeners.add(callback);
+  if (typeof window !== "undefined") {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "portside:theme") callback();
+    };
+    const handleCustom = () => callback();
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("portside-theme-change", handleCustom);
+    return () => {
+      themeListeners.delete(callback);
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("portside-theme-change", handleCustom);
+    };
+  }
+  return () => {
+    themeListeners.delete(callback);
+  };
+}
 
 function getClientPort() {
   if (typeof window === "undefined") return "3000";
@@ -77,10 +112,16 @@ function getAutoCheckSnapshot() {
 }
 
 function getThemeSnapshot(): ThemeMode {
-  if (typeof window === "undefined") return "light";
-  const stored = window.localStorage.getItem("portside:theme");
-  if (stored === "light" || stored === "dark") return stored;
-  return "light";
+  if (typeof window === "undefined") return "dark";
+  try {
+    const stored = window.localStorage.getItem("portside:theme");
+    if (stored === "light") return "light";
+    if (stored === "dark") return "dark";
+    if (typeof document !== "undefined" && document.documentElement.classList.contains("dark")) return "dark";
+    if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+    return "dark";
+  } catch {}
+  return "dark";
 }
 
 export function DashboardProvider({
@@ -100,11 +141,9 @@ export function DashboardProvider({
   const [projects, setProjects] = useState(initialProjects);
   const [checking, setChecking] = useState(false);
   const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
-  const appPort = useSyncExternalStore(subscribe, getClientPort, () => "3000");
-  const storedAutoCheck = useSyncExternalStore(subscribe, getAutoCheckSnapshot, () => true);
-  const [autoCheck, setAutoCheckState] = useState(storedAutoCheck);
-  const storedTheme = useSyncExternalStore(subscribe, getThemeSnapshot, () => "light" as ThemeMode);
-  const [theme, setThemeState] = useState<ThemeMode>(storedTheme);
+  const appPort = useSyncExternalStore(subscribeTheme, getClientPort, () => "3000");
+  const autoCheck = useSyncExternalStore(subscribeAutoCheck, getAutoCheckSnapshot, () => true);
+  const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, () => "dark" as ThemeMode);
   const [isDesktop, setIsDesktop] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [lanOpen, setLanOpen] = useState(false);
@@ -196,20 +235,27 @@ export function DashboardProvider({
   );
 
   const setAutoCheck = useCallback((v: boolean) => {
-    setAutoCheckState(v);
-    window.localStorage.setItem("portside:autoCheck", v ? "1" : "0");
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem("portside:autoCheck", v ? "1" : "0");
+      } catch {}
+    }
+    autoCheckListeners.forEach((l) => l());
   }, []);
 
   const setTheme = useCallback((t: ThemeMode) => {
-    setThemeState(t);
     if (typeof window !== "undefined") {
-      window.localStorage.setItem("portside:theme", t);
+      try {
+        window.localStorage.setItem("portside:theme", t);
+      } catch {}
       if (t === "dark") {
         document.documentElement.classList.add("dark");
       } else {
         document.documentElement.classList.remove("dark");
       }
+      window.dispatchEvent(new Event("portside-theme-change"));
     }
+    themeListeners.forEach((l) => l());
   }, []);
 
   useEffect(() => {

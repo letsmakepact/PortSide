@@ -516,37 +516,53 @@ export function SettingsView() {
                 type="button"
                 onClick={() => setTheme("light")}
                 className={cn(
-                  "flex flex-1 items-center gap-3 rounded-lg border p-3.5 text-left transition-colors",
+                  "flex flex-1 items-center gap-3 rounded-lg border p-3.5 text-left transition-all cursor-pointer",
                   theme === "light"
-                    ? "border-brand-primary bg-brand-surface text-slate-900 dark:border-sky-500/60 dark:bg-brand-surface-dark dark:text-white"
+                    ? "border-sky-500 bg-sky-500/10 text-slate-900 ring-1 ring-sky-500/50 dark:border-sky-500 dark:bg-sky-500/15 dark:text-white"
                     : "border-slate-200 bg-brand-surface text-slate-600 hover:bg-brand-bg dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400 dark:hover:bg-slate-800/40",
                 )}
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-slate-800 border border-slate-200 shadow-xs dark:bg-slate-900 dark:text-amber-400 dark:border-slate-800">
+                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-slate-800 border border-slate-200 shadow-xs dark:bg-slate-900 dark:text-amber-400 dark:border-slate-800 shrink-0">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
                 </span>
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold">Light Mode</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Default high-contrast light theme</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Clean light theme</p>
                 </div>
+                <span className={cn(
+                  "h-4 w-4 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                  theme === "light"
+                    ? "border-sky-500 bg-sky-500 text-white"
+                    : "border-slate-300 dark:border-slate-700 bg-transparent"
+                )}>
+                  {theme === "light" && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                </span>
               </button>
               <button
                 type="button"
                 onClick={() => setTheme("dark")}
                 className={cn(
-                  "flex flex-1 items-center gap-3 rounded-lg border p-3.5 text-left transition-colors",
+                  "flex flex-1 items-center gap-3 rounded-lg border p-3.5 text-left transition-all cursor-pointer",
                   theme === "dark"
-                    ? "border-brand-primary bg-brand-surface text-slate-900 dark:border-sky-500/60 dark:bg-brand-surface-dark dark:text-white"
+                    ? "border-sky-500 bg-sky-500/10 text-slate-900 ring-1 ring-sky-500/50 dark:border-sky-500 dark:bg-sky-500/15 dark:text-white"
                     : "border-slate-200 bg-brand-surface text-slate-600 hover:bg-brand-bg dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400 dark:hover:bg-slate-800/40",
                 )}
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-sky-400 border border-slate-800">
+                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-sky-400 border border-slate-800 shrink-0">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
                 </span>
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold">Bluish Black Dark</p>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400">High-contrast dark theme</p>
                 </div>
+                <span className={cn(
+                  "h-4 w-4 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                  theme === "dark"
+                    ? "border-sky-500 bg-sky-500 text-white"
+                    : "border-slate-300 dark:border-slate-700 bg-transparent"
+                )}>
+                  {theme === "dark" && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                </span>
               </button>
             </div>
           </Card>
