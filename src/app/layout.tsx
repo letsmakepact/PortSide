@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,12 +27,47 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   title: { default: "Portside · Name Your Localhost", template: "%s · Portside" },
-  description: "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
+  description:
+    "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
+  keywords: [
+    "localhost reverse proxy",
+    "clean localhost subdomains",
+    "local development port manager",
+    "zero config reverse proxy",
+    "test dev server on mobile",
+    "smart tv web testing",
+    "mDNS local routing",
+    "no etc hosts",
+    "port 80 proxy",
+    "portside",
+  ],
   authors: [{ name: "pact", url: "https://github.com/letsmakepact" }],
   creator: "pact (@pactwithdevil)",
+  category: "technology",
+  classification: "Developer Tools",
+  alternates: {
+    canonical: appUrl,
+    languages: {
+      en: appUrl,
+      "en-US": appUrl,
+      "x-default": appUrl,
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     title: "Portside · Name Your Localhost",
-    description: "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
+    description:
+      "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
     url: appUrl,
     siteName: "Portside",
     images: [
@@ -48,7 +84,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Portside · Name Your Localhost",
-    description: "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
+    description:
+      "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
     creator: "@pactwithdevil",
     images: ["/opengraph-image"],
   },
@@ -73,6 +110,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
+        <JsonLd appUrl={appUrl} />
         <link
           rel="icon"
           type="image/svg+xml"

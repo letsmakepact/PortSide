@@ -62,6 +62,8 @@ interface DashboardContextValue {
 
 const Ctx = createContext<DashboardContextValue | null>(null);
 
+const POLL_MS = 15_000;
+
 const autoCheckListeners = new Set<() => void>();
 function subscribeAutoCheck(callback: () => void) {
   autoCheckListeners.add(callback);

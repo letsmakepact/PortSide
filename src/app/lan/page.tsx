@@ -1,8 +1,29 @@
+import type { Metadata } from "next";
 import { listLanServices } from "@/lib/queries";
 import { getLanIp } from "@/lib/lan";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
 import { isServerSupporter } from "@/lib/server-checks";
 import { LanRemoteNav } from "@/components/lan/LanRemoteNav";
+
+export const metadata: Metadata = {
+  title: "Multi-Device LAN Launchpad",
+  description:
+    "Launch and test local development servers across iOS, Android, and Smart TV browsers with zero-config mDNS and scannable QR codes.",
+  alternates: {
+    canonical: "/lan",
+    languages: {
+      en: "/lan",
+      "en-US": "/lan",
+      "x-default": "/lan",
+    },
+  },
+  openGraph: {
+    title: "Portside LAN Launchpad · Test Across All Screens",
+    description:
+      "Instant camera QR codes and Smart TV D-pad remote navigation for testing local web services on your Wi-Fi network.",
+    url: "/lan",
+  },
+};
 
 export const dynamic = "force-dynamic";
 

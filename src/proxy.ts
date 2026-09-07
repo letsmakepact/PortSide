@@ -9,22 +9,76 @@ const clientHostCache = new Map<string, CachedHostVerification>();
 const CLIENT_POSITIVE_TTL_MS = 10 * 60 * 1000; // 10 minutes for verified hosts
 const CLIENT_NEGATIVE_TTL_MS = 30 * 1000;      // 30 seconds for rejected hosts
 
+const PORTSIDE_SYSTEM_ROUTES = [
+  "/",
+  "/dashboard",
+  "/profile",
+  "/lan",
+  "/docs",
+  "/login",
+  "/register",
+  "/api",
+  "/auth",
+  "/portside-proxy",
+  "/about",
+  "/@me",
+];
+
+const PORTSIDE_STATIC_FILES = new Set([
+  "/favicon.ico",
+  "/favicon.svg",
+  "/icon.svg",
+  "/icon.png",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/apple-icon.png",
+  "/apple-touch-icon.png",
+  "/og.png",
+  "/anchor.png",
+  "/bright_anchor.png",
+  "/portside.png",
+  "/portside-256.png",
+  "/portside-512.png",
+  "/manifest.webmanifest",
+  "/robots.txt",
+  "/sitemap.xml",
+]);
+
 async function verifyHostWithServer(hostname: string): Promise<boolean> {
   const cached = clientHostCache.get(hostname);
   if (cached && cached.expiresAt > Date.now()) {
     return cached.known;
   }
 
-  // Ask authoritative sovereign servers
+  // 1. Authoritative Sovereign & Creator fast-path (0ms, offline-resilient)
+  if (
+    hostname === "portside.lol" ||
+    hostname === "www.portside.lol" ||
+    hostname === "app.portside.lol" ||
+    hostname === "api.portside.lol" ||
+    hostname === "pact.portside.lol" ||
+    hostname.endsWith(".pact.portside.lol") ||
+    hostname.endsWith(".vercel.app")
+  ) {
+    clientHostCache.set(hostname, {
+      known: true,
+      expiresAt: Date.now() + CLIENT_POSITIVE_TTL_MS,
+    });
+    return true;
+  }
+
+  // 2. Ask authoritative sovereign server endpoints
   const serverEndpoints = [
-    "https://portside-theta.vercel.app",
+    "https://www.portside.lol",
     "https://portside.lol",
+    "https://portside-theta.vercel.app",
   ];
 
   for (const base of serverEndpoints) {
     try {
       const res = await fetch(`${base}/api/host/verify?host=${encodeURIComponent(hostname)}`, {
-        signal: AbortSignal.timeout(2500),
+        signal: AbortSignal.timeout(3500),
+        redirect: "follow",
         headers: {
           "user-agent": "PortSide-Proxy/1.1.0",
         },
@@ -79,48 +133,20 @@ async function verifySupporterStatus(): Promise<boolean> {
   return false;
 }
 
-const PORTSIDE_SYSTEM_ROUTES = [
-  "/",
-  "/dashboard",
-  "/profile",
-  "/lan",
-  "/login",
-  "/api",
-  "/auth",
-  "/portside-proxy",
-  "/about",
-  "/@me",
-];
-
-const PORTSIDE_STATIC_FILES = new Set([
-  "/favicon.ico",
-  "/favicon.svg",
-  "/icon.svg",
-  "/icon.png",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/apple-icon.png",
-  "/apple-touch-icon.png",
-  "/og.png",
-  "/anchor.png",
-  "/bright_anchor.png",
-  "/portside.png",
-  "/portside-256.png",
-  "/portside-512.png",
-  "/manifest.webmanifest",
-  "/robots.txt",
-  "/sitemap.xml",
-]);
-
 export async function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase();
   const hostname = host.split(":")[0];
   const { pathname } = request.nextUrl;
 
+  // Static assets & internal Next.js resources fast bypass (prevents 502 Bad Gateway)
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/opengraph-image") ||
-    pathname.startsWith("/twitter-image")
+    pathname.startsWith("/twitter-image") ||
+    pathname.startsWith("/icon") ||
+    pathname.startsWith("/apple-icon") ||
+    pathname.startsWith("/favicon") ||
+    PORTSIDE_STATIC_FILES.has(pathname)
   ) {
     return NextResponse.next();
   }
@@ -139,7 +165,7 @@ export async function proxy(request: NextRequest) {
     /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
 
   if (!isLocalNetwork) {
-    // 2. Authoritative check: ask the sovereign server if this host is recognized and authorized
+    // 2. Authoritative check: ask sovereign server if this host is recognized and authorized
     const isKnown = await verifyHostWithServer(hostname);
     if (!isKnown) {
       return new NextResponse("Forbidden: Host not recognized by PortSide sovereign server.", { status: 403 });
@@ -257,11 +283,12 @@ export async function proxy(request: NextRequest) {
   }
 
   const isRawIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname);
-  const isPortsideDomain = hostname.endsWith(".portside.lol");
+  const isPortsideApex = hostname === "portside.lol" || hostname === "www.portside.lol";
+  const isPortsideVanitySubdomain = hostname.endsWith(".portside.lol") && !isPortsideApex && hostname !== "app.portside.lol";
   const isTryCloudflare = hostname.endsWith(".trycloudflare.com");
 
   if (!label && pathname === "/") {
-    if (isPortsideDomain) {
+    if (isPortsideVanitySubdomain) {
       const profileUrl = request.nextUrl.clone();
       profileUrl.pathname = "/profile";
       return NextResponse.rewrite(profileUrl);
