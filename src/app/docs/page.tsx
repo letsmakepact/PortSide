@@ -63,6 +63,16 @@ const SECTIONS: DocSection[] = [
     ],
   },
   {
+    id: "security-architecture",
+    title: "Security & Database Protection",
+    items: [
+      { id: "database-protection", title: "Air-Gapped Local Database" },
+      { id: "registration-firewall", title: "Cloud Registration Firewall" },
+      { id: "path-sandboxing", title: "Control Plane & Path Sandboxing" },
+      { id: "cryptographic-handshake", title: "Zero-Trust Device Handshakes" },
+    ],
+  },
+  {
     id: "troubleshooting",
     title: "Troubleshooting",
     items: [
@@ -131,6 +141,14 @@ export default function DocsPage() {
         acceptedAnswer: {
           "@type": "Answer",
           text: "Open http://<your-local-ip>/s/<project> on your phone or scan the high-redundancy QR code from the desktop dashboard for 100% free direct project testing across any iOS or Android browser over local Wi-Fi.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How does PortSide protect the developer's local database from public internet visitors?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "PortSide's local database binds exclusively to loopback (127.0.0.1) and is never exposed through edge tunnels. Furthermore, registrations originating from public vanity links bypass local database insertion completely and are forwarded to the central cloud platform.",
         },
       },
       {
@@ -518,7 +536,86 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 6: TROUBLESHOOTING */}
+          {/* SECTION 6: SECURITY & DATABASE PROTECTION */}
+          <section id="security-architecture" className="space-y-8 scroll-mt-28">
+            <div id="database-protection" className="border-b border-white/10 pb-4 scroll-mt-28">
+              <span className="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">
+                Zero-Trust Defense
+              </span>
+              <h2 className="text-2xl font-bold text-white mt-1">
+                Security Architecture &amp; Database Protection
+              </h2>
+            </div>
+
+            <div className="space-y-6 text-sm text-slate-300 leading-relaxed">
+              <p>
+                When you share a live project or your vanity showcase (<code className="font-mono text-sky-300">alex.portside.lol</code>), PortSide enforces strict boundaries between public internet traffic, your dev server processes, and your machine&apos;s local operating system and databases.
+              </p>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.03] p-5 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+                    <h3 className="font-bold text-white text-base">Air-Gapped Local Database</h3>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    The desktop application&apos;s embedded database (<code className="font-mono text-emerald-300">portside_db</code> / PostgreSQL) binds strictly to <code className="font-mono text-slate-200">127.0.0.1</code>. It is never exposed over edge tunnels or LAN bridges. Remote visitors cannot query, modify, or inject data into your database.
+                  </p>
+                </div>
+
+                <div id="registration-firewall" className="rounded-2xl border border-sky-500/20 bg-sky-500/[0.03] p-5 space-y-3 scroll-mt-28">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-sky-400"></span>
+                    <h3 className="font-bold text-white text-base">Cloud Registration Firewall</h3>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    If an internet visitor attempts to register or sign up via your public showcase link (<code className="font-mono text-sky-300">*.portside.lol/register</code>), PortSide intercepts the request. It <strong>never</strong> provisions a local user, local folders, or workspace directories on your computer. Instead, the request is safely forwarded to the central cloud platform (<code className="font-mono text-sky-300">portside.lol</code>).
+                  </p>
+                </div>
+              </div>
+
+              <div id="path-sandboxing" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-amber-400"></span>
+                  Control Plane &amp; Path Sandboxing
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  PortSide maintains strict separation between your application routes and the desktop control plane:
+                </p>
+                <ul className="space-y-2 text-xs text-slate-400 list-disc list-inside">
+                  <li><strong className="text-slate-200">Protected Control Routes:</strong> Paths such as <code className="font-mono text-amber-300">/dashboard</code>, <code className="font-mono text-amber-300">/settings</code>, <code className="font-mono text-amber-300">/api/services</code>, and administrative panels are locked to local loopback sessions and rejected when requested over public vanity tunnels.</li>
+                  <li><strong className="text-slate-200">Isolated Service Proxying:</strong> Public visitors requesting mapped services (<code className="font-mono text-sky-300">/s/&lt;project&gt;</code> or subdomains) are forwarded exclusively to that designated internal dev port. The proxy cannot traverse to neighboring ports, system directories, or local disk paths.</li>
+                  <li><strong className="text-slate-200">Account Partitioning:</strong> Free, supporter, and public sessions maintain distinct cryptographically verified authentication cookies with strict SameSite and Secure flags.</li>
+                </ul>
+              </div>
+
+              <div id="cryptographic-handshake" className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-3 scroll-mt-28">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-violet-400"></span>
+                  Zero-Trust Hardware &amp; HMAC Handshakes
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Supporter licenses and edge tunnel connections are authoritatively validated through dual-architecture cryptographic handshakes:
+                </p>
+                <div className="grid gap-3 sm:grid-cols-3 text-xs pt-1">
+                  <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-1">
+                    <p className="font-mono font-semibold text-violet-300">Hardware ID Binding</p>
+                    <p className="text-slate-400">Unique physical machine hashes prevent unauthorized license cloning or impersonation across untrusted devices.</p>
+                  </div>
+                  <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-1">
+                    <p className="font-mono font-semibold text-violet-300">Anti-Replay Nonces</p>
+                    <p className="text-slate-400">Every licensing verification exchanges ephemeral nonces with strict 5-minute drift limits to defeat packet capture replay attacks.</p>
+                  </div>
+                  <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-1">
+                    <p className="font-mono font-semibold text-violet-300">Timing-Safe HMAC</p>
+                    <p className="text-slate-400">Signatures and session tickets are validated using constant-time comparisons, eliminating side-channel timing leaks.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 7: TROUBLESHOOTING */}
           <section id="troubleshooting" className="space-y-8 scroll-mt-28">
             <div id="common-questions" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -548,6 +645,13 @@ export default function DocsPage() {
                 <h3 className="font-bold text-white text-sm">Is my source code uploaded to any third-party cloud?</h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Never. PortSide runs locally on your physical machine. Only incoming HTTP requests pass through encrypted edge proxies directly to your designated local port.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2">
+                <h3 className="font-bold text-white text-sm">How does PortSide protect my local database from public visitors?</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Your local database (<code className="font-mono text-sky-300">portside_db</code>) binds strictly to <code className="font-mono text-slate-200">127.0.0.1</code> and is never routed through edge tunnels. Furthermore, when visitors sign up through your public vanity link (<code className="font-mono text-sky-300">alex.portside.lol/register</code>), PortSide intercepts the call and forwards it to the central cloud platform—completely preventing new database rows or folders from being created on your computer.
                 </p>
               </div>
             </div>
