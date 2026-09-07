@@ -28,6 +28,7 @@ import {
   Crown,
   Shield,
   ShieldCheck,
+  KeyRound,
 } from "lucide-react";
 import { AnchorLogo } from "@/components/AnchorLogo";
 
@@ -876,7 +877,7 @@ export default function Home() {
                 <div className="lg:col-span-6 space-y-5 text-left">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 text-xs font-mono font-semibold">
                     <Shield className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                    <span>Public Showcase or 100% Private /lan</span>
+                    <span>Public Showcase or Auth-Gated /lan</span>
                   </div>
 
                   <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
@@ -884,7 +885,7 @@ export default function Home() {
                   </h2>
 
                   <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                    Granular control over what touches the internet. Expose client demos globally on your custom vanity domain, or lock internal databases and sensitive tools strictly to your real home IP address via <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">/lan</code>.
+                    Granular control over what touches the world. Expose public client demos globally on your custom vanity domain, or lock internal dashboards and admin tools behind a secure login gate at <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">/lan</code> accessible only to you on any connection—home Wi-Fi or 5G mobile.
                   </p>
 
                   {/* Feature Highlights Grid */}
@@ -895,27 +896,27 @@ export default function Home() {
                         Public Vanity Subdomain
                       </div>
                       <p className="text-[11px] text-slate-400 leading-normal">
-                        Share live project demos globally under your memorable HTTPS domain.
+                        Share live client projects and demos globally under your memorable HTTPS domain.
                       </p>
                     </div>
 
                     <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
                       <div className="text-xs font-bold text-white flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                        100% Private via /lan
+                        Protected /lan Access
                       </div>
                       <p className="text-[11px] text-slate-400 leading-normal">
-                        Only accessible to you via your real home IP address. Never hits the internet.
+                        Protected with a secure master login. Zero unauthorized visitors can peek your private dashboard.
                       </p>
                     </div>
 
                     <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
                       <div className="text-xs font-bold text-white flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        Zero Cloud Exposure
+                        Anywhere & 5G Ready
                       </div>
                       <p className="text-[11px] text-slate-400 leading-normal">
-                        Internal databases and staging tools stay sealed on your local physical network.
+                        Access your local private services seamlessly from your phone on 5G or any remote network.
                       </p>
                     </div>
 
@@ -925,7 +926,7 @@ export default function Home() {
                         One-Click Privacy Toggle
                       </div>
                       <p className="text-[11px] text-slate-400 leading-normal">
-                        Instantly flip any service between Public Edge and Private Home LAN.
+                        Instantly toggle any port between Public Edge and Authenticated /lan.
                       </p>
                     </div>
                   </div>
@@ -1033,15 +1034,16 @@ export default function Home() {
                           </div>
                         </div>
 
-                        {/* 100% Private Home LAN Service */}
+                        {/* Private Authenticated /lan Service */}
                         <div>
                           <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider flex items-center justify-between pb-1.5 px-0.5">
                             <span className="flex items-center gap-1.5 text-amber-400 font-semibold">
                               <Lock className="w-3 h-3 text-amber-400" />
-                              100% Private · Home LAN Only
+                              Private · Authenticated /lan
                             </span>
-                            <span className="text-amber-400 text-[10px] font-mono bg-amber-950/50 border border-amber-500/30 px-1.5 py-0.2 rounded">
-                              Real Home IP Only
+                            <span className="text-amber-400 text-[10px] font-mono bg-amber-950/50 border border-amber-500/30 px-1.5 py-0.2 rounded flex items-center gap-1">
+                              <KeyRound className="w-2.5 h-2.5" />
+                              Login Required
                             </span>
                           </div>
                           <div className="p-3 rounded-xl bg-slate-900/40 border border-amber-500/20 flex items-center justify-between gap-3 text-xs">
@@ -1049,7 +1051,7 @@ export default function Home() {
                               <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                               <div className="min-w-0">
                                 <p className="font-semibold text-white text-xs truncate">internal-db-admin</p>
-                                <p className="text-[10px] font-mono text-slate-500">internal port :5432 &middot; unexposed</p>
+                                <p className="text-[10px] font-mono text-slate-500">internal port :5432 &middot; 5G & remote protected</p>
                               </div>
                             </div>
                             <span className="text-[11px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded truncate shrink-0">
