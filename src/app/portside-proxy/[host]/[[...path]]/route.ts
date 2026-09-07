@@ -75,9 +75,6 @@ async function handle(req: NextRequest, ctx: Ctx) {
   }
 
   const hasBody = !["GET", "HEAD"].includes(req.method);
-  const controller = new AbortController();
-  // Extended 10-minute timeout for LLM streaming, database dumps, and large file uploads
-  const timer = setTimeout(() => controller.abort(), 600_000);
 
   try {
     const init: RequestInit & { duplex?: "half" } = {
@@ -85,7 +82,7 @@ async function handle(req: NextRequest, ctx: Ctx) {
       headers,
       body: hasBody ? req.body : undefined,
       redirect: "manual",
-      signal: controller.signal,
+      signal: req.signal,
       duplex: "half",
     };
     const upstream = await fetch(target, init);
@@ -174,8 +171,6 @@ async function handle(req: NextRequest, ctx: Ctx) {
       `Nothing is listening on port ${svc.port}. Start "${svc.name}" and refresh this page.`,
       label,
     );
-  } finally {
-    clearTimeout(timer);
   }
 }
 
