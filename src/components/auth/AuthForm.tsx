@@ -96,7 +96,7 @@ export function AuthForm({
             type={isProfileMode ? "text" : "email"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={isProfileMode ? (vanityHandle ? `${vanityHandle} or you@example.com` : "pact or you@example.com") : "you@example.com"}
+            placeholder={isProfileMode ? (vanityHandle ? `${vanityHandle} or you@example.com` : "username or you@example.com") : "you@example.com"}
             autoComplete="username"
             required
           />
