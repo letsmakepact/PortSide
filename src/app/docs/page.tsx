@@ -69,7 +69,6 @@ const SECTIONS: DocSection[] = [
       { id: "database-protection", title: "Air-Gapped Local Database" },
       { id: "registration-firewall", title: "Cloud Registration Firewall" },
       { id: "path-sandboxing", title: "Control Plane & Path Sandboxing" },
-      { id: "cryptographic-handshake", title: "Zero-Trust Device Handshakes" },
     ],
   },
   {
@@ -585,32 +584,8 @@ export default function DocsPage() {
                 <ul className="space-y-2 text-xs text-slate-400 list-disc list-inside">
                   <li><strong className="text-slate-200">Protected Control Routes:</strong> Paths such as <code className="font-mono text-amber-300">/dashboard</code>, <code className="font-mono text-amber-300">/settings</code>, <code className="font-mono text-amber-300">/api/services</code>, and administrative panels are locked to local loopback sessions and rejected when requested over public vanity tunnels.</li>
                   <li><strong className="text-slate-200">Isolated Service Proxying:</strong> Public visitors requesting mapped services (<code className="font-mono text-sky-300">/s/&lt;project&gt;</code> or subdomains) are forwarded exclusively to that designated internal dev port. The proxy cannot traverse to neighboring ports, system directories, or local disk paths.</li>
-                  <li><strong className="text-slate-200">Account Partitioning:</strong> Free, supporter, and public sessions maintain distinct cryptographically verified authentication cookies with strict SameSite and Secure flags.</li>
+                  <li><strong className="text-slate-200">Process &amp; Workspace Isolation:</strong> Requests from external edge connections never execute system shell commands or spawn background daemon processes on your development host.</li>
                 </ul>
-              </div>
-
-              <div id="cryptographic-handshake" className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-3 scroll-mt-28">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-violet-400"></span>
-                  Zero-Trust Hardware &amp; HMAC Handshakes
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Supporter licenses and edge tunnel connections are authoritatively validated through dual-architecture cryptographic handshakes:
-                </p>
-                <div className="grid gap-3 sm:grid-cols-3 text-xs pt-1">
-                  <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-1">
-                    <p className="font-mono font-semibold text-violet-300">Hardware ID Binding</p>
-                    <p className="text-slate-400">Unique physical machine hashes prevent unauthorized license cloning or impersonation across untrusted devices.</p>
-                  </div>
-                  <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-1">
-                    <p className="font-mono font-semibold text-violet-300">Anti-Replay Nonces</p>
-                    <p className="text-slate-400">Every licensing verification exchanges ephemeral nonces with strict 5-minute drift limits to defeat packet capture replay attacks.</p>
-                  </div>
-                  <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 space-y-1">
-                    <p className="font-mono font-semibold text-violet-300">Timing-Safe HMAC</p>
-                    <p className="text-slate-400">Signatures and session tickets are validated using constant-time comparisons, eliminating side-channel timing leaks.</p>
-                  </div>
-                </div>
               </div>
             </div>
           </section>
