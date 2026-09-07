@@ -35,7 +35,7 @@ export default async function LoginPage({
       isProfileMode={isProfileMode}
       vanityHandle={vanityHandle}
       redirectTo={resolvedParams.next || (isVanity ? "/dashboard/settings?tab=profile" : "/dashboard")}
-      demo={{ email: DEMO_EMAIL, password: DEMO_PASSWORD }}
+      demo={isProfileMode ? undefined : { email: DEMO_EMAIL, password: DEMO_PASSWORD }}
     />
   );
 }

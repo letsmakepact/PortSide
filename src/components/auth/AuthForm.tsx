@@ -90,14 +90,14 @@ export function AuthForm({
           </div>
         )}
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{isProfileMode ? "Email or Username" : "Email"}</Label>
           <Input
             id="email"
-            type="email"
+            type={isProfileMode ? "text" : "email"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            autoComplete="email"
+            placeholder={isProfileMode ? (vanityHandle ? `${vanityHandle} or you@example.com` : "pact or you@example.com") : "you@example.com"}
+            autoComplete="username"
             required
           />
         </div>
