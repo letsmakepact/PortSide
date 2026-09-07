@@ -170,6 +170,23 @@ export default async function ProfilePage() {
               <span className={`h-2 w-2 rounded-full ${statusColor} animate-pulse`} />
               {profile.statusText || "Node Online"}
             </span>
+            {user ? (
+              <a
+                href="/dashboard/settings?tab=profile"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500/15 border border-sky-500/30 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:bg-sky-500/25 transition shadow-xs"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                Customize Profile
+              </a>
+            ) : (
+              <a
+                href="/login?next=/dashboard/settings?tab=profile"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/15 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition shadow-xs"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></svg>
+                Customize Profile
+              </a>
+            )}
             {profile.buymeacoffee && (
               <a
                 href={profile.buymeacoffee}

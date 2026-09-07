@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/auth";
 import { ensureSeeded } from "@/lib/seed";
 import { AnchorIconBox } from "@/components/ui/AnchorLogo";
@@ -9,44 +10,94 @@ export const dynamic = "force-dynamic";
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   await ensureSeeded();
   const user = await getCurrentUser();
-  if (user) redirect("/dashboard");
+
+  const headerList = await headers();
+  const rawHost = headerList.get("x-forwarded-host") || headerList.get("host") || "";
+  const host = rawHost.split(":")[0].toLowerCase();
+  const isPortsideApex = host === "portside.lol" || host === "www.portside.lol" || host === "app.portside.lol";
+  const isVanity = host.endsWith(".portside.lol") && !isPortsideApex;
+  const vanityHandle = isVanity ? host.split(".")[0] : "";
+
+  if (user) {
+    if (isVanity) {
+      redirect("/dashboard/settings?tab=profile");
+    }
+    redirect("/dashboard");
+  }
 
   return (
     <div className="grid min-h-screen lg:grid-cols-[1.1fr_1fr] bg-slate-50 dark:bg-[#060b13] text-slate-900 dark:text-slate-100">
       <aside className="relative hidden overflow-hidden bg-[#060b13] border-r border-slate-800/80 p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-sky-500/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-cyan-600/10 blur-3xl pointer-events-none" />
+        
         <div className="relative flex items-center gap-2.5">
           <Logo />
           <span className="text-lg font-bold tracking-tight text-white">Portside</span>
-        </div>
-        <div className="relative max-w-md">
-          <h2 className="text-4xl font-semibold leading-tight tracking-tight">
-            Stop remembering ports.
-            <br />
-            <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
-              Start naming them.
+          {isVanity && (
+            <span className="font-mono text-xs text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md">
+              /{vanityHandle}
             </span>
-          </h2>
-          <p className="mt-5 text-slate-400">
-            Portside runs quietly in the background and gives every local dev server its own hostname.
-          </p>
-          <div className="mt-8 space-y-3 font-mono text-sm">
-            {[
-              ["localhost:8081", "api.localhost"],
-              ["localhost:5173", "admin.localhost"],
-              ["localhost:3030", "metabase.localhost"],
-            ].map(([from, to]) => (
-              <div key={from} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
-                <span className="text-slate-500 line-through">{from}</span>
-                <span className="text-slate-600">→</span>
-                <span className="text-emerald-300">{to}</span>
-              </div>
-            ))}
-          </div>
+          )}
         </div>
+
+        <div className="relative max-w-md">
+          {isVanity ? (
+            <>
+              <h2 className="text-4xl font-semibold leading-tight tracking-tight">
+                Curate your showcase.
+                <br />
+                <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+                  Share your live work.
+                </span>
+              </h2>
+              <p className="mt-5 text-slate-400 text-sm leading-relaxed">
+                Personalize your developer profile, configure active services, custom links, and showcase themes on your own Portside vanity node.
+              </p>
+              <div className="mt-8 space-y-3 font-mono text-sm">
+                {[
+                  [`${vanityHandle}.portside.lol`, "Developer Showcase"],
+                  [`${vanityHandle}.portside.lol/s/api`, "Direct Service Route"],
+                  ["Themes & Presets", "Custom Accent & Bio"],
+                ].map(([title, desc]) => (
+                  <div key={title} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+                    <span className="text-sky-300 text-xs font-mono">{title}</span>
+                    <span className="text-slate-400 text-xs font-sans">{desc}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-4xl font-semibold leading-tight tracking-tight">
+                Stop remembering ports.
+                <br />
+                <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+                  Start naming them.
+                </span>
+              </h2>
+              <p className="mt-5 text-slate-400">
+                Portside runs quietly in the background and gives every local dev server its own hostname.
+              </p>
+              <div className="mt-8 space-y-3 font-mono text-sm">
+                {[
+                  ["localhost:8081", "api.localhost"],
+                  ["localhost:5173", "admin.localhost"],
+                  ["localhost:3030", "metabase.localhost"],
+                ].map(([from, to]) => (
+                  <div key={from} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+                    <span className="text-slate-500 line-through">{from}</span>
+                    <span className="text-slate-600">→</span>
+                    <span className="text-emerald-300">{to}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="relative flex flex-col gap-1 text-xs text-slate-400">
-          <p>Built for developers juggling a dozen localhost processes.</p>
+          <p>{isVanity ? "Built for developers sharing their work live." : "Built for developers juggling a dozen localhost processes."}</p>
           <p className="text-slate-500">
             Created by{" "}
             <a

@@ -6,7 +6,21 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Primitives";
 
-export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { email: string; password: string } }) {
+interface AuthFormProps {
+  mode: "login" | "register";
+  demo?: { email: string; password: string };
+  isProfileMode?: boolean;
+  vanityHandle?: string;
+  redirectTo?: string;
+}
+
+export function AuthForm({
+  mode,
+  demo,
+  isProfileMode,
+  vanityHandle,
+  redirectTo,
+}: AuthFormProps) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState(demo?.email ?? "");
@@ -35,7 +49,8 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
         setLoading(false);
         return;
       }
-      router.push("/dashboard");
+      const destination = redirectTo || (isProfileMode ? "/dashboard/settings?tab=profile" : "/dashboard");
+      router.push(destination);
       router.refresh();
     } catch {
       setError("Network error. Please try again.");
@@ -46,10 +61,16 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
   return (
     <div className="animate-fade-up">
       <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-        {mode === "login" ? "Welcome back" : "Create your account"}
+        {isProfileMode
+          ? `Customize Profile${vanityHandle ? ` (@${vanityHandle})` : ""}`
+          : mode === "login"
+          ? "Welcome back"
+          : "Create your account"}
       </h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        {mode === "login"
+        {isProfileMode
+          ? "Sign in with your Portside credentials to customize your public showcase, theme, and services."
+          : mode === "login"
           ? "Sign in to manage your local hostnames."
           : "Runs entirely on your machine. Confirmed securely on server."}
       </p>
@@ -99,7 +120,7 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
           </p>
         )}
         <Button type="submit" size="lg" className="w-full" loading={loading}>
-          {mode === "login" ? "Sign in" : "Create account"}
+          {isProfileMode ? "Sign in to Customize Profile" : mode === "login" ? "Sign in" : "Create account"}
         </Button>
       </form>
 
@@ -123,3 +144,4 @@ export function AuthForm({ mode, demo }: { mode: "login" | "register"; demo?: { 
     </div>
   );
 }
+
