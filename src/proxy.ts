@@ -163,12 +163,14 @@ export async function proxy(request: NextRequest) {
 
   let label: string | null = null;
   let targetPath = pathname;
+  let isPathProxy = false;
 
   if (pathname.startsWith("/s/")) {
     const segments = pathname.slice(3).split("/");
     label = segments[0]?.toLowerCase() || null;
     const rest = segments.slice(1).join("/");
     targetPath = rest ? `/${rest}` : "/";
+    isPathProxy = true;
   }
 
   if (!label) {
@@ -277,10 +279,16 @@ export async function proxy(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = `/portside-proxy/${label}${targetPath === "/" ? "" : targetPath}`;
+  if (isPathProxy) {
+    url.searchParams.set("__ps_path", "1");
+  }
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-portside-original-path", targetPath);
   requestHeaders.set("x-portside-client-host", host);
+  if (isPathProxy) {
+    requestHeaders.set("x-portside-path-proxy", "true");
+  }
 
   const response = NextResponse.rewrite(url, {
     request: {

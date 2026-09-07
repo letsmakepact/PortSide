@@ -45,7 +45,10 @@ async function handle(req: NextRequest, ctx: Ctx) {
   }
 
   const rawPath = req.headers.get("x-portside-original-path") || (path.length ? `/${path.map(encodeURIComponent).join("/")}` : "/");
-  const search = req.nextUrl.search;
+  const searchParams = new URLSearchParams(req.nextUrl.searchParams);
+  const isPathProxy = searchParams.get("__ps_path") === "1";
+  searchParams.delete("__ps_path");
+  const search = searchParams.toString() ? `?${searchParams.toString()}` : "";
   const target = `${svc.protocol}://127.0.0.1:${svc.port}${rawPath}${search}`;
 
   const headers = new Headers();
@@ -89,6 +92,28 @@ async function handle(req: NextRequest, ctx: Ctx) {
       }
       outHeaders.append(key, value);
     });
+
+    const contentType = upstream.headers.get("content-type") || "";
+    const clientHost = req.headers.get("x-portside-client-host") || "";
+    if (isPathProxy && contentType.includes("text/html")) {
+      let html = await upstream.text();
+      // Inject base tag if not already present
+      if (!html.includes("<base ") && !html.includes("<base/")) {
+        html = html.replace(/<head>/i, `<head><base href="/s/${label}/">`);
+      }
+      // Rewrite root-relative asset attributes to stay strictly namespaced under /s/:service/
+      html = html.replace(/(src|href)=["']\/(assets\/[^"']+)["']/gi, `$1="/s/${label}/$2"`);
+      html = html.replace(/(src|href)=["']\/(static\/[^"']+)["']/gi, `$1="/s/${label}/$2"`);
+      html = html.replace(/(src|href)=["']\/(favicon\.[^"']+)["']/gi, `$1="/s/${label}/$2"`);
+      html = html.replace(/(src|href)=["']\/(logo\.[^"']+)["']/gi, `$1="/s/${label}/$2"`);
+
+      outHeaders.delete("content-length");
+      return new Response(html, {
+        status: upstream.status,
+        statusText: upstream.statusText,
+        headers: outHeaders,
+      });
+    }
 
     return new Response(upstream.body, {
       status: upstream.status,
