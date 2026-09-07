@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
 
@@ -98,10 +98,16 @@ export default function ComparisonsPage() {
               Docs
             </Link>
             <Link
-              href="/open-source"
+              href="/ngrok-alternative"
               className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
             >
-              Open Source
+              Ngrok Alternative
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
+            >
+              Pricing
             </Link>
             <Link
               href="/dashboard"

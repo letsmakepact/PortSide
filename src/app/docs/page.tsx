@@ -102,6 +102,45 @@ export default function DocsPage() {
     ],
   };
 
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to Route Custom Subdomains to Dev Ports Without Editing /etc/hosts",
+    description:
+      "A step-by-step guide to configuring clean *.localhost subdomains for local development services using Portside.",
+    totalTime: "PT1M",
+    step: [
+      {
+        "@type": "HowToStep",
+        position: 1,
+        name: "Install Portside",
+        text: "Download the standalone launcher executable or install via curl script: curl -fsSL https://raw.githubusercontent.com/letsmakepact/PortSide/main/install.sh | bash",
+        url: `${appUrl}/docs#quick-start`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 2,
+        name: "Start Portside Proxy",
+        text: "Launch the application. Portside automatically binds to Port 80 and begins listening for HTTP Host headers.",
+        url: `${appUrl}/docs#architecture`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 3,
+        name: "Map Your Custom Subdomain",
+        text: "Open the dashboard and click New Service. Enter your desired subdomain (e.g. api) and internal dev port (e.g. 8080).",
+        url: `${appUrl}/docs#features`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 4,
+        name: "Access Without Port Numbers",
+        text: "Open http://api.localhost directly in any modern browser. Traffic routes seamlessly without modifying hosts files.",
+        url: `${appUrl}/docs#what-is-portside`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-sky-500 selection:text-white">
       {/* JSON-LD Schemas */}
@@ -112,6 +151,10 @@ export default function DocsPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
       />
 
       {/* Top Navigation */}
@@ -137,10 +180,16 @@ export default function DocsPage() {
               Comparisons
             </Link>
             <Link
-              href="/open-source"
+              href="/ngrok-alternative"
               className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
             >
-              Open Source
+              Ngrok Alternative
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
+            >
+              Pricing
             </Link>
             <Link
               href="/dashboard"

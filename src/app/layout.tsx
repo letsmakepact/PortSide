@@ -127,6 +127,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
         <link rel="icon" href="/icon.png?v=2" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
+        <link rel="alternate" type="application/rss+xml" title="Portside RSS Feed" href="/feed.xml" />
+        <link rel="help" href="/llms.txt" title="Portside AI Reference" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("portside:theme");if(t==="light"){document.documentElement.classList.remove("dark");}else{document.documentElement.classList.add("dark");}}catch(e){}})();`,

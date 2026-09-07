@@ -33,6 +33,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
+      url: `${appUrl}/ngrok-alternative`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      alternates: {
+        languages: {
+          en: `${appUrl}/ngrok-alternative`,
+          "en-US": `${appUrl}/ngrok-alternative`,
+          "x-default": `${appUrl}/ngrok-alternative`,
+        },
+      },
+    },
+    {
+      url: `${appUrl}/pricing`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: `${appUrl}/pricing`,
+          "en-US": `${appUrl}/pricing`,
+          "x-default": `${appUrl}/pricing`,
+        },
+      },
+    },
+    {
       url: `${appUrl}/open-source`,
       lastModified,
       changeFrequency: "weekly",
