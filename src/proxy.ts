@@ -80,6 +80,7 @@ async function verifySupporterStatus(): Promise<boolean> {
 }
 
 const PORTSIDE_SYSTEM_ROUTES = [
+  "/",
   "/dashboard",
   "/profile",
   "/lan",
@@ -87,6 +88,8 @@ const PORTSIDE_SYSTEM_ROUTES = [
   "/api",
   "/auth",
   "/portside-proxy",
+  "/about",
+  "/@me",
 ];
 
 const PORTSIDE_STATIC_FILES = new Set([
@@ -222,15 +225,6 @@ export async function proxy(request: NextRequest) {
           }
         } catch {}
       }
-
-      // 2. Inspect active service session cookie
-      if (!label) {
-        const cookieSvc = request.cookies.get("portside_active_service")?.value;
-        if (cookieSvc && /^[a-z0-9-]+$/.test(cookieSvc)) {
-          label = cookieSvc.toLowerCase();
-          targetPath = pathname;
-        }
-      }
     }
   }
 
@@ -278,10 +272,11 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  if (label && (pathname.startsWith("/s/") || !request.cookies.get("portside_active_service"))) {
-    response.cookies.set("portside_active_service", label, {
+  // Ensure any stale active service cookie is purged
+  if (request.cookies.has("portside_active_service")) {
+    response.cookies.set("portside_active_service", "", {
       path: "/",
-      maxAge: 1800,
+      maxAge: 0,
       sameSite: "lax",
     });
   }
