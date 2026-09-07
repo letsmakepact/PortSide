@@ -885,7 +885,7 @@ export default function Home() {
                   </h2>
 
                   <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                    Granular control over what touches the world. Expose public client demos globally on your custom vanity domain, or lock internal dashboards and admin tools behind a secure login gate at <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">/lan</code> accessible only to you on any connection—home Wi-Fi or 5G mobile.
+                    Granular control over what touches the world. Expose public client demos globally on your custom vanity domain, or lock internal dashboards and admin tools behind a secure login gate at <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">/lan</code>. Authenticates directly with your existing Portside credentials—no extra passwords or new accounts to manage, accessible seamlessly on home Wi-Fi or 5G mobile.
                   </p>
 
                   {/* Feature Highlights Grid */}
@@ -903,10 +903,10 @@ export default function Home() {
                     <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
                       <div className="text-xs font-bold text-white flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                        Protected /lan Access
+                        Built-in Portside Auth
                       </div>
                       <p className="text-[11px] text-slate-400 leading-normal">
-                        Protected with a secure master login. Zero unauthorized visitors can peek your private dashboard.
+                        Logs in with your existing Portside account credentials. Zero setup headache.
                       </p>
                     </div>
 
@@ -1043,7 +1043,7 @@ export default function Home() {
                             </span>
                             <span className="text-amber-400 text-[10px] font-mono bg-amber-950/50 border border-amber-500/30 px-1.5 py-0.2 rounded flex items-center gap-1">
                               <KeyRound className="w-2.5 h-2.5" />
-                              Login Required
+                              Portside Auth
                             </span>
                           </div>
                           <div className="p-3 rounded-xl bg-slate-900/40 border border-amber-500/20 flex items-center justify-between gap-3 text-xs">
@@ -1051,7 +1051,7 @@ export default function Home() {
                               <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                               <div className="min-w-0">
                                 <p className="font-semibold text-white text-xs truncate">internal-db-admin</p>
-                                <p className="text-[10px] font-mono text-slate-500">internal port :5432 &middot; 5G & remote protected</p>
+                                <p className="text-[10px] font-mono text-slate-500">internal port :5432 &middot; protected via Portside login</p>
                               </div>
                             </div>
                             <span className="text-[11px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded truncate shrink-0">
