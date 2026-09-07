@@ -35,7 +35,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { AnchorLogo } from "@/components/AnchorLogo";
+import { AnchorLogo } from "@/components/ui/AnchorLogo";
 
 interface ReleaseAsset {
   name: string;

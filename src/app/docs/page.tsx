@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Script from "next/script";
-import { AnchorLogo } from "@/components/AnchorLogo";
+import { AnchorLogo } from "@/components/ui/AnchorLogo";
 
 interface DocItem {
   id: string;
