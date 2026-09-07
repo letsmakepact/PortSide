@@ -365,6 +365,11 @@ export async function proxy(request: NextRequest) {
       lanUrl.pathname = "/lan";
       return withSecurityHeaders(NextResponse.redirect(lanUrl));
     }
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      const dashUrl = request.nextUrl.clone();
+      dashUrl.pathname = "/dashboard";
+      return withSecurityHeaders(NextResponse.redirect(dashUrl));
+    }
   }
 
   if (!label || label === "www" || label === "app") {
