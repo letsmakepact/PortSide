@@ -216,7 +216,7 @@ export async function proxy(request: NextRequest) {
             targetPath = pathname;
           } else {
             const refHostMatch = refUrl.hostname.match(
-              /^([a-z0-9-]+)\.(?:localhost|local|.*\.portside\.lol|(?:[0-9.-]+\.)?(?:nip|sslip)\.io)$/i
+              /^([a-z0-9-]+)\.(?:localhost|local|[a-z0-9-]+\.portside\.lol|(?:[0-9.-]+\.)?(?:nip|sslip)\.io)$/i
             );
             if (refHostMatch && refHostMatch[1] !== "www" && refHostMatch[1] !== "app") {
               label = refHostMatch[1].toLowerCase();
@@ -224,6 +224,22 @@ export async function proxy(request: NextRequest) {
             }
           }
         } catch {}
+      }
+
+      // 2. Active service cookie fallback for sub-resources & dynamic module imports (/assets/*, *.js, *.css, etc.)
+      if (!label) {
+        const isSpaAsset =
+          pathname.startsWith("/assets/") ||
+          pathname.startsWith("/static/") ||
+          /\.(?:js|mjs|cjs|css|svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|eot|json|map)$/i.test(pathname);
+
+        if (isSpaAsset) {
+          const cookieService = request.cookies.get("portside_active_service")?.value;
+          if (cookieService && /^[a-z0-9-]+$/.test(cookieService)) {
+            label = cookieService.toLowerCase();
+            targetPath = pathname;
+          }
+        }
       }
     }
   }
@@ -272,14 +288,12 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Ensure any stale active service cookie is purged
-  if (request.cookies.has("portside_active_service")) {
-    response.cookies.set("portside_active_service", "", {
-      path: "/",
-      maxAge: 0,
-      sameSite: "lax",
-    });
-  }
+  // Track active service in cookie so subsequent dynamic chunk imports & assets resolve cleanly
+  response.cookies.set("portside_active_service", label, {
+    path: "/",
+    maxAge: 86400,
+    sameSite: "lax",
+  });
 
   return response;
 }
