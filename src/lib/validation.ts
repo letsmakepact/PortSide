@@ -38,6 +38,13 @@ export async function validateService(
   if (body.port !== undefined || !opts.partial) {
     const port = Number(body.port);
     if (!Number.isInteger(port) || port < 1 || port > 65535) return { ok: false, error: "Port must be between 1 and 65535." };
+    const appPort = Number(process.env.PORT ?? 80);
+    if (port === appPort) {
+      return { ok: false, error: `Port ${port} is reserved for PortSide itself and cannot be proxied.` };
+    }
+    if ([5432, 3306, 27017, 6379, 22, 23, 25].includes(port)) {
+      return { ok: false, error: `Port ${port} is a reserved system or database wire port and cannot be mapped as an HTTP service.` };
+    }
     out.port = port;
   }
 

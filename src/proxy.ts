@@ -133,12 +133,20 @@ async function verifySupporterStatus(): Promise<boolean> {
   return false;
 }
 
+function withSecurityHeaders(res: NextResponse): NextResponse {
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("X-Frame-Options", "SAMEORIGIN");
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set("X-XSS-Protection", "1; mode=block");
+  return res;
+}
+
 export async function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase();
   const hostname = host.split(":")[0];
   const { pathname } = request.nextUrl;
 
-  // Static assets & internal Next.js resources fast bypass (prevents 502 Bad Gateway)
+  // 0. Static assets & internal Next.js resources fast bypass
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/opengraph-image") ||
@@ -148,7 +156,64 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/favicon") ||
     PORTSIDE_STATIC_FILES.has(pathname)
   ) {
-    return NextResponse.next();
+    return withSecurityHeaders(NextResponse.next());
+  }
+
+  // 0a. Drive-By CSRF Defense & Localhost Origin Guard
+  // For state-mutating requests (POST, PUT, PATCH, DELETE), verify Origin header
+  const origin = request.headers.get("origin");
+  if (origin && !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
+    try {
+      const originHost = new URL(origin).hostname.toLowerCase();
+      const isAllowedOrigin =
+        originHost === "localhost" ||
+        originHost === "127.0.0.1" ||
+        originHost === "::1" ||
+        originHost.endsWith(".localhost") ||
+        originHost.endsWith(".local") ||
+        originHost === hostname ||
+        originHost === "portside.lol" ||
+        originHost === "www.portside.lol" ||
+        originHost === "app.portside.lol";
+
+      if (!isAllowedOrigin) {
+        return withSecurityHeaders(
+          new NextResponse(
+            JSON.stringify({ error: "Cross-Origin Request Blocked by PortSide Security Shield." }),
+            { status: 403, headers: { "content-type": "application/json" } }
+          )
+        );
+      }
+    } catch {
+      return withSecurityHeaders(
+        new NextResponse(
+          JSON.stringify({ error: "Invalid Origin header." }),
+          { status: 403, headers: { "content-type": "application/json" } }
+        )
+      );
+    }
+  }
+
+  // 0b. Public Vanity Subdomain Lockdown
+  // If an external visitor hits the developer's public vanity tunnel (*.portside.lol),
+  // strictly block access to the private control plane and admin APIs.
+  const isPortsideApex = hostname === "portside.lol" || hostname === "www.portside.lol";
+  const isPortsideVanitySubdomain = hostname.endsWith(".portside.lol") && !isPortsideApex && hostname !== "app.portside.lol";
+
+  if (isPortsideVanitySubdomain) {
+    if (
+      pathname.startsWith("/dashboard") ||
+      pathname.startsWith("/api/services") ||
+      pathname.startsWith("/api/hotspot") ||
+      pathname.startsWith("/api/updates")
+    ) {
+      return withSecurityHeaders(
+        new NextResponse(
+          JSON.stringify({ error: "Access Denied: Control plane and service configuration are restricted to local loopback." }),
+          { status: 403, headers: { "content-type": "application/json" } }
+        )
+      );
+    }
   }
 
   // 1. Fast-path local network addresses (0ms latency, works offline)
@@ -168,7 +233,9 @@ export async function proxy(request: NextRequest) {
     // 2. Authoritative check: ask official server if this host is recognized and authorized
     const isAuthorized = await verifyHostWithServer(hostname);
     if (!isAuthorized) {
-      return new NextResponse("Forbidden: Host not recognized by PortSide official server.", { status: 403 });
+      return withSecurityHeaders(
+        new NextResponse("Forbidden: Host not recognized by PortSide official server.", { status: 403 })
+      );
     }
   }
 
@@ -176,15 +243,17 @@ export async function proxy(request: NextRequest) {
   if (hostname.endsWith(".local")) {
     const isSupporter = await verifySupporterStatus();
     if (!isSupporter) {
-      return new NextResponse(
-        "Forbidden: *.local mDNS routing is reserved for verified PortSide Supporters.",
-        { status: 403 }
+      return withSecurityHeaders(
+        new NextResponse(
+          "Forbidden: *.local mDNS routing is reserved for verified PortSide Supporters.",
+          { status: 403 }
+        )
       );
     }
   }
 
   if (pathname.startsWith("/portside-proxy")) {
-    return new NextResponse("Not found", { status: 404 });
+    return withSecurityHeaders(new NextResponse("Not found", { status: 404 }));
   }
 
   let label: string | null = null;
@@ -273,35 +342,33 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!label && PORTSIDE_STATIC_FILES.has(pathname)) {
-    return NextResponse.next();
+    return withSecurityHeaders(NextResponse.next());
   }
 
   if (!label && (pathname === "/about" || pathname === "/@me")) {
     const profileUrl = request.nextUrl.clone();
     profileUrl.pathname = "/profile";
-    return NextResponse.rewrite(profileUrl);
+    return withSecurityHeaders(NextResponse.rewrite(profileUrl));
   }
 
   const isRawIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname);
-  const isPortsideApex = hostname === "portside.lol" || hostname === "www.portside.lol";
-  const isPortsideVanitySubdomain = hostname.endsWith(".portside.lol") && !isPortsideApex && hostname !== "app.portside.lol";
   const isTryCloudflare = hostname.endsWith(".trycloudflare.com");
 
   if (!label && pathname === "/") {
     if (isPortsideVanitySubdomain) {
       const profileUrl = request.nextUrl.clone();
       profileUrl.pathname = "/profile";
-      return NextResponse.rewrite(profileUrl);
+      return withSecurityHeaders(NextResponse.rewrite(profileUrl));
     }
     if (isRawIp || isTryCloudflare) {
       const lanUrl = request.nextUrl.clone();
       lanUrl.pathname = "/lan";
-      return NextResponse.redirect(lanUrl);
+      return withSecurityHeaders(NextResponse.redirect(lanUrl));
     }
   }
 
   if (!label || label === "www" || label === "app") {
-    return NextResponse.next();
+    return withSecurityHeaders(NextResponse.next());
   }
 
   const url = request.nextUrl.clone();
@@ -330,7 +397,7 @@ export async function proxy(request: NextRequest) {
     sameSite: "lax",
   });
 
-  return response;
+  return withSecurityHeaders(response);
 }
 
 export const config = {

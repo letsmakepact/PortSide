@@ -45,6 +45,17 @@ async function handle(req: NextRequest, ctx: Ctx) {
   }
 
   const rawPath = req.headers.get("x-portside-original-path") || (path.length ? `/${path.map(encodeURIComponent).join("/")}` : "/");
+  
+  // Strict Path Traversal Defense: block directory traversal attacks trying to escape dev server root
+  if (rawPath.includes("..") || rawPath.includes("%2e%2e") || rawPath.includes("\0")) {
+    return errorPage(
+      400,
+      "Path Traversal Blocked",
+      "Directory traversal patterns are not permitted.",
+      label,
+    );
+  }
+
   const parsedReqUrl = new URL(req.url);
   const searchParams = new URLSearchParams(req.nextUrl.searchParams);
   const isPathProxy =
@@ -120,6 +131,11 @@ async function handle(req: NextRequest, ctx: Ctx) {
       }
       outHeaders.append(key, value);
     });
+
+    // Enforce essential security headers on proxied responses
+    outHeaders.set("x-content-type-options", "nosniff");
+    outHeaders.set("x-frame-options", "SAMEORIGIN");
+    outHeaders.set("referrer-policy", "strict-origin-when-cross-origin");
 
     const contentType = upstream.headers.get("content-type") || "";
 
