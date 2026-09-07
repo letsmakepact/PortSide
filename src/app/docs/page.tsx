@@ -39,7 +39,6 @@ export const metadata: Metadata = {
     title: "Portside Documentation · Name Your Localhost",
     description:
       "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config Open-Air signals and mobile & TV access.",
-    creator: "@pactwithdevil",
   },
 };
 

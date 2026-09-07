@@ -90,7 +90,7 @@ export const PACT_DEFAULT_PROFILE: PublicProfile = {
   verifiedBadgeText: "PortSide Verified Supporter",
   skills: ["TypeScript", "Next.js", "Go", "Tailwind CSS", "PostgreSQL", "Docker"],
   github: "https://github.com/letsmakepact",
-  twitter: "https://x.com/pactwithdevil",
+  twitter: "",
   buymeacoffee: "https://buymeacoffee.com/pacts",
   website: "https://pact.portside.lol",
   discord: "",

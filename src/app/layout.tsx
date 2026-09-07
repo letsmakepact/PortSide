@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     "portside",
   ],
   authors: [{ name: "pact", url: "https://github.com/letsmakepact" }],
-  creator: "pact (@pactwithdevil)",
+  creator: "pact (letsmakepact)",
   category: "technology",
   classification: "Developer Tools",
   alternates: {
@@ -93,7 +93,6 @@ export const metadata: Metadata = {
     title: "Portside · Name Your Localhost",
     description:
       "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
-    creator: "@pactwithdevil",
     images: ["/opengraph-image"],
   },
   icons: {
