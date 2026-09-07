@@ -38,8 +38,30 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     user = await getCurrentUser();
   }
 
-  // If no user is authenticated, this is an unauthenticated guest / standard instance.
-  if (!user) return false;
+  // If no user is authenticated (e.g. mobile phone/Smart TV on LAN or unauthenticated vanity visitor),
+  // check if this PortSide node is owned by a verified Supporter.
+  if (!user) {
+    try {
+      const supporterRows = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          tier: users.tier,
+        })
+        .from(users)
+        .where(eq(users.tier, "supporter"))
+        .limit(1);
+
+      if (supporterRows.length > 0) {
+        const nodeSupporter = supporterRows[0];
+        const sessionResult = await getOrFetchSupporterSession(nodeSupporter.email);
+        if (sessionResult.valid && sessionResult.payload?.tier === "supporter") {
+          return true;
+        }
+      }
+    } catch {}
+    return false;
+  }
 
   // Authoritatively verify with sovereign server. NEVER trust local database tier or client state.
   const sessionResult = await getOrFetchSupporterSession(user.email);
