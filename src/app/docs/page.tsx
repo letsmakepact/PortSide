@@ -7,12 +7,12 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://portside.lol";
 export const metadata: Metadata = {
   title: "Documentation · Name Your Localhost Reverse Proxy",
   description:
-    "Comprehensive developer guide for Portside: zero-config *.localhost reverse proxy, port 80 routing without /etc/hosts, mDNS mobile access, and 10-foot Smart TV testing.",
+    "Comprehensive developer guide for Portside: zero-config *.localhost reverse proxy, port 80 routing without /etc/hosts, Open-Air signals mobile access, and 10-foot Smart TV testing.",
   keywords: [
     "localhost reverse proxy documentation",
     "clean localhost subdomains",
     "reverse proxy port 80",
-    "local development mDNS",
+    "local development Open-Air signals",
     "smart tv remote testing",
     "test localhost on iphone android",
     "zero config local domains",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Portside Documentation · Name Your Localhost",
     description:
-      "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
+      "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config Open-Air signals and mobile & TV access.",
     url: `${appUrl}/docs`,
     siteName: "Portside",
     locale: "en_US",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Portside Documentation · Name Your Localhost",
     description:
-      "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
+      "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config Open-Air signals and mobile & TV access.",
     creator: "@pactwithdevil",
   },
 };
@@ -131,6 +131,18 @@ export default function DocsPage() {
 
           <nav aria-label="Documentation quick links" className="flex items-center gap-3">
             <Link
+              href="/comparisons"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
+            >
+              Comparisons
+            </Link>
+            <Link
+              href="/open-source"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
+            >
+              Open Source
+            </Link>
+            <Link
               href="/dashboard"
               className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 transition shadow-sm"
             >
@@ -159,7 +171,7 @@ export default function DocsPage() {
             Portside · Localhost Reverse Proxy &amp; Multi-Device Cockpit
           </h1>
           <p className="text-base md:text-lg text-slate-400 leading-relaxed max-w-2xl">
-            Route custom <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">*.localhost</code> and <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">*.local</code> domains directly to your dev servers without port numbers. Zero-config mDNS, camera QR codes, and Smart TV remote controls.
+            Route custom <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">*.localhost</code> and <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">*.local</code> domains directly to your dev servers without port numbers. Zero-config Open-Air signals, camera QR codes, and Smart TV remote controls.
           </p>
         </div>
 

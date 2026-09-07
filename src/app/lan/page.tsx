@@ -8,7 +8,7 @@ import { LanRemoteNav } from "@/components/lan/LanRemoteNav";
 export const metadata: Metadata = {
   title: "Multi-Device LAN Launchpad",
   description:
-    "Launch and test local development servers across iOS, Android, and Smart TV browsers with zero-config mDNS and scannable QR codes.",
+    "Launch and test local development servers across iOS, Android, and Smart TV browsers with zero-config Open-Air signals and scannable QR codes.",
   alternates: {
     canonical: "/lan",
     languages: {

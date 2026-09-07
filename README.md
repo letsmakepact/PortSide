@@ -50,9 +50,9 @@ Portside is 100% free for individual developers, with optional Supporter perks f
 | **Smart TV Remote D-Pad Navigation** | Yes (Included) | Yes |
 | **Device-Specific Guided Tutorial** | Yes (Included) | Yes |
 | **Personal Multi-Service Launchpad Dashboard (`/lan`)** | Jump Links | Full Interactive Dashboard |
-| **Clean `.local` / `.localhost` on OTHER Devices** | Raw IP / nip.io | Clean Zero-Config Names |
+| **Clean `.local` on Other Devices** | Raw IP / nip.io | Clean Open-Air Signals |
 | **Isolated Dev Wi-Fi Hotspot** | - | Yes |
-| **Global 5G / Cellular Tunneling (`*.portside.lol`)** | - | Yes |
+| **Global 5G Remote Access (`*.portside.lol`)** | - | Yes (Our Tunnels) |
 
 ---
 
@@ -61,15 +61,16 @@ Portside is 100% free for individual developers, with optional Supporter perks f
 ### 1. Mobile Phones & Tablets (iOS & Android)
 - **Instant Camera Scan:** Open the **Mobile / TV LAN** modal in your dashboard and point your phone camera at the QR code.
 - **Free Direct Redirect:** Automatically jumps to `http://<lan-ip>/s/<project>` or `http://<project>.<lan-ip>.nip.io` over your local Wi-Fi with zero configuration.
-- **Clean Local Names (Supporters):** Open `http://<project>.local` directly in mobile Safari or Chrome without typing raw IP addresses.
+- **Clean Local Names (Supporters):** Open `http://<project>.local` directly in mobile Safari or Chrome via Open-Air signals without typing raw IP addresses.
 - **Home Screen PWA:** Tap "Add to Home Screen" to install Portside as a standalone mobile app with safe-area notch and home-bar padding.
 
 ### 2. Smart TVs & Big Screen Displays (10-Foot UI)
 - **Wireless TV Testing:** Open the built-in web browser on your LG (webOS), Samsung (Tizen), Android TV, Fire TV, or Apple TV.
 - **Navigate to:**
   ```
-  http://<your-lan-ip>/lan
+  http://<your-lan-ip>/s/<project>
   ```
+  *(Supporters can open `http://<your-lan-ip>/lan` for the full interactive multi-service launchpad).*
 - **Remote Control Navigation:** Use the physical arrow keys on your TV remote control to glide between launch cards with 4px glowing sky-blue focus rings. Press **OK / Enter** on the remote to launch full-screen.
 
 ### 3. Laptops & Desktops (Workstation Cockpit)
@@ -89,17 +90,20 @@ Portside is 100% free for individual developers, with optional Supporter perks f
 
 ## Quick Start
 
+> [!NOTE]
+> **Release Status:** Current public binary release is **`v1.0.0`**. All new updates documented below (Smart TV D-pad, high-redundancy QR, Open-Air signals, and sovereign proxy fast-path) are committed in `main` and available when running from source or in the upcoming **`v1.1.0`** binary release.
+
 ### Option A: Standalone Launcher (Recommended)
 
 Download the pre-compiled launcher for your operating system from [GitHub Releases](https://github.com/letsmakepact/PortSide/releases/latest):
 
-| Operating System | Binary Asset |
+| Operating System | Binary Asset in GitHub Releases |
 |---|---|
-| **Windows** (x64) | `Portside.exe` (with embedded anchor emblem) |
-| **macOS** (Apple Silicon M1/M2/M3/M4) | `Portside-darwin-arm64` / `Portside.app` |
-| **macOS** (Intel) | `Portside-darwin-amd64` / `Portside.app` |
-| **Linux** (x86_64) | `Portside-linux-amd64` / `Portside` |
-| **Linux** (arm64) | `Portside-linux-arm64` |
+| **Windows** (x64) | `Portside-Launcher.exe` |
+| **macOS** (Apple Silicon M1/M2/M3/M4) | `Portside-Launcher-darwin-arm64` |
+| **macOS** (Intel) | `Portside-Launcher-darwin-amd64` |
+| **Linux** (x86_64) | `Portside-Launcher-linux-amd64` |
+| **Linux** (arm64) | `Portside-Launcher-linux-arm64` |
 
 #### One-Line Terminal Setup (macOS & Linux):
 
@@ -163,6 +167,12 @@ Because Portside runs on standard HTTP port 80, modern browsers resolve any `*.l
 No `/etc/hosts` modifications, port suffixes, or reverse proxy certificates required.
 
 ---
+
+## Documentation & AI Engine Reference
+- **Docs:** [portside.lol/docs](https://portside.lol/docs)
+- **Comparisons & Benchmarks:** [portside.lol/comparisons](https://portside.lol/comparisons)
+- **Open Source Showcase:** [portside.lol/open-source](https://portside.lol/open-source)
+- **AI Crawlers & LLM Indexing:** [portside.lol/llms.txt](https://portside.lol/llms.txt) · [portside.lol/llms-full.txt](https://portside.lol/llms-full.txt)
 
 ## License & Terms of Use
 

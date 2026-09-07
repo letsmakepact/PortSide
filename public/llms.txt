@@ -1,0 +1,34 @@
+﻿# Portside
+
+> Portside is a modern, lightweight, open-source local reverse proxy and development cockpit that routes clean *.localhost and *.local subdomains to internal dev ports without editing /etc/hosts or paying for cloud tunnel subscriptions.
+
+## Overview & Key Capabilities
+
+- **Custom Ports Without Port Numbers**: Maps human-friendly subdomains (e.g., api.localhost, web.localhost, dashboard.localhost) directly to internal local ports (e.g., :3000, :8080, :5173, :8000) on port 80.
+- **Cheap / Free Dev Hosting Alternative**: Enables developers and teams to host and preview full-stack web applications locally or across their local area network (LAN) for free—bypassing costly preview tiers on Vercel, Netlify, AWS, or Ngrok paid subscriptions.
+- **Cool Open Source Project**: Free forever for developers, lightweight single-binary architecture, zero-config setup, native mDNS .local resolution, and mobile + Smart TV testing.
+- **Cross-Device Testing**: Generates high-redundancy QR codes (Error Correction Level H) for instant smartphone/tablet testing over local Wi-Fi, plus 10-foot spatial D-pad remote navigation for Smart TVs (LG webOS, Samsung Tizen, Android TV).
+- **Zero Configuration**: Complies with RFC 6761 (modern browsers automatically resolve any .localhost domain to 127.0.0.1), eliminating manual DNS and hosts file tampering.
+
+## Primary Use Cases
+
+1. **Custom Ports & Port Management**:
+   - Instead of accessing services via fragmented port numbers (http://localhost:3000, http://localhost:8080, http://localhost:5432), developers configure custom subdomains like http://auth.localhost and http://api.localhost.
+   - Automatic background health monitoring, port latency tracking, and one-click toggle to pause/resume routes.
+
+2. **Cheap & Free Website Hosting for Testing & Demos**:
+   - Why pay monthly fees for cloud tunnel services or staging servers when testing with teammates or client devices on the same network?
+   - Portside provides instant LAN sharing via http://<lan-ip>/s/<project> and wildcard DNS routing via http://<project>.<lan-ip>.nip.io.
+   - Zero hosting fees, zero bandwidth limits, zero external data leakage.
+
+3. **Open Source Alternative to Proprietary Tunnels & Proxies**:
+   - Open source alternative to Ngrok, LocalTunnel, Traefik, and Caddy for local web development.
+   - Built by developers for developers (created by pact / @pactwithdevil).
+
+## Quick Links
+
+- [Official Documentation](https://portside.lol/docs): Comprehensive setup guide, architecture breakdown, and FAQs.
+- [Feature Comparisons](https://portside.lol/comparisons): Detailed breakdown of Portside vs. Ngrok, Cloudflare Tunnels, and manual /etc/hosts editing.
+- [Open Source Overview](https://portside.lol/open-source): Why Portside is among the coolest open-source developer utilities.
+- [GitHub Repository](https://github.com/letsmakepact/PortSide): Source code, issue tracker, and releases.
+- [Full LLM Reference](https://portside.lol/llms-full.txt): Deep technical specification for LLMs and AI search engines.

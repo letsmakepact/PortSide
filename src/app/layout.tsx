@@ -30,10 +30,17 @@ export const metadata: Metadata = {
   description:
     "Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.",
   keywords: [
+    "custom ports",
+    "custom port routing",
+    "cheap websites to host on",
+    "free hosting alternative for developers",
+    "open source cool projects",
+    "open source reverse proxy",
     "localhost reverse proxy",
     "clean localhost subdomains",
     "local development port manager",
     "zero config reverse proxy",
+    "ngrok alternative open source",
     "test dev server on mobile",
     "smart tv web testing",
     "mDNS local routing",

@@ -20,10 +20,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
-      url: `${appUrl}/`,
+      url: `${appUrl}/comparisons`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      alternates: {
+        languages: {
+          en: `${appUrl}/comparisons`,
+          "en-US": `${appUrl}/comparisons`,
+          "x-default": `${appUrl}/comparisons`,
+        },
+      },
+    },
+    {
+      url: `${appUrl}/open-source`,
       lastModified,
       changeFrequency: "weekly",
       priority: 0.9,
+      alternates: {
+        languages: {
+          en: `${appUrl}/open-source`,
+          "en-US": `${appUrl}/open-source`,
+          "x-default": `${appUrl}/open-source`,
+        },
+      },
+    },
+    {
+      url: `${appUrl}/`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.85,
       alternates: {
         languages: {
           en: `${appUrl}/`,

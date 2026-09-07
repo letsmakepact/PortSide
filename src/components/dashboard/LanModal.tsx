@@ -204,7 +204,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                     ? "Remote redirect. Connect seamlessly from external devices."
                     : "Upgrade to Supporter to enable remote links."
                   : isSupporter
-                  ? "Local Wi-Fi redirect (.local for iOS & Apple Bonjour). Point camera to launch."
+                  ? "Local Wi-Fi redirect (.local via Open-Air signals). Point camera to launch."
                   : "Local Wi-Fi redirect. Point your camera to launch immediately."}
               </p>
             </div>
