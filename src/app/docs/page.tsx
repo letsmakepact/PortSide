@@ -211,11 +211,6 @@ export default function DocsPage() {
 
           <nav className="hidden md:flex items-center gap-6 text-sm text-slate-400">
             <Link href="/" className="hover:text-white transition">Home</Link>
-            <a href="#overview" onClick={(e) => scrollToItem(e, "overview")} className="hover:text-white transition">Overview</a>
-            <a href="#localhost-subdomains" onClick={(e) => scrollToItem(e, "localhost-subdomains")} className="hover:text-white transition">Routing</a>
-            <a href="#mdns-discovery" onClick={(e) => scrollToItem(e, "mdns-discovery")} className="hover:text-white transition">Mobile LAN</a>
-            <a href="#vanity-domains" onClick={(e) => scrollToItem(e, "vanity-domains")} className="hover:text-white transition">Edge Tunnels</a>
-            <a href="#about-me-page" onClick={(e) => scrollToItem(e, "about-me-page")} className="hover:text-white transition">Showcase</a>
           </nav>
 
           <div className="flex items-center gap-3">
