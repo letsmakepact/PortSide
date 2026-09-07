@@ -25,6 +25,13 @@ export interface ProjectDTO {
   slug: string;
   description: string;
   color: string;
+  icon: string;
+  category: string;
+  tags: string[];
+  repoUrl: string;
+  docsUrl: string;
+  lead: string;
+  accent: string;
   createdAt: string;
   updatedAt: string;
   serviceCount?: number;
@@ -55,4 +62,11 @@ export interface ProjectInput {
   name: string;
   description?: string;
   color?: string;
+  icon?: string;
+  category?: string;
+  tags?: string[];
+  repoUrl?: string;
+  docsUrl?: string;
+  lead?: string;
+  accent?: string;
 }

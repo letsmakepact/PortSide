@@ -85,5 +85,18 @@ export function validateProject(raw: unknown, opts: { partial?: boolean } = {}):
     if (!(PROJECT_COLORS as readonly string[]).includes(color)) return { ok: false, error: "Invalid color." };
     out.color = color;
   }
+  if (body.icon !== undefined) out.icon = String(body.icon).slice(0, 32) || "layers";
+  if (body.category !== undefined) out.category = String(body.category).slice(0, 64) || "development";
+  if (body.tags !== undefined) {
+    if (Array.isArray(body.tags)) {
+      out.tags = body.tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean).slice(0, 15);
+    } else {
+      out.tags = [];
+    }
+  }
+  if (body.repoUrl !== undefined) out.repoUrl = String(body.repoUrl).trim().slice(0, 300);
+  if (body.docsUrl !== undefined) out.docsUrl = String(body.docsUrl).trim().slice(0, 300);
+  if (body.lead !== undefined) out.lead = String(body.lead).trim().slice(0, 120);
+  if (body.accent !== undefined) out.accent = String(body.accent).trim().slice(0, 32) || "glow";
   return { ok: true, data: out };
 }

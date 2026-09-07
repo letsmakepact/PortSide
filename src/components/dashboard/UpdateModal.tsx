@@ -130,7 +130,7 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
                 {update.isExe ? (
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant="secondary"
                     className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold cursor-default hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-400"
                   >
                     <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-1.5" />

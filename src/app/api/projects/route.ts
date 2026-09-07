@@ -42,7 +42,20 @@ export async function POST(req: Request) {
     const slug = await uniqueSlug(user.id, slugify(d.name!));
     const [row] = await db
       .insert(projects)
-      .values({ userId: user.id, name: d.name!, slug, description: d.description ?? "", color: d.color ?? "indigo" })
+      .values({
+        userId: user.id,
+        name: d.name!,
+        slug,
+        description: d.description ?? "",
+        color: d.color ?? "indigo",
+        icon: d.icon ?? "layers",
+        category: d.category ?? "development",
+        tags: d.tags ?? [],
+        repoUrl: d.repoUrl ?? "",
+        docsUrl: d.docsUrl ?? "",
+        lead: d.lead ?? "",
+        accent: d.accent ?? "glow",
+      })
       .returning();
     await db.insert(activityLogs).values({ userId: user.id, action: "project", message: `Created project "${row.name}"` });
     return Response.json({ project: toProjectDTO(row, 0) }, { status: 201 });

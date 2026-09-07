@@ -1891,7 +1891,7 @@ export function SettingsView() {
                 </Button>
                 {isOnApp ? (
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     className="border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-semibold cursor-default hover:bg-emerald-500/10 hover:text-emerald-400"
                   >
                     <CheckCircle2 className="h-4 w-4 text-emerald-400 mr-1.5" />
