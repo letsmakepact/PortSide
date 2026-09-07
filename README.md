@@ -91,7 +91,7 @@ Portside is 100% free for individual developers, with optional Supporter perks f
 ## Quick Start
 
 > [!NOTE]
-> **Release Status:** Current public binary release is **`v1.0.0`**. All new updates documented below (Smart TV D-pad, high-redundancy QR, Open-Air signals, and sovereign proxy fast-path) are committed in `main` and available when running from source or in the upcoming **`v1.1.0`** binary release.
+> **Release Status:** Current public binary release is **`v1.0.0`**. All new updates documented below (Smart TV D-pad, high-redundancy QR, Open-Air signals, and official proxy fast-path) are committed in `main` and available when running from source or in the upcoming **`v1.1.0`** binary release.
 
 ### Option A: Standalone Launcher (Recommended)
 

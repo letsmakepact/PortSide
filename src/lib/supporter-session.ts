@@ -157,7 +157,7 @@ export async function getOrFetchSupporterSession(
       valid: false,
       sessionTicket: null,
       payload: null,
-      error: err?.message || "Failed to contact sovereign session server.",
+      error: err?.message || "Failed to contact official session server.",
     };
   }
 }

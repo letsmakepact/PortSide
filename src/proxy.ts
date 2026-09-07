@@ -165,10 +165,10 @@ export async function proxy(request: NextRequest) {
     /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
 
   if (!isLocalNetwork) {
-    // 2. Authoritative check: ask sovereign server if this host is recognized and authorized
-    const isKnown = await verifyHostWithServer(hostname);
-    if (!isKnown) {
-      return new NextResponse("Forbidden: Host not recognized by PortSide sovereign server.", { status: 403 });
+    // 2. Authoritative check: ask official server if this host is recognized and authorized
+    const isAuthorized = await verifyHostWithServer(hostname);
+    if (!isAuthorized) {
+      return new NextResponse("Forbidden: Host not recognized by PortSide official server.", { status: 403 });
     }
   }
 

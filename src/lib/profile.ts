@@ -77,7 +77,7 @@ export const PACT_DEFAULT_PROFILE: PublicProfile = {
   handle: "pact",
   name: "pact",
   title: "Full-Stack Developer & Systems Architect",
-  bio: "Building sovereign local infrastructure, distributed network routing, and modern web applications. Powered by PortSide.",
+  bio: "Building modern local infrastructure, distributed network routing, and web applications. Powered by PortSide.",
   avatarUrl: "https://github.com/letsmakepact.png",
   bannerUrl: "",
   bannerPreset: "cyber-mesh",

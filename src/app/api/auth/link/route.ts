@@ -102,7 +102,7 @@ export async function POST(req: Request) {
       if (!sessionResult.valid || !sessionResult.sessionTicket) {
         return NextResponse.json(
           {
-            error: "Server confirmation failed: Could not verify active Supporter entitlement on the sovereign server. Please check your network connection or active subscription.",
+            error: "Server confirmation failed: Could not verify active Supporter entitlement on the official server. Please check your network connection or active subscription.",
           },
           { status: 403 }
         );
