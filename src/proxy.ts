@@ -79,6 +79,36 @@ async function verifySupporterStatus(): Promise<boolean> {
   return false;
 }
 
+const PORTSIDE_SYSTEM_ROUTES = [
+  "/dashboard",
+  "/profile",
+  "/lan",
+  "/login",
+  "/api",
+  "/auth",
+  "/portside-proxy",
+];
+
+const PORTSIDE_STATIC_FILES = new Set([
+  "/favicon.ico",
+  "/favicon.svg",
+  "/icon.svg",
+  "/icon.png",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/apple-icon.png",
+  "/apple-touch-icon.png",
+  "/og.png",
+  "/anchor.png",
+  "/bright_anchor.png",
+  "/portside.png",
+  "/portside-256.png",
+  "/portside-512.png",
+  "/manifest.webmanifest",
+  "/robots.txt",
+  "/sitemap.xml",
+]);
+
 export async function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase();
   const hostname = host.split(":")[0];
@@ -87,12 +117,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/opengraph-image") ||
-    pathname.startsWith("/twitter-image") ||
-    pathname.startsWith("/icon") ||
-    pathname.startsWith("/apple-icon") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.startsWith("/manifest") ||
-    /\.(?:svg|png|jpg|jpeg|gif|webp|ico|webmanifest)$/.test(pathname)
+    pathname.startsWith("/twitter-image")
   ) {
     return NextResponse.next();
   }
@@ -171,6 +196,48 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Fallback for Single Page Apps (SPA) requesting root-relative assets (/assets/..., /logo.svg, etc.)
+  if (!label) {
+    const isSystemPath = PORTSIDE_SYSTEM_ROUTES.some(
+      (r) => pathname === r || pathname.startsWith(`${r}/`)
+    );
+    if (!isSystemPath) {
+      // 1. Inspect Referer header
+      const referer = request.headers.get("referer");
+      if (referer) {
+        try {
+          const refUrl = new URL(referer);
+          const refMatch = refUrl.pathname.match(/^\/s\/([a-z0-9-]+)(?:\/|$)/i);
+          if (refMatch) {
+            label = refMatch[1].toLowerCase();
+            targetPath = pathname;
+          } else {
+            const refHostMatch = refUrl.hostname.match(
+              /^([a-z0-9-]+)\.(?:localhost|local|.*\.portside\.lol|(?:[0-9.-]+\.)?(?:nip|sslip)\.io)$/i
+            );
+            if (refHostMatch && refHostMatch[1] !== "www" && refHostMatch[1] !== "app") {
+              label = refHostMatch[1].toLowerCase();
+              targetPath = pathname;
+            }
+          }
+        } catch {}
+      }
+
+      // 2. Inspect active service session cookie
+      if (!label) {
+        const cookieSvc = request.cookies.get("portside_active_service")?.value;
+        if (cookieSvc && /^[a-z0-9-]+$/.test(cookieSvc)) {
+          label = cookieSvc.toLowerCase();
+          targetPath = pathname;
+        }
+      }
+    }
+  }
+
+  if (!label && PORTSIDE_STATIC_FILES.has(pathname)) {
+    return NextResponse.next();
+  }
+
   if (!label && (pathname === "/about" || pathname === "/@me")) {
     const profileUrl = request.nextUrl.clone();
     profileUrl.pathname = "/profile";
@@ -205,15 +272,25 @@ export async function proxy(request: NextRequest) {
   requestHeaders.set("x-portside-original-path", targetPath);
   requestHeaders.set("x-portside-client-host", host);
 
-  return NextResponse.rewrite(url, {
+  const response = NextResponse.rewrite(url, {
     request: {
       headers: requestHeaders,
     },
   });
+
+  if (label && (pathname.startsWith("/s/") || !request.cookies.get("portside_active_service"))) {
+    response.cookies.set("portside_active_service", label, {
+      path: "/",
+      maxAge: 1800,
+      sameSite: "lax",
+    });
+  }
+
+  return response;
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|icon|apple-icon|opengraph-image|twitter-image|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|webmanifest)).*)",
+    "/((?!_next/static|_next/image).*)",
   ],
 };
