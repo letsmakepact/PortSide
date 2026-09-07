@@ -126,12 +126,27 @@ export function AuthForm({
 
       <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
         {mode === "login" ? (
-          <>
-            New here?{" "}
-            <Link href="/register" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
-              Create an account
-            </Link>
-          </>
+          isProfileMode ? (
+            <div>
+              <span className="text-slate-400">Want your own developer showcase?</span>{" "}
+              <a
+                href="https://portside.lol"
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-sky-400 hover:text-sky-300 hover:underline inline-flex items-center gap-1"
+              >
+                Get Portside
+                <svg viewBox="0 0 24 24" className="h-3 w-3 inline" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+              </a>
+            </div>
+          ) : (
+            <>
+              New here?{" "}
+              <Link href="/register" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
+                Create an account
+              </Link>
+            </>
+          )
         ) : (
           <>
             Already have an account?{" "}

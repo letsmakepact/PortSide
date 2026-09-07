@@ -5,6 +5,11 @@ import { createSession, hashPassword } from "@/lib/auth";
 import { getHardwareMachineId } from "@/lib/supporter-session";
 
 export async function POST(req: Request) {
+  const rawHost = (req.headers.get("x-forwarded-host") || req.headers.get("host") || "").toLowerCase();
+  const host = rawHost.split(":")[0];
+  const isPortsideApex = host === "portside.lol" || host === "www.portside.lol" || host === "app.portside.lol";
+  const isPublicLink = host.endsWith(".portside.lol") && !isPortsideApex;
+
   const body = (await req.json().catch(() => ({}))) as { email?: string; password?: string; name?: string };
   const email = (body.email ?? "").trim().toLowerCase();
   const password = body.password ?? "";
@@ -13,6 +18,43 @@ export async function POST(req: Request) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return Response.json({ error: "Enter a valid email address." }, { status: 400 });
   if (password.length < 8) return Response.json({ error: "Password must be at least 8 characters." }, { status: 400 });
 
+  // If accessed via a developer's public vanity link (e.g. alex.portside.lol),
+  // NEVER create a local user, database rows, or folders on the developer's server!
+  // Send the registration directly to OUR central server.
+  if (isPublicLink) {
+    const webPortalUrl = "https://portside.lol";
+    try {
+      const serverRes = await fetch(`${webPortalUrl}/api/account/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          name,
+          action: "register",
+        }),
+      });
+      const data = await serverRes.json().catch(() => ({}));
+      if (!serverRes.ok) {
+        return Response.json(
+          { error: data.error || "Failed to register on central Portside server." },
+          { status: serverRes.status }
+        );
+      }
+      return Response.json(
+        {
+          ok: true,
+          central: true,
+          message: "Account registered successfully on Portside. Download Portside to run your own node!",
+          redirectUrl: "https://portside.lol",
+        },
+        { status: 201 }
+      );
+    } catch {
+      return Response.json({ error: "Could not connect to Portside central server." }, { status: 502 });
+    }
+  }
+
+  // Local-only registration on the developer's own machine
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
   if (existing.length) {
     return Response.json(
