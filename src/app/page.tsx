@@ -29,6 +29,11 @@ import {
   Shield,
   ShieldCheck,
   KeyRound,
+  Database,
+  Cpu,
+  Laptop,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { AnchorLogo } from "@/components/AnchorLogo";
 
@@ -182,6 +187,7 @@ export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showNavDownload, setShowNavDownload] = useState(false);
   const [selectedOs, setSelectedOs] = useState<"windows" | "macos" | "linux">("windows");
+  const [activeShowcaseMode, setActiveShowcaseMode] = useState<"public" | "lan">("public");
 
   useEffect(() => {
     // Detect OS
@@ -867,202 +873,360 @@ export default function Home() {
         </section>
 
         {/* DEVELOPER SHOWCASE PREVIEW (pact.portside.lol) */}
-        <section id="showcase" className="relative py-16 sm:py-24 border-t border-white/5 bg-[#060b13]">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="rounded-2xl sm:rounded-3xl border border-sky-500/20 bg-gradient-to-b from-slate-900/90 via-slate-950 to-[#060b13] p-5 sm:p-10 lg:p-12 relative overflow-hidden shadow-2xl shadow-sky-950/30">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
+        <section id="showcase" className="relative py-20 sm:py-28 border-t border-white/5 bg-[#05080f]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+            {/* Header */}
+            <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-14">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-medium tracking-wide">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>ROUTING & ACCESS CONTROL MATRIX</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                One Vanity Subdomain. <br className="hidden sm:inline" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400">
+                  Dual Privacy Realms.
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mx-auto">
+                Route live public demos globally on your custom <span className="text-slate-200 font-mono">username.portside.lol</span> vanity domain, while locking internal databases and microservices behind your Portside database credentials at <span className="text-sky-300 font-mono">/lan</span>—accessible anywhere, including cellular 5G.
+              </p>
 
-              <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
-                {/* Left Column: Context & Value */}
-                <div className="lg:col-span-6 space-y-5 text-left">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 text-xs font-mono font-semibold">
-                    <Shield className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                    <span>Public Showcase or Auth-Gated /lan</span>
+              {/* Precision Segmented Route Switcher */}
+              <div className="pt-2 flex items-center justify-center">
+                <div className="inline-flex p-1 rounded-xl bg-slate-900/90 border border-slate-800 shadow-inner max-w-full overflow-x-auto">
+                  <button
+                    type="button"
+                    onClick={() => setActiveShowcaseMode("public")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono font-semibold transition-all ${
+                      activeShowcaseMode === "public"
+                        ? "bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    <Globe className="w-3.5 h-3.5 shrink-0" />
+                    <span>Public Showcase (/)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveShowcaseMode("lan")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono font-semibold transition-all ${
+                      activeShowcaseMode === "lan"
+                        ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    <Lock className="w-3.5 h-3.5 shrink-0" />
+                    <span>Auth-Gated LAN & 5G (/lan)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Inspector Console */}
+            <div className="rounded-2xl border border-slate-800/80 bg-[#070d17] shadow-2xl overflow-hidden transition-all duration-300">
+              {/* Console Chrome / Titlebar */}
+              <div className="px-4 sm:px-6 py-3 bg-slate-900/80 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                {/* Traffic lights & Hostname pill */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                   </div>
-
-                  <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    Your Developer Identity at <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-300 font-mono">username.portside.lol</span>
-                  </h2>
-
-                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                    Granular control over what touches the world. Expose public client demos globally on your custom vanity domain, or lock internal dashboards and admin tools behind a secure login gate at <code className="text-sky-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">/lan</code>. Authenticates directly with your existing Portside credentials—no extra passwords or new accounts to manage, accessible seamlessly on home Wi-Fi or 5G mobile.
-                  </p>
-
-                  {/* Feature Highlights Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                        Public Vanity Subdomain
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-normal">
-                        Share live client projects and demos globally under your memorable HTTPS domain.
-                      </p>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                        Built-in Portside Auth
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-normal">
-                        Logs in with your existing Portside account credentials. Zero setup headache.
-                      </p>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        Anywhere & 5G Ready
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-normal">
-                        Access your local private services seamlessly from your phone on 5G or any remote network.
-                      </p>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                        One-Click Privacy Toggle
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-normal">
-                        Instantly toggle any port between Public Edge and Authenticated /lan.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <a
-                      href="https://pact.portside.lol"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 px-5 py-3 font-bold text-xs transition inline-flex items-center justify-center gap-2 shadow-md shadow-sky-950 active:scale-[0.98]"
-                    >
-                      <span>View Live Showcase (pact.portside.lol)</span>
-                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-                    </a>
-                    <a
-                      href="https://buymeacoffee.com/pacts"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 px-4 py-3 font-semibold text-xs transition inline-flex items-center justify-center active:scale-[0.98]"
-                    >
-                      Unlock with Supporter
-                    </a>
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-xs font-mono">
+                    <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
+                    <span className="text-slate-200">
+                      https://pact.portside.lol{activeShowcaseMode === "lan" ? "/lan" : ""}
+                    </span>
                   </div>
                 </div>
 
-                {/* Right Column: Clean Responsive Window Mockup with Public vs Private Split */}
-                <div className="lg:col-span-6 w-full">
-                  <div className="rounded-2xl border border-slate-800 bg-[#090e17] shadow-2xl overflow-hidden">
-                    {/* Window Titlebar */}
-                    <div className="px-3 sm:px-4 py-2.5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
-                      </div>
-
-                      {/* Mock URL pill */}
-                      <div className="flex-1 max-w-[280px] sm:max-w-xs mx-auto flex items-center justify-center gap-1.5 px-3 py-1 rounded-md bg-slate-950/80 border border-slate-800/80 text-[11px] font-mono text-slate-300 truncate">
-                        <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
-                        <span className="text-sky-300 truncate">https://pact.portside.lol</span>
-                      </div>
-
-                      <span className="hidden sm:inline-block text-[10px] font-mono uppercase text-sky-400 font-semibold px-2 py-0.5 rounded bg-sky-950/60 border border-sky-500/20 shrink-0">
-                        Verified
+                {/* Status Badges */}
+                <div className="flex items-center gap-2 font-mono text-[11px]">
+                  {activeShowcaseMode === "public" ? (
+                    <>
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        EDGE ONLINE (18ms)
                       </span>
+                      <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                        TLS 1.3 ECDSA
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-sky-500/10 border border-sky-500/20 text-sky-400">
+                        PUBLIC VISITOR
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/20 text-amber-300 flex items-center gap-1.5">
+                        <KeyRound className="w-3 h-3" />
+                        PORTSIDE AUTH REQUIRED
+                      </span>
+                      <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                        5G / REMOTE REACHABLE
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                        SESSION ACTIVE
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Dynamic Console Body */}
+              <div className="p-5 sm:p-8">
+                {activeShowcaseMode === "public" ? (
+                  /* PUBLIC SHOWCASE VIEW */
+                  <div className="space-y-6">
+                    {/* Developer Profile Header Card */}
+                    <div className="p-4 sm:p-5 rounded-xl bg-slate-900/40 border border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-cyan-500/10 border border-sky-500/30 flex items-center justify-center font-mono font-bold text-lg text-sky-400">
+                          P
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-base font-bold text-white">pact</span>
+                            <span className="px-2 py-0.2 rounded-full text-[10px] font-mono text-sky-300 bg-sky-500/10 border border-sky-500/30">
+                              official creator
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-0.5">Systems Architect &middot; Full-Stack Core</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="px-2.5 py-1 rounded-md bg-slate-950 text-slate-300 text-[11px] font-mono border border-slate-800">
+                          TypeScript
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-slate-950 text-slate-300 text-[11px] font-mono border border-slate-800">
+                          Next.js 15
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-slate-950 text-slate-300 text-[11px] font-mono border border-slate-800">
+                          Go Engine
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-slate-950 text-slate-300 text-[11px] font-mono border border-slate-800">
+                          Cloudflare Tunnels
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Window Content */}
-                    <div className="p-4 sm:p-6 space-y-4">
-                      {/* Developer Profile Header */}
-                      <div className="p-3.5 sm:p-4 rounded-xl bg-slate-900/60 border border-slate-800/70 space-y-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center font-bold text-sky-400 text-base font-mono shrink-0">
-                            P
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <p className="font-bold text-white text-sm">pact</p>
-                              <span className="text-[10px] font-mono text-sky-400 bg-sky-950/80 border border-sky-500/30 px-1.5 py-0.2 rounded">
-                                creator
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-400 truncate">Systems Architect · Full-Stack Dev</p>
-                          </div>
-                        </div>
-
-                        <p className="text-xs text-slate-300 leading-relaxed">
-                          Building clean developer utilities. Eliminating port chaos and streamlining multi-device workflows.
-                        </p>
-
-                        <div className="flex flex-wrap gap-1.5 pt-0.5">
-                          <span className="px-2 py-0.5 rounded-md bg-slate-950 text-[10px] font-mono text-slate-300 border border-slate-800">TypeScript</span>
-                          <span className="px-2 py-0.5 rounded-md bg-slate-950 text-[10px] font-mono text-slate-300 border border-slate-800">Next.js 15</span>
-                          <span className="px-2 py-0.5 rounded-md bg-slate-950 text-[10px] font-mono text-slate-300 border border-slate-800">Go</span>
-                          <span className="px-2 py-0.5 rounded-md bg-slate-950 text-[10px] font-mono text-slate-300 border border-slate-800">PostgreSQL</span>
-                        </div>
+                    {/* Publicly Routed Endpoints Table */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs font-mono text-slate-400 px-1">
+                        <span className="flex items-center gap-2 text-sky-400 font-semibold uppercase tracking-wider">
+                          <Globe className="w-3.5 h-3.5" />
+                          Publicly Exposed Endpoints (Zero Auth Needed)
+                        </span>
+                        <span className="text-slate-500 text-[11px]">Crawlable &middot; Global Edge CDN</span>
                       </div>
 
-                      {/* Services: Public vs Private Comparison */}
-                      <div className="space-y-2.5">
-                        {/* Public Edge Service */}
-                        <div>
-                          <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider flex items-center justify-between pb-1.5 px-0.5">
-                            <span className="flex items-center gap-1.5 text-sky-400 font-semibold">
-                              <Globe className="w-3 h-3 text-sky-400" />
-                              Public Edge Service (Global)
-                            </span>
-                            <span className="text-emerald-400 text-[10px] flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              Active
-                            </span>
-                          </div>
-                          <div className="p-3 rounded-xl bg-slate-900/40 border border-sky-500/20 flex items-center justify-between gap-3 text-xs">
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                              <div className="min-w-0">
-                                <p className="font-semibold text-white text-xs truncate">portside-api</p>
-                                <p className="text-[10px] font-mono text-slate-500">internal port :8081</p>
-                              </div>
+                      <div className="divide-y divide-slate-800/80 rounded-xl border border-slate-800 bg-slate-950/60 overflow-hidden">
+                        <div className="p-3.5 sm:px-4 sm:py-3 flex items-center justify-between gap-4 text-xs font-mono">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-semibold text-white">web-portfolio</span>
+                              <span className="text-slate-500 ml-2 text-[11px]">mapped to localhost:3000</span>
                             </div>
-                            <span className="text-[11px] font-mono text-sky-300 bg-sky-950/60 border border-sky-500/30 px-2 py-0.5 rounded truncate shrink-0">
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="px-2 py-0.5 rounded bg-sky-950/70 border border-sky-500/30 text-sky-300 text-[11px]">
+                              / (Root)
+                            </span>
+                            <span className="hidden sm:inline-block text-[10px] text-emerald-400">HTTP 200</span>
+                          </div>
+                        </div>
+
+                        <div className="p-3.5 sm:px-4 sm:py-3 flex items-center justify-between gap-4 text-xs font-mono">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-semibold text-white">portside-api</span>
+                              <span className="text-slate-500 ml-2 text-[11px]">mapped to localhost:8081</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="px-2 py-0.5 rounded bg-sky-950/70 border border-sky-500/30 text-sky-300 text-[11px]">
                               /api
                             </span>
+                            <span className="hidden sm:inline-block text-[10px] text-emerald-400">REST API</span>
                           </div>
                         </div>
 
-                        {/* Private Authenticated /lan Service */}
-                        <div>
-                          <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider flex items-center justify-between pb-1.5 px-0.5">
-                            <span className="flex items-center gap-1.5 text-amber-400 font-semibold">
-                              <Lock className="w-3 h-3 text-amber-400" />
-                              Private · Authenticated /lan
-                            </span>
-                            <span className="text-amber-400 text-[10px] font-mono bg-amber-950/50 border border-amber-500/30 px-1.5 py-0.2 rounded flex items-center gap-1">
-                              <KeyRound className="w-2.5 h-2.5" />
-                              Portside Auth
-                            </span>
-                          </div>
-                          <div className="p-3 rounded-xl bg-slate-900/40 border border-amber-500/20 flex items-center justify-between gap-3 text-xs">
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
-                              <div className="min-w-0">
-                                <p className="font-semibold text-white text-xs truncate">internal-db-admin</p>
-                                <p className="text-[10px] font-mono text-slate-500">internal port :5432 &middot; protected via Portside login</p>
-                              </div>
+                        <div className="p-3.5 sm:px-4 sm:py-3 flex items-center justify-between gap-4 text-xs font-mono">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-semibold text-white">client-staging-demo</span>
+                              <span className="text-slate-500 ml-2 text-[11px]">mapped to localhost:5173</span>
                             </div>
-                            <span className="text-[11px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded truncate shrink-0">
-                              /lan
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="px-2 py-0.5 rounded bg-sky-950/70 border border-sky-500/30 text-sky-300 text-[11px]">
+                              /demo
                             </span>
+                            <span className="hidden sm:inline-block text-[10px] text-emerald-400">LIVE PREVIEW</span>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                ) : (
+                  /* PRIVATE /LAN AUTHENTICATED VIEW */
+                  <div className="space-y-6">
+                    {/* Portside Database Auth Banner */}
+                    <div className="p-4 sm:p-5 rounded-xl bg-amber-500/[0.04] border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-mono text-amber-400 shrink-0">
+                          <KeyRound className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-base font-bold text-white">Authenticated Developer Gateway</span>
+                            <span className="px-2 py-0.2 rounded-full text-[10px] font-mono text-emerald-300 bg-emerald-500/10 border border-emerald-500/30">
+                              Portside DB Verified
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            Authenticated with your existing Portside account (<span className="text-amber-300 font-mono font-semibold">letsmakepact</span>). No new passwords or separate logins.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 font-mono text-xs text-amber-300 bg-amber-950/60 border border-amber-500/30 px-3 py-1.5 rounded-lg shrink-0">
+                        <Smartphone className="w-3.5 h-3.5" />
+                        <span>Accessible on 5G & Remote</span>
+                      </div>
+                    </div>
+
+                    {/* Authenticated Internal Service Matrix */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs font-mono text-slate-400 px-1">
+                        <span className="flex items-center gap-2 text-amber-400 font-semibold uppercase tracking-wider">
+                          <Lock className="w-3.5 h-3.5" />
+                          Gated Services (Hidden Behind /lan Login)
+                        </span>
+                        <span className="text-emerald-400 text-[11px] flex items-center gap-1">
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          Zero Public Ingress
+                        </span>
+                      </div>
+
+                      <div className="divide-y divide-slate-800/80 rounded-xl border border-slate-800 bg-slate-950/60 overflow-hidden">
+                        <div className="p-3.5 sm:px-4 sm:py-3 flex items-center justify-between gap-4 text-xs font-mono">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <Database className="w-4 h-4 text-amber-400 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-semibold text-white">postgres-pgadmin</span>
+                              <span className="text-slate-500 ml-2 text-[11px]">internal port :5432</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="px-2 py-0.5 rounded bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[11px]">
+                              /lan/db
+                            </span>
+                            <span className="hidden sm:inline-block text-[10px] text-slate-400">GATED DB</span>
+                          </div>
+                        </div>
+
+                        <div className="p-3.5 sm:px-4 sm:py-3 flex items-center justify-between gap-4 text-xs font-mono">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <Cpu className="w-4 h-4 text-amber-400 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-semibold text-white">ollama-ai-engine</span>
+                              <span className="text-slate-500 ml-2 text-[11px]">internal port :11434 &middot; llama3.3</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="px-2 py-0.5 rounded bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[11px]">
+                              /lan/ai
+                            </span>
+                            <span className="hidden sm:inline-block text-[10px] text-slate-400">GATED API</span>
+                          </div>
+                        </div>
+
+                        <div className="p-3.5 sm:px-4 sm:py-3 flex items-center justify-between gap-4 text-xs font-mono">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <Server className="w-4 h-4 text-amber-400 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-semibold text-white">redis-commander</span>
+                              <span className="text-slate-500 ml-2 text-[11px]">internal port :6379 &middot; cache manager</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="px-2 py-0.5 rounded bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[11px]">
+                              /lan/redis
+                            </span>
+                            <span className="hidden sm:inline-block text-[10px] text-slate-400">GATED GUI</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Console Action Bar */}
+              <div className="px-5 sm:px-8 py-4 bg-slate-900/60 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-xs text-slate-400 text-center sm:text-left">
+                  {activeShowcaseMode === "public"
+                    ? "Anyone on the internet can explore your public projects, bio, and live client staging demos."
+                    : "Only you can access /lan by logging in with your Portside credentials—even from your phone on 5G."}
+                </p>
+
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <a
+                    href="https://pact.portside.lol"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 sm:flex-initial rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2.5 font-bold text-xs transition inline-flex items-center justify-center gap-2 shadow-md shadow-sky-500/20 active:scale-[0.98]"
+                  >
+                    <span>Visit Live Showcase</span>
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                  <a
+                    href="https://buymeacoffee.com/pacts"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 sm:flex-initial rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2.5 font-semibold text-xs transition inline-flex items-center justify-center active:scale-[0.98]"
+                  >
+                    Claim Subdomain ($4.99/mo)
+                  </a>
                 </div>
+              </div>
+            </div>
+
+            {/* Architecture Engineering Spec Strip */}
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+              <div className="p-5 rounded-2xl bg-[#080e18] border border-slate-800/80 space-y-2">
+                <div className="flex items-center gap-2.5 text-xs font-mono font-bold text-sky-400 uppercase tracking-wider">
+                  <Globe className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>Single Hostname Routing</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  One custom hostname (<code className="text-slate-200 font-mono">username.portside.lol</code>) handles public web showcase traffic at root while routing authenticated private tools directly through <code className="text-sky-300 font-mono">/lan</code>.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#080e18] border border-slate-800/80 space-y-2">
+                <div className="flex items-center gap-2.5 text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+                  <KeyRound className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>Native Portside Auth</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  No passwords to generate or separate auth services to configure. Any request to <code className="text-amber-300 font-mono">/lan</code> validates against your primary Portside account session in our database.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#080e18] border border-slate-800/80 space-y-2">
+                <div className="flex items-center gap-2.5 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
+                  <Smartphone className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>5G & Cellular Mobility</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Connect from coffee shop Wi-Fi or directly from your phone on 5G. Zero router port forwarding or UPnP holes required—internal ports stay sealed from public scans.
+                </p>
               </div>
             </div>
           </div>
