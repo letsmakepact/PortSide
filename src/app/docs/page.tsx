@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -209,15 +209,13 @@ export default function DocsPage() {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-5 text-sm text-slate-400">
+          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-400">
             <Link href="/" className="hover:text-white transition">Home</Link>
-            <Link href="/comparisons" className="hover:text-white transition">Comparisons</Link>
-            <Link href="/ngrok-alternative" className="hover:text-white transition">Ngrok Alternative</Link>
-            <Link href="/pricing" className="hover:text-white transition">Pricing</Link>
             <a href="#overview" onClick={(e) => scrollToItem(e, "overview")} className="hover:text-white transition">Overview</a>
             <a href="#localhost-subdomains" onClick={(e) => scrollToItem(e, "localhost-subdomains")} className="hover:text-white transition">Routing</a>
             <a href="#mdns-discovery" onClick={(e) => scrollToItem(e, "mdns-discovery")} className="hover:text-white transition">Mobile LAN</a>
             <a href="#vanity-domains" onClick={(e) => scrollToItem(e, "vanity-domains")} className="hover:text-white transition">Edge Tunnels</a>
+            <a href="#about-me-page" onClick={(e) => scrollToItem(e, "about-me-page")} className="hover:text-white transition">Showcase</a>
           </nav>
 
           <div className="flex items-center gap-3">
