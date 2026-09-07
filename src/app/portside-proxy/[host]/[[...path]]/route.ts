@@ -45,20 +45,34 @@ async function handle(req: NextRequest, ctx: Ctx) {
   }
 
   const rawPath = req.headers.get("x-portside-original-path") || (path.length ? `/${path.map(encodeURIComponent).join("/")}` : "/");
+  const parsedReqUrl = new URL(req.url);
   const searchParams = new URLSearchParams(req.nextUrl.searchParams);
-  const isPathProxy = searchParams.get("__ps_path") === "1";
+  const isPathProxy =
+    searchParams.get("__ps_path") === "1" ||
+    parsedReqUrl.searchParams.get("__ps_path") === "1" ||
+    req.headers.get("x-portside-path-proxy") === "true";
   searchParams.delete("__ps_path");
+  parsedReqUrl.searchParams.delete("__ps_path");
   const search = searchParams.toString() ? `?${searchParams.toString()}` : "";
   const target = `${svc.protocol}://127.0.0.1:${svc.port}${rawPath}${search}`;
 
   const headers = new Headers();
   req.headers.forEach((value, key) => {
-    if (!HOP_BY_HOP.has(key.toLowerCase())) headers.set(key, value);
+    const k = key.toLowerCase();
+    if (k === "upgrade" && value.toLowerCase() === "websocket") {
+      headers.set(key, value);
+      headers.set("connection", "Upgrade");
+      return;
+    }
+    if (!HOP_BY_HOP.has(k)) headers.set(key, value);
   });
   headers.set("host", `localhost:${svc.port}`);
   headers.set("x-forwarded-host", req.headers.get("host") ?? "");
   headers.set("x-forwarded-proto", "http");
   headers.set("x-forwarded-by", "portside");
+  if (isPathProxy) {
+    headers.set("accept-encoding", "identity");
+  }
 
   const hasBody = !["GET", "HEAD"].includes(req.method);
   const controller = new AbortController();
@@ -83,24 +97,43 @@ async function handle(req: NextRequest, ctx: Ctx) {
         const appPort = process.env.PORT ?? "3000";
         const portSuffix = appPort === "80" ? "" : `:${appPort}`;
         const clientHost = req.headers.get("x-portside-client-host") || `${label}.localhost${portSuffix}`;
-        const rewritten = value.replace(
-          new RegExp(`^https?://(?:localhost|127\\.0\\.0\\.1):${svc.port}(/.*)?$`),
-          `http://${clientHost}$1`,
-        );
-        outHeaders.set(key, rewritten);
+        if (isPathProxy) {
+          let targetLocation = value.replace(
+            new RegExp(`^https?://(?:localhost|127\\.0\\.0\\.1):${svc.port}(/.*)?$`),
+            `$1`,
+          );
+          if (targetLocation.startsWith("/") && !targetLocation.startsWith(`/s/${label}`)) {
+            targetLocation = `/s/${label}${targetLocation}`;
+          }
+          outHeaders.set(key, targetLocation);
+        } else {
+          const rewritten = value.replace(
+            new RegExp(`^https?://(?:localhost|127\\.0\\.0\\.1):${svc.port}(/.*)?$`),
+            `http://${clientHost}$1`,
+          );
+          outHeaders.set(key, rewritten);
+        }
+        return;
+      }
+      if (k === "set-cookie" && isPathProxy) {
+        const rewrittenCookie = value.replace(/path=\/[^;]*/i, `Path=/s/${label}/`);
+        outHeaders.append(key, rewrittenCookie);
         return;
       }
       outHeaders.append(key, value);
     });
 
     const contentType = upstream.headers.get("content-type") || "";
-    const clientHost = req.headers.get("x-portside-client-host") || "";
     if (isPathProxy && contentType.includes("text/html")) {
       let html = await upstream.text();
       // Inject base tag if not already present
       if (!html.includes("<base ") && !html.includes("<base/")) {
         html = html.replace(/<head>/i, `<head><base href="/s/${label}/">`);
       }
+      // Inject client-side fetch & XHR interceptor
+      const clientPatch = `<script data-portside-runtime="1">(function(){var p="/s/${label}";var of=window.fetch;if(of){window.fetch=function(u,o){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(p)&&!u.startsWith("/_next")){u=p+u;}return of.call(this,u,o);};}var oo=XMLHttpRequest.prototype.open;if(oo){XMLHttpRequest.prototype.open=function(m,u){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(p)&&!u.startsWith("/_next")){u=p+u;}return oo.apply(this,arguments);};}})();</script>`;
+      html = html.replace(/<head>/i, `<head>${clientPatch}`);
+
       // Rewrite root-relative asset attributes to stay strictly namespaced under /s/:service/
       html = html.replace(/(src|href)=["']\/(assets\/[^"']+)["']/gi, `$1="/s/${label}/$2"`);
       html = html.replace(/(src|href)=["']\/(static\/[^"']+)["']/gi, `$1="/s/${label}/$2"`);
