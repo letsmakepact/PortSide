@@ -21,8 +21,6 @@ export default async function RegisterPage() {
   const isPortsideApex = host === "portside.lol" || host === "www.portside.lol" || host === "app.portside.lol";
   const isPublicLink = host.endsWith(".portside.lol") && !isPortsideApex;
 
-  // If accessed via a developer's public vanity link (e.g. alex.portside.lol/register),
-  // NEVER register on the developer's local machine! Forward directly to our central platform.
   if (isPublicLink) {
     redirect("https://portside.lol");
   }

@@ -129,7 +129,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
   return (
     <Modal open={open} onClose={onClose} title="" size="lg">
       <div className="relative pt-1 text-slate-100">
-        {/* Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500/15 border border-sky-400/30 text-sky-400 shadow-md shadow-sky-500/10 shrink-0">
@@ -153,9 +152,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
           </span>
         </div>
 
-        {/* Body Content */}
         <div className="mt-5 grid gap-6 sm:grid-cols-2">
-          {/* Left: QR Code Card */}
           <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-800/80 bg-[#080e1a] p-5 text-center shadow-inner">
             <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
               <span>
@@ -178,7 +175,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   alt="Portside Mobile QR Code"
                   className="h-44 w-44 rounded-xl"
                 />
-                {/* Center Anchor Emblem with clean quiet zone ring */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#081426] border border-sky-400 shadow-md shadow-sky-500/30 p-1.5 ring-4 ring-white">
                     <AnchorLogo className="h-full w-full" />
@@ -210,9 +206,7 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
             </div>
           </div>
 
-          {/* Right: Controls & Routing Details */}
           <div className="flex flex-col justify-between space-y-4">
-            {/* Mode Switcher */}
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Connection Mode
@@ -244,7 +238,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               </div>
             </div>
 
-            {/* Target Service Selection */}
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Target Project / Service
@@ -272,7 +265,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               </div>
             </div>
 
-            {/* TAB 1: GLOBAL 5G / REMOTE -> Shows Custom portside.lol Link */}
             {connectionMode === "tunnel" && (
               isSupporter ? (
                 <div className="rounded-xl border border-sky-500/30 bg-sky-950/25 p-3.5 space-y-2.5">
@@ -399,10 +391,8 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
               )
             )}
 
-            {/* TAB 2: LOCAL WI-FI -> Shows iOS .local (IF SUPPORTER) & Direct Wi-Fi */}
             {connectionMode === "lan" && (
               <div className="space-y-3">
-                {/* Dedicated iOS .local Card (SUPPORTER ONLY) */}
                 {isSupporter && (
                   <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-3.5 space-y-2.5">
                     <div className="flex items-center justify-between">
@@ -447,7 +437,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   </div>
                 )}
 
-                {/* Direct Project Wi-Fi URL (Standard / Universal) */}
                 <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-slate-300">Direct Project Wi-Fi URL</span>
@@ -463,7 +452,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
                   <p className="text-[10px] text-slate-500">Universal route for Android, Windows, and Linux devices on your Wi-Fi.</p>
                 </div>
 
-                {/* Smart TV Remote Callout */}
                 <div className="rounded-xl border border-sky-900/40 bg-sky-950/20 p-3 text-xs text-sky-200">
                   <div className="flex items-center gap-1.5 font-semibold text-sky-400 mb-1">
                     <Tv className="h-3.5 w-3.5" />
@@ -482,7 +470,6 @@ export function LanModal({ open, onClose }: { open: boolean; onClose: () => void
           </div>
         </div>
 
-        {/* Footer */}
         <div className="mt-6 flex justify-end border-t border-slate-800 pt-4">
           <Button size="sm" onClick={onClose} className="px-5">
             Done

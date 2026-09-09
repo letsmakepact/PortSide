@@ -141,7 +141,6 @@ function ServiceFormContent({
                 );
               })}
             </div>
-            {/* Legacy symbols accordion/toggle */}
             <div className="mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center gap-1 overflow-x-auto py-0.5">
               <span className="text-[10px] uppercase font-mono text-slate-400 font-semibold px-1">Glyphs:</span>
               {LEGACY_SERVICE_ICONS.map((ic) => (

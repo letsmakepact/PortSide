@@ -30,7 +30,6 @@ export default async function Image() {
           position: "relative",
         }}
       >
-        {/* Subtle grid background accent */}
         <div
           style={{
             position: "absolute",
@@ -45,7 +44,6 @@ export default async function Image() {
           }}
         />
 
-        {/* Anchor Card Container */}
         <div
           style={{
             display: "flex",
@@ -60,7 +58,6 @@ export default async function Image() {
             marginBottom: 36,
           }}
         >
-          {/* Signature Anchor SVG */}
           <svg
             viewBox="0 0 32 32"
             fill="none"
@@ -69,7 +66,6 @@ export default async function Image() {
               height: 110,
             }}
           >
-            {/* Anchor Ring */}
             <circle
               cx="16"
               cy="6"
@@ -78,7 +74,6 @@ export default async function Image() {
               strokeWidth="2.2"
               fill="none"
             />
-            {/* Crossbar */}
             <rect
               x="8.5"
               y="10.5"
@@ -88,7 +83,6 @@ export default async function Image() {
               fill="#38bdf8"
               opacity="0.9"
             />
-            {/* Central Shank */}
             <rect
               x="14.5"
               y="8"
@@ -97,7 +91,6 @@ export default async function Image() {
               rx="1.5"
               fill="#38bdf8"
             />
-            {/* Curved Anchor Arms */}
             <path
               d="M7 16C7 21 10.5 25 16 25C21.5 25 25 21 25 16"
               stroke="#38bdf8"
@@ -105,12 +98,10 @@ export default async function Image() {
               strokeLinecap="round"
               fill="none"
             />
-            {/* Left Fluke Arrow */}
             <polygon
               points="3.5,16.5 7.5,12 9.5,17"
               fill="#38bdf8"
             />
-            {/* Right Fluke Arrow */}
             <polygon
               points="28.5,16.5 24.5,12 22.5,17"
               fill="#38bdf8"
@@ -118,7 +109,6 @@ export default async function Image() {
           </svg>
         </div>
 
-        {/* Title */}
         <div
           style={{
             display: "flex",
@@ -136,7 +126,6 @@ export default async function Image() {
           <span style={{ color: "#38bdf8" }}>Name Your Localhost</span>
         </div>
 
-        {/* Tagline */}
         <div
           style={{
             fontSize: 26,
@@ -150,7 +139,6 @@ export default async function Image() {
           Route custom .localhost and .local domains directly to your dev servers without port numbers. Zero-config mDNS and mobile & TV access.
         </div>
 
-        {/* Footer Pill */}
         <div
           style={{
             display: "flex",

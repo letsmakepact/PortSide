@@ -85,7 +85,6 @@ const SECTIONS: DocSection[] = [
 export default function DocsPage() {
   const [activeId, setActiveId] = useState<string>("overview");
 
-  // Scrollspy: update active section as the user scrolls
   useEffect(() => {
     const allIds = SECTIONS.flatMap((s) => s.items.map((i) => i.id));
 
@@ -202,7 +201,6 @@ export default function DocsPage() {
 
   return (
     <div className="min-h-screen bg-[#060b13] text-slate-100 flex flex-col font-sans selection:bg-sky-500/30">
-      {/* JSON-LD Schemas */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -212,7 +210,6 @@ export default function DocsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
       />
 
-      {/* Navigation Header */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#060b13]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -260,9 +257,7 @@ export default function DocsPage() {
         </div>
       </header>
 
-      {/* Main Documentation Body */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 w-full flex-1 flex gap-10">
-        {/* Desktop Sidebar Navigation with Active Scrollspy */}
         <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-24 space-y-7 max-h-[calc(100vh-8rem)] overflow-y-auto pr-3 text-xs">
             {SECTIONS.map((section) => {
@@ -304,9 +299,7 @@ export default function DocsPage() {
           </div>
         </aside>
 
-        {/* Content Area */}
         <article className="flex-1 min-w-0 max-w-4xl space-y-16">
-          {/* SECTION 1: GETTING STARTED */}
           <section id="getting-started" className="space-y-8 scroll-mt-28">
             <div id="overview" className="border-b border-white/10 pb-6 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -320,7 +313,6 @@ export default function DocsPage() {
               </p>
             </div>
 
-            {/* Quickstart Card */}
             <div id="quickstart" className="rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-slate-900 to-slate-950 p-6 space-y-4 scroll-mt-28">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400 text-xs font-mono">01</span>
@@ -339,7 +331,6 @@ export default function DocsPage() {
               </ol>
             </div>
 
-            {/* Installation */}
             <div id="installation" className="space-y-4 scroll-mt-28">
               <h2 className="text-xl font-bold text-white">Installation Options</h2>
               <p className="text-sm text-slate-300 leading-relaxed">
@@ -358,7 +349,6 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 2: CORE ROUTING */}
           <section id="core-routing" className="space-y-8 scroll-mt-28">
             <div id="localhost-subdomains" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -472,7 +462,6 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 3: LOCAL NETWORK & MOBILE */}
           <section id="local-network" className="space-y-8 scroll-mt-28">
             <div id="mdns-discovery" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -511,7 +500,6 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 4: GLOBAL EDGE TUNNELS */}
           <section id="edge-tunnels" className="space-y-8 scroll-mt-28">
             <div id="vanity-domains" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -564,7 +552,6 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 5: DEVELOPER SHOWCASE */}
           <section id="showcase-profile" className="space-y-8 scroll-mt-28">
             <div id="about-me-page" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -602,7 +589,6 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 6: SECURITY & DATABASE PROTECTION */}
           <section id="security-architecture" className="space-y-8 scroll-mt-28">
             <div id="database-protection" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">
@@ -657,7 +643,6 @@ export default function DocsPage() {
             </div>
           </section>
 
-          {/* SECTION 7: TROUBLESHOOTING */}
           <section id="troubleshooting" className="space-y-8 scroll-mt-28">
             <div id="common-questions" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -701,7 +686,6 @@ export default function DocsPage() {
         </article>
       </div>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 bg-[#060b13]/90 py-8 text-center text-xs text-slate-500 mt-20">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">

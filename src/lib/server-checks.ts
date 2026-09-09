@@ -11,10 +11,6 @@ export class SupporterRequiredError extends Error {
   }
 }
 
-/**
- * Authoritatively verifies whether a user or instance has Supporter status on the server.
- * Never relies on client-side state.
- */
 export async function isServerSupporter(userIdOrUser?: number | SafeUser | null): Promise<boolean> {
   let user: SafeUser | null = null;
 
@@ -38,8 +34,6 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     user = await getCurrentUser();
   }
 
-  // If no user is authenticated (e.g. mobile phone/Smart TV on LAN or unauthenticated vanity visitor),
-  // check if this PortSide node is owned by a verified Supporter.
   if (!user) {
     try {
       const supporterRows = await db
@@ -63,7 +57,6 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     return false;
   }
 
-  // Authoritatively verify with sovereign server. NEVER trust local database tier or client state.
   const sessionResult = await getOrFetchSupporterSession(user.email);
   if (sessionResult.valid && sessionResult.payload?.tier === "supporter") {
     if (user.tier !== "supporter") {
@@ -80,7 +73,6 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
     return true;
   }
 
-  // If sovereign server denies supporter or user is on free tier, demote if erroneously set
   if (user.tier === "supporter" && !sessionResult.valid) {
     try {
       await db
@@ -96,10 +88,6 @@ export async function isServerSupporter(userIdOrUser?: number | SafeUser | null)
   return false;
 }
 
-/**
- * Asserts that the authenticated user has confirmed Supporter status on the server.
- * Throws SupporterRequiredError if not confirmed.
- */
 export async function requireServerSupporter(): Promise<SafeUser> {
   const user = await requireUser();
   const confirmed = await isServerSupporter(user);

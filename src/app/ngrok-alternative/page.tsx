@@ -75,7 +75,6 @@ export default function NgrokAlternativePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      {/* Header */}
       <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
@@ -113,7 +112,6 @@ export default function NgrokAlternativePage() {
         </div>
       </header>
 
-      {/* Hero */}
       <main className="max-w-4xl mx-auto px-4 py-12 space-y-12">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-sky-950/60 border border-sky-500/30 text-sky-300">
@@ -128,7 +126,6 @@ export default function NgrokAlternativePage() {
           </p>
         </div>
 
-        {/* 4 Key Comparison Pillars */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800/80 pt-8">
           <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
             <div className="text-sky-400 font-bold text-xs uppercase tracking-wider">01 / Zero Accounts &amp; Privacy</div>
@@ -163,7 +160,6 @@ export default function NgrokAlternativePage() {
           </div>
         </section>
 
-        {/* Action / Download Box */}
         <section className="p-6 rounded-2xl bg-gradient-to-r from-sky-950/40 via-slate-900 to-slate-900 border border-sky-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-bold text-white">Switch to Portside in Under 60 Seconds</h3>

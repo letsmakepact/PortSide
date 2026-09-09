@@ -195,7 +195,6 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
   const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
 
   useEffect(() => {
-    // Detect device environment
     if (typeof window !== "undefined") {
       const ua = navigator.userAgent.toLowerCase();
       const isTv =
@@ -264,7 +263,6 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
   return (
     <Modal open={isOpen} onClose={closeTutorial} title="" size="lg">
       <div className="relative pt-1">
-        {/* Device Switcher Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3.5 mb-4">
           <div className="flex items-center gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 p-1">
             <button
@@ -319,7 +317,6 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
           </span>
         </div>
 
-        {/* Step Indicator Pills */}
         <div className="flex gap-1.5 mb-5">
           {steps.map((_, i) => (
             <button
@@ -339,7 +336,6 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
           ))}
         </div>
 
-        {/* Step Header */}
         <div className="flex items-start gap-4">
           <div
             className={`flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl shadow-lg text-white ${
@@ -375,7 +371,6 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
           {current.description}
         </p>
 
-        {/* Highlights List */}
         <div className="mt-4 space-y-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-3.5">
           {current.highlight.map((h, i) => (
             <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
@@ -385,7 +380,6 @@ export function TutorialModal({ forceOpen, onClose, onAddService, servicesCount 
           ))}
         </div>
 
-        {/* Modal Actions */}
         <div className="mt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-4">
           <button
             type="button"

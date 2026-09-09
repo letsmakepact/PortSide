@@ -88,7 +88,6 @@ export function ProjectsView() {
                   p.id < 0 && "animate-pulse",
                 )}
               >
-                {/* Accent Header styling */}
                 {accentStyle === "glow" && (
                   <div className={cn("absolute inset-x-0 top-0 h-1 rounded-t", c.dot)} />
                 )}
@@ -100,7 +99,6 @@ export function ProjectsView() {
                 )}
 
                 <div>
-                  {/* Top Header with Icon, Category, Title, and Actions */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
                       <div
@@ -168,12 +166,10 @@ export function ProjectsView() {
                     </div>
                   </div>
 
-                  {/* Description */}
                   <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     {p.description || "No description provided."}
                   </p>
 
-                  {/* Tags and Lead Badges */}
                   {(p.lead || (p.tags && p.tags.length > 0)) && (
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {p.lead && (
@@ -194,7 +190,6 @@ export function ProjectsView() {
                     </div>
                   )}
 
-                  {/* Assigned Services preview */}
                   <div className="mt-3.5 flex flex-wrap gap-1.5">
                     {members.slice(0, 4).map((s) => (
                       <span
@@ -216,7 +211,6 @@ export function ProjectsView() {
                   </div>
                 </div>
 
-                {/* Footer status bar */}
                 <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3">
                   <span
                     className={cn(
@@ -332,7 +326,6 @@ function ProjectForm({
 
   return (
     <form onSubmit={submit} noValidate className="space-y-5">
-      {/* Live Preview Card */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -435,7 +428,6 @@ function ProjectForm({
         </div>
       </div>
 
-      {/* Tabs for Organization */}
       <div className="flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/60 p-1">
         <button
           type="button"
@@ -475,7 +467,6 @@ function ProjectForm({
         </button>
       </div>
 
-      {/* Tab 1: Identity & Icon */}
       {activeTab === "identity" && (
         <div className="space-y-4">
           <div>
@@ -560,7 +551,6 @@ function ProjectForm({
         </div>
       )}
 
-      {/* Tab 2: Color & Styling Theme */}
       {activeTab === "styling" && (
         <div className="space-y-4">
           <div>
@@ -621,7 +611,6 @@ function ProjectForm({
         </div>
       )}
 
-      {/* Tab 3: Links, Tags & Team */}
       {activeTab === "links" && (
         <div className="space-y-4">
           <div>

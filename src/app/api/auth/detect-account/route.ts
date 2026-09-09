@@ -11,10 +11,8 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const machineId = getHardwareMachineId();
-    // Strictly hardcoded sovereign URL; cannot be spoofed via environment variable
     const webPortalUrl = "https://portside.lol";
 
-    // 1. Authoritative check: ALWAYS query the sovereign server first
     try {
       const serverRes = await fetch(
         `${webPortalUrl}/api/device/instructions?machineId=${machineId}`,
@@ -23,7 +21,6 @@ export async function GET() {
       if (serverRes.ok) {
         const inst = await serverRes.json();
         if (inst.email && inst.email.includes("@")) {
-          // Verify Ed25519 cryptographic ticket: cannot be spoofed by rogue local servers or JSON mocks
           let isSupporter = false;
           if (inst.sessionTicket) {
             const verified = verifySessionTicket(inst.sessionTicket, machineId, inst.email);
@@ -47,7 +44,6 @@ export async function GET() {
       }
     } catch {}
 
-    // 2. Fallback to local database only if server is offline
     const list = await db
       .select({
         id: users.id,

@@ -60,7 +60,6 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
       : { transactionId: claimInput.trim() };
 
     try {
-      // 1. Hit sovereign claim endpoint on portside.lol
       const res = await fetch("https://portside.lol/api/license/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,7 +67,6 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
       });
       const data = await res.json();
       if (res.ok && data.ok && data.licenseKey) {
-        // 2. Automatically activate the minted license key locally
         const actRes = await activateLicense(data.licenseKey);
         if (actRes.ok) {
           setClaimInput("");

@@ -25,7 +25,6 @@ export async function GET(req: Request) {
   const rawUrls = hostname ? getLanUrls(hostname, port, lanIp) : null;
   const portalUrl = `http://${lanIp}${port === "80" || port === "443" ? "" : `:${port}`}/lan`;
 
-  // Server-level security: strictly omit .local URLs for non-supporters
   const urls = rawUrls
     ? {
         lanIp: rawUrls.lanIp,
@@ -37,7 +36,6 @@ export async function GET(req: Request) {
       }
     : null;
 
-  // Optional server-signed pairing token if supporter session is present
   let pairToken: string | null = null;
   const supporterEmail = isSupporter && user?.email ? user.email : null;
   if (supporterEmail) {
@@ -74,7 +72,6 @@ export async function GET(req: Request) {
   const extraVanityPurchased = profile.extraVanityPurchased || 0;
   const vanityChangesRemaining = Math.max(0, 1 + extraVanityPurchased - vanityChangesUsed);
 
-  // Supporter domain resolution: guaranteed portside.lol domain ONLY for supporters
   if (isSupporter && !vanityDomain) {
     if (requestedDomain) {
       vanityDomain = requestedDomain.includes(".") ? requestedDomain : `${requestedDomain}.portside.lol`;
@@ -89,7 +86,6 @@ export async function GET(req: Request) {
     }
   }
 
-  // Non-supporters do not get vanity domain or custom 5G tunnel
   if (!isSupporter) {
     vanityDomain = "";
     publicTunnelUrl = "";
@@ -114,7 +110,6 @@ export async function GET(req: Request) {
         qrTarget = "";
       }
     } else {
-      // Local Wi-Fi (lan) mode: Supporter gets .local iOS resolution; non-supporter gets direct IP URL
       if (isSupporter && rawUrls?.localMdnsUrl) {
         qrTarget = hostname ? rawUrls.localMdnsUrl : rawUrls.portalLocalUrl || portalUrl;
       } else {

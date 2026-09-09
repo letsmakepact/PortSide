@@ -6,8 +6,8 @@ interface CachedHostVerification {
 }
 
 const clientHostCache = new Map<string, CachedHostVerification>();
-const CLIENT_POSITIVE_TTL_MS = 10 * 60 * 1000; // 10 minutes for verified hosts
-const CLIENT_NEGATIVE_TTL_MS = 30 * 1000;      // 30 seconds for rejected hosts
+const CLIENT_POSITIVE_TTL_MS = 10 * 60 * 1000;
+const CLIENT_NEGATIVE_TTL_MS = 30 * 1000;
 
 const PORTSIDE_SYSTEM_ROUTES = [
   "/",
@@ -50,7 +50,6 @@ async function verifyHostWithServer(hostname: string): Promise<boolean> {
     return cached.known;
   }
 
-  // 1. Authoritative Sovereign & Creator fast-path (0ms, offline-resilient)
   if (
     hostname === "portside.lol" ||
     hostname === "www.portside.lol" ||
@@ -67,7 +66,6 @@ async function verifyHostWithServer(hostname: string): Promise<boolean> {
     return true;
   }
 
-  // 2. Ask authoritative sovereign server endpoints
   const serverEndpoints = [
     "https://www.portside.lol",
     "https://portside.lol",
@@ -146,7 +144,6 @@ export async function proxy(request: NextRequest) {
   const hostname = host.split(":")[0];
   const { pathname } = request.nextUrl;
 
-  // 0. Static assets & internal Next.js resources fast bypass
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/opengraph-image") ||
@@ -159,8 +156,6 @@ export async function proxy(request: NextRequest) {
     return withSecurityHeaders(NextResponse.next());
   }
 
-  // 0a. Drive-By CSRF Defense & Localhost Origin Guard
-  // For state-mutating requests (POST, PUT, PATCH, DELETE), verify Origin header
   const origin = request.headers.get("origin");
   if (origin && !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
     try {
@@ -194,9 +189,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // 0b. Public Vanity Subdomain Lockdown
-  // If an external visitor hits the developer's public vanity tunnel (*.portside.lol),
-  // strictly block access to the private control plane and admin APIs.
   const isPortsideApex = hostname === "portside.lol" || hostname === "www.portside.lol";
   const isPortsideVanitySubdomain = hostname.endsWith(".portside.lol") && !isPortsideApex && hostname !== "app.portside.lol";
 
@@ -216,7 +208,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // 1. Fast-path local network addresses (0ms latency, works offline)
   const isLocalNetwork =
     hostname === "localhost" ||
     hostname === "127.0.0.1" ||
@@ -233,7 +224,6 @@ export async function proxy(request: NextRequest) {
     /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
 
   if (!isLocalNetwork) {
-    // 2. Authoritative check: ask official server if this host is recognized and authorized
     const isAuthorized = await verifyHostWithServer(hostname);
     if (!isAuthorized) {
       return withSecurityHeaders(
@@ -242,7 +232,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // 3. Server-level enforcement for .local mDNS routing: only authorized Supporters can route .local
   if (hostname.endsWith(".local")) {
     const isSupporter = await verifySupporterStatus();
     if (!isSupporter) {
@@ -313,13 +302,11 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Fallback for Single Page Apps (SPA) requesting root-relative assets (/assets/..., /logo.svg, etc.)
   if (!label) {
     const isSystemPath = PORTSIDE_SYSTEM_ROUTES.some(
       (r) => pathname === r || pathname.startsWith(`${r}/`)
     );
     if (!isSystemPath) {
-      // 1. Inspect Referer header
       const referer = request.headers.get("referer");
       if (referer) {
         try {
@@ -340,7 +327,6 @@ export async function proxy(request: NextRequest) {
         } catch {}
       }
 
-      // 2. Active service cookie fallback for sub-resources & dynamic module imports (/assets/*, *.js, *.css, etc.)
       if (!label) {
         const isSpaAsset =
           pathname.startsWith("/assets/") ||
@@ -412,7 +398,6 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Track active service in cookie so subsequent dynamic chunk imports & assets resolve cleanly
   response.cookies.set("portside_active_service", label, {
     path: "/",
     maxAge: 86400,

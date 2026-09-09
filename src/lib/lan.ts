@@ -29,7 +29,6 @@ export function getLanIp(): string {
         const lowerName = name.toLowerCase();
         const ip = info.address;
 
-        // Skip link-local and virtual host-only IPs
         if (ip.startsWith("169.254.") || ip.startsWith("192.168.56.")) {
           continue;
         }

@@ -22,7 +22,6 @@ export interface CustomLink {
 }
 
 export interface PublicProfile {
-  // Identity & Branding
   handle: string;
   name: string;
   title: string;
@@ -40,10 +39,8 @@ export interface PublicProfile {
   vanityChangesUsed?: number;
   extraVanityPurchased?: number;
 
-  // Skills
   skills: string[];
 
-  // Social & Contact
   github: string;
   twitter: string;
   buymeacoffee: string;
@@ -53,17 +50,14 @@ export interface PublicProfile {
   linkedin: string;
   email: string;
 
-  // Custom links
   customLinks: CustomLink[];
 
-  // Project showcase controls
   showProjects: boolean;
   projectsTitle: string;
   projectsSubtitle: string;
   visibleServices: string[];
   projectOverrides: Record<string, ProjectOverride>;
 
-  // Call to Action
   showCta: boolean;
   ctaTitle: string;
   ctaDescription: string;
@@ -235,13 +229,9 @@ export async function getProfile(userParam?: SafeUser | null): Promise<PublicPro
 }
 
 export function getVanityChangeCost(changesUsed: number): number {
-  // 1st change (changesUsed = 0) is free
   if (changesUsed < 1) return 0;
-  // 2nd change (changesUsed = 1) is $10
   if (changesUsed === 1) return 10;
-  // 3rd change (changesUsed = 2) is $15
   if (changesUsed === 2) return 15;
-  // 4th change is $15 or $20, 5th change and subsequent are $20
   return 20;
 }
 
@@ -262,9 +252,8 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
   let newHandle = current.handle;
   let vanityChangesUsed = current.vanityChangesUsed || 0;
   const extraVanityPurchased = current.extraVanityPurchased || 0;
-  const maxAllowedChanges = 1 + extraVanityPurchased; // 1 free change, extra must be purchased
+  const maxAllowedChanges = 1 + extraVanityPurchased;
 
-  // Check if caller is requesting a vanity handle change
   if (typeof data.handle === "string") {
     const rawInput = data.handle.toLowerCase().trim().replace(/[^a-z0-9-]/g, "").slice(0, 30);
     if (rawInput && rawInput !== current.handle) {
@@ -296,7 +285,6 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
         throw new Error("Vanity handle must be at least 3 characters long.");
       }
 
-      // Rule: 1st change is free, 2nd is $10, 3rd is $15, 5th is $20
       if (!isPact && vanityChangesUsed >= maxAllowedChanges) {
         const nextCost = getVanityChangeCost(vanityChangesUsed);
         const changeOrdinal = vanityChangesUsed === 1 ? "2nd" : vanityChangesUsed === 2 ? "3rd" : vanityChangesUsed === 3 ? "4th" : "5th";
@@ -310,7 +298,6 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
     }
   }
 
-  // Security: Handle, Website, and Verified Badge are strictly server-managed.
   const sanitizedInput = { ...data };
   delete (sanitizedInput as any).handle;
   delete (sanitizedInput as any).website;

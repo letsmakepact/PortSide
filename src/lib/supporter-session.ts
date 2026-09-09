@@ -23,22 +23,13 @@ export function getHardwareMachineId(): string {
   return "PS-CABDA074-A01FD367";
 }
 
-// Global cache for live Ephemeral Supporter Session Ticket
 declare global {
-  // eslint-disable-next-line no-var
   var __PORTSIDE_LIVE_SESSION_TICKET__: string | null | undefined;
-  // eslint-disable-next-line no-var
   var __PORTSIDE_LIVE_SESSION_PAYLOAD__: SessionTicketPayload | null | undefined;
 }
 
-// Canonical sovereign portal URL (strictly hardcoded to prevent local env redirection attacks)
 const WEB_PORTAL_URL = "https://portside.lol";
 
-/**
- * Returns the currently active session ticket, or requests a fresh one from Portside-Web.
- * If the user's tier was tampered locally (e.g. cracked database or patched boolean),
- * the sovereign server will refuse to sign a session ticket, leaving the features inert.
- */
 export async function getOrFetchSupporterSession(
   email: string,
   licenseKey?: string,
@@ -46,7 +37,6 @@ export async function getOrFetchSupporterSession(
 ): Promise<{ valid: boolean; sessionTicket: string | null; payload: SessionTicketPayload | null; error?: string }> {
   const machineId = getHardwareMachineId();
 
-  // Return cached session if still fresh (> 2 min remaining) and matches requested email
   if (
     !forceRefresh &&
     global.__PORTSIDE_LIVE_SESSION_TICKET__ &&
@@ -97,7 +87,6 @@ export async function getOrFetchSupporterSession(
       return { valid: false, sessionTicket: null, payload: null, error: "Empty session ticket returned." };
     }
 
-    // Authenticate signature locally with Ed25519 master public key
     const verified = verifySessionTicket(ticket, machineId, email);
     if (!verified.valid || !verified.payload) {
       return {
@@ -108,7 +97,6 @@ export async function getOrFetchSupporterSession(
       };
     }
 
-    // Cache valid session (deep-frozen as immutable and read-only)
     const immutablePayload = Object.freeze({
       ...verified.payload,
       features: Object.freeze([...(verified.payload.features || [])]),
@@ -116,7 +104,6 @@ export async function getOrFetchSupporterSession(
     global.__PORTSIDE_LIVE_SESSION_TICKET__ = ticket;
     global.__PORTSIDE_LIVE_SESSION_PAYLOAD__ = immutablePayload;
 
-    // Notify Go launcher of active session ticket
     try {
       const launcherController = new AbortController();
       const launcherTimeout = setTimeout(() => launcherController.abort(), 800);
@@ -138,7 +125,6 @@ export async function getOrFetchSupporterSession(
       payload: immutablePayload,
     });
   } catch (err: any) {
-    // If network error, check if we still have an unexpired cached ticket for this email
     if (
       global.__PORTSIDE_LIVE_SESSION_TICKET__ &&
       global.__PORTSIDE_LIVE_SESSION_PAYLOAD__ &&
@@ -162,9 +148,6 @@ export async function getOrFetchSupporterSession(
   }
 }
 
-/**
- * Requests a short-lived (5m) server-signed pair token for Hotspot or LAN fleet pairing.
- */
 export async function requestPairToken(
   email: string
 ): Promise<{ valid: boolean; pairToken: string | null; error?: string }> {

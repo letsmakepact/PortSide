@@ -54,7 +54,6 @@ export function SettingsView() {
   const [activatingKey, setActivatingKey] = useState(false);
   const [rechecking, setRechecking] = useState(false);
 
-  // Profile states
   const [profileHandle, setProfileHandle] = useState("");
   const [profileName, setProfileName] = useState("");
   const [profileTitle, setProfileTitle] = useState("");
@@ -97,7 +96,6 @@ export function SettingsView() {
   const [vanityChangesUsed, setVanityChangesUsed] = useState(0);
   const [nextVanityCost, setNextVanityCost] = useState(10);
 
-  // Hotspot states
   const [hotspotActive, setHotspotActive] = useState(false);
   const [hotspotSsid, setHotspotSsid] = useState("PortSide-DevNet");
   const [hotspotKey, setHotspotKey] = useState("portside123");
@@ -481,7 +479,6 @@ export function SettingsView() {
     <div className="space-y-6">
       <PageHeader title="Settings" subtitle="Manage your dashboard preferences, account security, and routing configuration." />
 
-      {/* Tab Navigation Bar - responsive segmented pills that naturally wrap and fit without scrolling */}
       <nav aria-label="Settings Tabs" className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
         {tabs.map((tab) => {
           const IconComp = tab.icon;
@@ -505,7 +502,6 @@ export function SettingsView() {
         })}
       </nav>
 
-      {/* TAB 1: GENERAL / PREFERENCES & HEALTH */}
       {activeTab === "general" && (
         <div className="space-y-5">
           <Card className="p-5">
@@ -588,10 +584,8 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB: PUBLIC PROFILE & ABOUT ME */}
       {activeTab === "profile" && (
         <div className="space-y-6">
-          {/* Top Live URL & Actions Banner */}
           {isSupporter ? (
             <Card className="p-5 border-sky-500/30 bg-gradient-to-r from-sky-950/30 via-slate-900 to-slate-950 shadow-lg">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -698,7 +692,6 @@ export function SettingsView() {
             </Card>
           ) : (
             <div className="space-y-5">
-              {/* Profile Sub-Tab Navigation Bar */}
               <div className="flex flex-wrap gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-3">
                 {[
                   { id: "identity", label: "Identity & Bio" },
@@ -725,7 +718,6 @@ export function SettingsView() {
                 ))}
               </div>
 
-              {/* SUBTAB 1: IDENTITY & BIO */}
               {profileSubTab === "identity" && (
                 <Card className="p-6 space-y-5">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -906,7 +898,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* SUBTAB 2: THEME & VISUALS */}
               {profileSubTab === "theme" && (
                 <Card className="p-6 space-y-6">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -914,7 +905,6 @@ export function SettingsView() {
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize your page palette, ambient glows, header banners, and avatar.</p>
                   </div>
 
-                  {/* Accent Color Selection */}
                   <div className="space-y-3">
                     <Label>Profile Accent Palette</Label>
                     <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
@@ -944,7 +934,6 @@ export function SettingsView() {
                     </div>
                   </div>
 
-                  {/* Banner Presets */}
                   <div className="space-y-3">
                     <Label>Header Banner Style Preset</Label>
                     <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
@@ -973,7 +962,6 @@ export function SettingsView() {
                     </div>
                   </div>
 
-                  {/* Custom Banner & Avatar URLs with Live Previews */}
                   <div className="grid gap-4 sm:grid-cols-2 pt-2">
                     <div className="space-y-2">
                       <Label htmlFor="profBanner">Custom Banner Image URL (Optional)</Label>
@@ -1013,7 +1001,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* SUBTAB 3: SKILLS & STACKS */}
               {profileSubTab === "skills" && (
                 <Card className="p-6 space-y-5">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -1031,7 +1018,6 @@ export function SettingsView() {
                     />
                   </div>
 
-                  {/* Tag preview chips */}
                   <div className="space-y-2 pt-2">
                     <p className="text-xs font-semibold text-slate-400">Current Skill Tags:</p>
                     <div className="flex flex-wrap gap-1.5">
@@ -1046,7 +1032,6 @@ export function SettingsView() {
                     </div>
                   </div>
 
-                  {/* Quick-add suggestions */}
                   <div className="space-y-2 pt-3 border-t border-white/5">
                     <p className="text-xs text-slate-500">Quick-add popular technologies:</p>
                     <div className="flex flex-wrap gap-1.5">
@@ -1070,7 +1055,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* SUBTAB 4: SOCIALS & CONTACTS */}
               {profileSubTab === "socials" && (
                 <Card className="p-6 space-y-5">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -1163,7 +1147,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* SUBTAB 5: PROJECTS & PER-SERVICE OVERRIDES */}
               {profileSubTab === "projects" && (
                 <Card className="p-6 space-y-6">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1270,7 +1253,6 @@ export function SettingsView() {
                                     </div>
                                   </div>
 
-                                  {/* Custom overrides for this service */}
                                   <div className="grid gap-3 sm:grid-cols-3 pt-1">
                                     <div>
                                       <Label className="text-[11px]">Display Title Override</Label>
@@ -1313,7 +1295,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* SUBTAB 6: CUSTOM LINKS */}
               {profileSubTab === "links" && (
                 <Card className="p-6 space-y-5">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
@@ -1377,7 +1358,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* SUBTAB 7: CALL TO ACTION */}
               {profileSubTab === "cta" && (
                 <Card className="p-6 space-y-5">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
@@ -1444,7 +1424,6 @@ export function SettingsView() {
                 </Card>
               )}
 
-              {/* Bottom Sticky Save Button */}
               <div className="flex items-center justify-between pt-4 border-t border-white/10">
                 <p className="text-xs text-slate-500">
                   Changes save directly to your persistent PortSide profile configuration.
@@ -1458,7 +1437,6 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB: SUPPORTER & PERKS */}
       {activeTab === "supporter" && (
         <div className="space-y-5">
           <div className="grid gap-5 lg:grid-cols-2">
@@ -1582,7 +1560,6 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB: DEV WI-FI HOTSPOT */}
       {activeTab === "hotspot" && (
         <div className="space-y-5">
           <Card className="p-5">
@@ -1635,7 +1612,6 @@ export function SettingsView() {
               </div>
             ) : (
               <div className="mt-6 space-y-5">
-                {/* Zero-Config LAN info */}
                 <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4">
                   <div className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -1655,7 +1631,6 @@ export function SettingsView() {
                   </div>
                 </div>
 
-                {/* Global Remote Access card */}
                 {publicTunnelUrl && (
                   <div className="rounded-2xl border border-sky-500/30 bg-sky-50/40 dark:bg-sky-950/20 p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1700,7 +1675,6 @@ export function SettingsView() {
                   </div>
                 )}
 
-                {/* Hotspot controls */}
                 <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
@@ -1795,7 +1769,6 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB 3: ACCOUNT & PROFILE */}
       {activeTab === "account" && (
         <div className="grid gap-5 lg:grid-cols-2">
           <Card className="p-5">
@@ -1836,7 +1809,6 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB 3: ROUTING & PROXY */}
       {activeTab === "routing" && (
         <div className="space-y-5">
           <Card className="p-5">
@@ -1889,7 +1861,6 @@ export function SettingsView() {
         </div>
       )}
 
-      {/* TAB 4: UPDATES & ABOUT */}
       {activeTab === "about" && (
         <div className="space-y-5">
           <Card className="p-5">

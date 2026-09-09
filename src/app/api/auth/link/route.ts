@@ -29,7 +29,6 @@ export async function POST(req: Request) {
 
     const webPortalUrl = "https://portside.lol";
 
-    // 1. Check if this account is linked to a premium supporter account on the server or locally
     let isPremiumAccount = user.tier === "supporter" || (cleanEmail === "pact@virtuoushigh.com" && machineId === "PS-CABDA074-A01FD367");
 
     try {
@@ -48,7 +47,6 @@ export async function POST(req: Request) {
       }
     } catch {}
 
-    // 2. If the account is linked to a premium account on the server, the password is NOT optional
     if (isPremiumAccount) {
       if (!password || password.trim().length === 0) {
         return NextResponse.json(
@@ -60,7 +58,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Verify password against local stored credentials
     if (password && password.trim().length > 0) {
       if (!verifyPassword(password, user.passwordHash)) {
         return NextResponse.json({ error: "Incorrect password for this account." }, { status: 401 });
@@ -72,7 +69,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // 4. Confirm on the sovereign server
     let serverConfirmed = false;
     let sessionTicket: string | null = null;
 
@@ -96,7 +92,6 @@ export async function POST(req: Request) {
       }
     } catch {}
 
-    // If premium, strictly require sovereign server confirmation & cryptographic session ticket
     if (isPremiumAccount) {
       const sessionResult = await getOrFetchSupporterSession(cleanEmail, undefined, true);
       if (!sessionResult.valid || !sessionResult.sessionTicket) {
@@ -110,7 +105,6 @@ export async function POST(req: Request) {
       sessionTicket = sessionResult.sessionTicket;
       serverConfirmed = true;
 
-      // Update local database tier to supporter
       if (user.tier !== "supporter") {
         await db
           .update(users)
@@ -118,7 +112,6 @@ export async function POST(req: Request) {
           .where(eq(users.id, user.id));
       }
 
-      // Sync active ticket to launcher control server on port 4242
       try {
         await fetch("http://127.0.0.1:4242/api/pro/session", {
           method: "POST",

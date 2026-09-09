@@ -153,7 +153,6 @@ export function DashboardProvider({
   const [hotspotOpen, setHotspotOpen] = useState(false);
   const inFlight = useRef(false);
 
-  // Strictly server-authoritative tier
   const isSupporter = user.tier === "supporter";
 
   const openTutorial = useCallback(() => setTutorialOpen(true), []);
@@ -186,11 +185,9 @@ export function DashboardProvider({
     }
   }, [user.tier]);
 
-  // Live server verification handshake on mount
   useEffect(() => {
     void verifyServerSupporter();
 
-    // Register unique install telemetry
     try {
       let installId = window.localStorage.getItem("portside:install_id");
       if (!installId) {
@@ -219,7 +216,6 @@ export function DashboardProvider({
           return { ok: false, error: data.error };
         }
 
-        // Immediately verify with server to guarantee authoritative confirmation
         await verifyServerSupporter();
 
         toast({

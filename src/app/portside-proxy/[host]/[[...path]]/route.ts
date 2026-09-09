@@ -46,7 +46,6 @@ async function handle(req: NextRequest, ctx: Ctx) {
 
   const rawPath = req.headers.get("x-portside-original-path") || (path.length ? `/${path.map(encodeURIComponent).join("/")}` : "/");
   
-  // Strict Path Traversal Defense: block directory traversal attacks trying to escape dev server root
   if (rawPath.includes("..") || rawPath.includes("%2e%2e") || rawPath.includes("\0")) {
     return errorPage(
       400,
@@ -132,14 +131,12 @@ async function handle(req: NextRequest, ctx: Ctx) {
       outHeaders.append(key, value);
     });
 
-    // Enforce essential security headers on proxied responses
     outHeaders.set("x-content-type-options", "nosniff");
     outHeaders.set("x-frame-options", "SAMEORIGIN");
     outHeaders.set("referrer-policy", "strict-origin-when-cross-origin");
 
     const contentType = upstream.headers.get("content-type") || "";
 
-    // Server-Sent Events (SSE) anti-buffering for LLMs & real-time telemetry
     if (contentType.includes("text/event-stream")) {
       outHeaders.set("cache-control", "no-cache, no-transform");
       outHeaders.set("x-accel-buffering", "no");
@@ -147,21 +144,17 @@ async function handle(req: NextRequest, ctx: Ctx) {
 
     if (isPathProxy && contentType.includes("text/html")) {
       let html = await upstream.text();
-      // Inject base tag if not already present
       if (!html.includes("<base ") && !html.includes("<base/")) {
         html = html.replace(/<head>/i, `<head><base href="/s/${label}/">`);
       }
 
-      // Extract CSP nonce if upstream enforces it
       const csp = upstream.headers.get("content-security-policy") || "";
       const nonceMatch = csp.match(/'nonce-([^']+)'/i);
       const nonceAttr = nonceMatch ? ` nonce="${nonceMatch[1]}"` : "";
 
-      // Inject client-side fetch, XHR, WebSocket, and History API interceptors
       const clientPatch = `<script data-portside-runtime="1"${nonceAttr}>(function(){var p="/s/${label}";var of=window.fetch;if(of){window.fetch=function(u,o){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(p)&&!u.startsWith("/_next")){u=p+u;}return of.call(this,u,o);};}var oo=XMLHttpRequest.prototype.open;if(oo){XMLHttpRequest.prototype.open=function(m,u){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(p)&&!u.startsWith("/_next")){u=p+u;}return oo.apply(this,arguments);};}var ow=window.WebSocket;if(ow){window.WebSocket=function(u,pr){if(typeof u==="string"){if(u.startsWith("/")){u=p+u;}else if(u.startsWith("ws://")||u.startsWith("wss://")){try{var pu=new URL(u);if(pu.host===location.host&&!pu.pathname.startsWith(p)){pu.pathname=p+pu.pathname;u=pu.toString();}}catch(e){}}}return pr?new ow(u,pr):new ow(u);};window.WebSocket.prototype=ow.prototype;}var oph=history.pushState;if(oph){history.pushState=function(s,t,u){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(p)){u=p+u;}return oph.call(this,s,t,u);};}var orh=history.replaceState;if(orh){history.replaceState=function(s,t,u){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(p)){u=p+u;}return orh.call(this,s,t,u);};}})();</script>`;
       html = html.replace(/<head>/i, `<head>${clientPatch}`);
 
-      // Rewrite root-relative asset attributes to stay strictly namespaced under /s/:service/
       html = html.replace(/(src|href)=["']\/(assets\/[^"']+)["']/gi, `$1="/s/${label}/$2"`);
       html = html.replace(/(src|href)=["']\/(static\/[^"']+)["']/gi, `$1="/s/${label}/$2"`);
       html = html.replace(/(src|href)=["']\/(favicon\.[^"']+)["']/gi, `$1="/s/${label}/$2"`);

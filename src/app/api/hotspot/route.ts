@@ -2,7 +2,6 @@ import { requireUser } from "@/lib/auth";
 import { isServerSupporter, requireServerSupporter, supporterForbidden } from "@/lib/server-checks";
 import { getOrFetchSupporterSession } from "@/lib/supporter-session";
 
-// Hotspot state in memory for active runtime
 let hotspotActive = false;
 let hotspotSsid = "PortSide-DevNet";
 let hotspotKey = "portside123";
@@ -80,7 +79,7 @@ export async function GET() {
       connectedDevices: isSupporter && hotspotActive ? 1 : 0,
       isSupporter,
       serverConfirmed: true,
-      mdnsActive: isSupporter, // Zero-config LAN active by default
+      mdnsActive: isSupporter,
       publicTunnelUrl,
     });
   } catch (e: any) {

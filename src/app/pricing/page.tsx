@@ -71,7 +71,6 @@ export default function PricingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
 
-      {/* Header */}
       <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
@@ -109,7 +108,6 @@ export default function PricingPage() {
         </div>
       </header>
 
-      {/* Pricing Hero */}
       <main className="max-w-4xl mx-auto px-4 py-12 space-y-12">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-sky-950/60 border border-sky-500/30 text-sky-300">
@@ -123,9 +121,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {/* Free Tier */}
           <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -153,7 +149,6 @@ export default function PricingPage() {
             </Link>
           </div>
 
-          {/* Supporter Tier */}
           <div className="p-6 rounded-2xl bg-gradient-to-b from-sky-950/30 to-slate-900 border border-sky-500/40 flex flex-col justify-between space-y-6 relative overflow-hidden">
             <div className="space-y-4">
               <div className="flex items-center justify-between">

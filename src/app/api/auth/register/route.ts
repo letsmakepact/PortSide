@@ -18,9 +18,6 @@ export async function POST(req: Request) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return Response.json({ error: "Enter a valid email address." }, { status: 400 });
   if (password.length < 8) return Response.json({ error: "Password must be at least 8 characters." }, { status: 400 });
 
-  // If accessed via a developer's public vanity link (e.g. alex.portside.lol),
-  // NEVER create a local user, database rows, or folders on the developer's server!
-  // Send the registration directly to OUR central server.
   if (isPublicLink) {
     const webPortalUrl = "https://portside.lol";
     try {
@@ -54,7 +51,6 @@ export async function POST(req: Request) {
     }
   }
 
-  // Local-only registration on the developer's own machine
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
   if (existing.length) {
     return Response.json(
@@ -63,7 +59,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // Confirm with PortSide central server
   try {
     const webPortalUrl = "https://portside.lol";
     const serverRes = await fetch(`${webPortalUrl}/api/account/confirm`, {
@@ -88,7 +83,6 @@ export async function POST(req: Request) {
       );
     }
   } catch {
-    // Continue if offline
   }
 
   const [user] = await db.insert(users).values({ email, name, passwordHash: hashPassword(password) }).returning();

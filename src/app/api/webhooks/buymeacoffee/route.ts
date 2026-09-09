@@ -5,9 +5,6 @@ import { users, activityLogs } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Validates the Buy Me a Coffee webhook signature using timingSafeEqual.
- */
 function verifyBmcSignature(rawBody: string, signature: string | null, secret: string): boolean {
   if (!signature || !secret) return false;
   try {
@@ -30,13 +27,11 @@ export async function POST(req: Request) {
   const { searchParams } = new URL(req.url);
   const tokenParam = searchParams.get("token");
 
-  // Enforce server verification: require configured webhook secret
   if (!secret) {
     console.error("[BMC Webhook] BMC_WEBHOOK_SECRET is not configured on this server.");
     return Response.json({ error: "Webhook not configured" }, { status: 500 });
   }
 
-  // Verify HMAC-SHA256 signature or token parameter
   const isSignatureValid = verifyBmcSignature(rawBody, signatureHeader, secret);
   const isTokenValid = tokenParam && tokenParam.length === secret.length && crypto.timingSafeEqual(Buffer.from(tokenParam), Buffer.from(secret));
 
@@ -51,7 +46,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
-  // BMC payload shapes: response.supporter_email, data.supporter_email, or email
   const supporterEmail = (
     event.response?.supporter_email ||
     event.data?.supporter_email ||
@@ -64,7 +58,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "No supporter email in payload" }, { status: 400 });
   }
 
-  // Match supporter email against PortSide users
   const matchedUsers = await db
     .select({ id: users.id, email: users.email, name: users.name })
     .from(users)
@@ -97,7 +90,6 @@ export async function POST(req: Request) {
     });
   }
 
-  // Even if user hasn't created their local account yet, acknowledge webhook cleanly
   return Response.json({
     ok: true,
     message: `Received supporter event for ${supporterEmail}. User account will be upgraded when registered.`,

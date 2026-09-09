@@ -20,7 +20,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "Email or username and password are required." }, { status: 400 });
   }
 
-  // Strictly look up the specific user by their unique email or username
   const [user] = await db
     .select()
     .from(users)
@@ -36,7 +35,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid email, username, or password." }, { status: 401 });
   }
 
-  // Sync to central Portside-Web server
   try {
     const webPortalUrl = "https://portside.lol";
     fetch(`${webPortalUrl}/api/account/confirm`, {

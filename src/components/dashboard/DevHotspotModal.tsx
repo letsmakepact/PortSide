@@ -150,7 +150,6 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
           </div>
         ) : (
           <div className="mt-6 space-y-4">
-            {/* Mode 1: Zero-Config LAN (Active by Default) */}
             <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -172,7 +171,6 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
               </div>
             </div>
 
-            {/* Mode 2: Dedicated Secure Wi-Fi Hotspot */}
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -207,7 +205,6 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
                 </Button>
               </div>
 
-              {/* Wi-Fi Credentials Configuration Form */}
               <form onSubmit={saveSettings} className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 grid gap-3 sm:grid-cols-2">
                 <div>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">

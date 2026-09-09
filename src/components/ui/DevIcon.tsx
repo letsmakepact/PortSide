@@ -241,7 +241,6 @@ export const DEV_ICON_REGISTRY: Record<string, DevIconMeta> = {
   },
 };
 
-// Aliases for common user terms or lowercase inputs
 const ALIAS_MAP: Record<string, string> = {
   api: "server",
   backend: "server",

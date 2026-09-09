@@ -6,7 +6,6 @@ import { isServerSupporter } from "@/lib/server-checks";
 
 export const dynamic = "force-dynamic";
 
-// Color theme helper
 function getThemeStyles(accent: PublicProfile["accentColor"]) {
   switch (accent) {
     case "emerald":
@@ -119,12 +118,10 @@ export default async function ProfilePage() {
   const theme = getThemeStyles(profile.accentColor || "sky");
   const bannerGradient = getBannerGradient(profile.bannerPreset || "cyber-mesh");
 
-  // Filter services
   const visibleServices = profile.visibleServices && profile.visibleServices.length > 0
     ? allServices.filter((s) => profile.visibleServices.includes(s.hostname))
     : allServices;
 
-  // Sort services: featured first, then name
   const sortedServices = [...visibleServices].sort((a, b) => {
     const aFeatured = profile.projectOverrides?.[a.hostname]?.featured ? 1 : 0;
     const bFeatured = profile.projectOverrides?.[b.hostname]?.featured ? 1 : 0;
@@ -132,7 +129,6 @@ export default async function ProfilePage() {
     return a.name.localeCompare(b.name);
   });
 
-  // Status indicator config
   const statusColor = {
     online: "bg-emerald-400",
     building: "bg-amber-400",
@@ -142,13 +138,11 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 selection:bg-sky-500 selection:text-white relative overflow-hidden font-sans">
-      {/* Dynamic ambient background glow */}
       <div
         className={`pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[550px] w-[900px] rounded-full bg-gradient-to-tr ${theme.accentGlow} to-transparent blur-3xl`}
       />
       <div className="pointer-events-none absolute top-[700px] right-0 h-[450px] w-[650px] rounded-full bg-sky-900/10 blur-3xl" />
 
-      {/* Navigation Header */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070b14]/85 backdrop-blur-md px-4 py-3.5 sm:px-8">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <a href="/" className="flex items-center gap-2.5 group">
@@ -203,9 +197,7 @@ export default async function ProfilePage() {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-8 space-y-12 relative z-10">
-        {/* Profile Card Container with Custom Banner */}
         <section className="rounded-3xl border border-white/10 overflow-hidden shadow-2xl backdrop-blur-xl bg-slate-900/40">
-          {/* Banner Header */}
           <div className="relative h-44 sm:h-56 w-full overflow-hidden">
             {profile.bannerUrl ? (
               <img
@@ -221,10 +213,8 @@ export default async function ProfilePage() {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
           </div>
 
-          {/* Hero Profile Body */}
           <div className="px-6 pb-8 pt-0 sm:px-10 relative">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-20 sm:-mt-24 mb-6">
-              {/* Avatar */}
               <div className="relative shrink-0">
                 <div className={`h-28 w-28 sm:h-36 sm:w-36 rounded-3xl overflow-hidden border-4 border-[#070b14] shadow-2xl bg-slate-900 flex items-center justify-center ring-2 ${theme.accentBorder}`}>
                   {profile.avatarUrl ? (
@@ -247,7 +237,6 @@ export default async function ProfilePage() {
                 </span>
               </div>
 
-              {/* Status and Primary Action */}
               <div className="flex flex-wrap items-center gap-2.5">
                 {profile.location && (
                   <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300">
@@ -269,7 +258,6 @@ export default async function ProfilePage() {
               </div>
             </div>
 
-            {/* Profile Info Details */}
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2.5">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
@@ -298,7 +286,6 @@ export default async function ProfilePage() {
                 {profile.bio}
               </p>
 
-              {/* Skills / Tech Stack */}
               {profile.skills && profile.skills.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {profile.skills.map((skill, i) => (
@@ -312,7 +299,6 @@ export default async function ProfilePage() {
                 </div>
               )}
 
-              {/* Social and Contact Links */}
               <div className="flex flex-wrap items-center gap-2.5 pt-3">
                 {profile.buymeacoffee && (
                   <a
@@ -405,7 +391,6 @@ export default async function ProfilePage() {
           </div>
         </section>
 
-        {/* Custom Showcase Links (Linktree-style) */}
         {profile.customLinks && profile.customLinks.length > 0 && (
           <section className="space-y-4">
             <h2 className="text-base font-bold tracking-tight text-white flex items-center gap-2">
@@ -440,7 +425,6 @@ export default async function ProfilePage() {
           </section>
         )}
 
-        {/* Live Hosted Projects Section */}
         {profile.showProjects !== false && (
           <section className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-white/10 pb-4">
@@ -491,7 +475,6 @@ export default async function ProfilePage() {
                       } p-5 backdrop-blur-sm transition-all duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:shadow-xl`}
                     >
                       <div>
-                        {/* Top bar: icon & status */}
                         <div className="flex items-start justify-between gap-3">
                           <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${theme.accentBgSubtle} border ${theme.accentBorder} ${theme.accentText} group-hover:scale-105 transition shadow-xs`}>
                             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -519,7 +502,6 @@ export default async function ProfilePage() {
                           </div>
                         </div>
 
-                        {/* Project Title and Hostname */}
                         <h3 className={`mt-4 text-base font-bold text-white group-hover:${theme.accentText} transition`}>
                           {displayName}
                         </h3>
@@ -527,12 +509,10 @@ export default async function ProfilePage() {
                           {svc.hostname}.{activeDomain || "localhost"}
                         </p>
 
-                        {/* Description */}
                         <p className="mt-2 text-xs text-slate-300 leading-relaxed line-clamp-2">
                           {displayDesc}
                         </p>
 
-                        {/* Tags */}
                         {displayTags && displayTags.length > 0 && (
                           <div className="mt-3 flex flex-wrap gap-1">
                             {displayTags.slice(0, 4).map((tag, idx) => (
@@ -547,7 +527,6 @@ export default async function ProfilePage() {
                         )}
                       </div>
 
-                      {/* Launch Actions */}
                       <div className="mt-6 pt-4 border-t border-white/5 space-y-2">
                         <a
                           href={directPath}
@@ -591,7 +570,6 @@ export default async function ProfilePage() {
           </section>
         )}
 
-        {/* Custom Call To Action Banner */}
         {profile.showCta !== false && (
           <section className={`rounded-2xl border ${theme.accentBorder} bg-gradient-to-r from-slate-900/90 via-slate-950 to-slate-900/90 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-5`}>
             <div className="space-y-1.5">
@@ -618,7 +596,6 @@ export default async function ProfilePage() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="mt-20 border-t border-white/10 bg-[#070b14]/90 py-8 text-center text-xs text-slate-500 relative z-10">
         <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
