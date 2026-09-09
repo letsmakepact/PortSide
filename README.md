@@ -76,6 +76,21 @@ Portside is 100% free for individual developers, with optional Supporter perks f
 ### 3. Laptops & Desktops (Workstation Cockpit)
 - Full-featured dashboard with searchable service lists, project filters, port probing latency metrics, and 1-click controls.
 
+### 4. Docker Containers & Microservices (All Short URLs)
+- **Native Short `*.localhost` Resolution:** Docker containers (such as Sub2API, Ollama, devcontainers, and backend microservices) can connect directly to all Portside short URLs (like `http://router.localhost` or `http://api.localhost`) without getting `connection refused`.
+- **Automatic Container Host Sync:** `Portside-Launcher` includes an automated background synchronizer that detects active Docker containers and maps all registered `.localhost` service routes to the host gateway (`192.168.65.254`).
+- **Zero-Friction Docker Compose Integration:** Add your services to `extra_hosts` in `docker-compose.yml` for permanent container-to-host routing:
+  ```yaml
+  services:
+    my-service:
+      image: my-service:latest
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+        - "router.localhost:host-gateway"
+        - "api.localhost:host-gateway"
+  ```
+- **Universal Gateway Fallbacks:** Containers can also connect via Docker path proxy (`http://host.docker.internal/s/<service>`) or wildcard DNS (`http://<service>.192.168.65.254.nip.io`).
+
 ---
 
 ## Tech Stack

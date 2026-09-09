@@ -221,6 +221,9 @@ export async function proxy(request: NextRequest) {
     hostname === "localhost" ||
     hostname === "127.0.0.1" ||
     hostname === "::1" ||
+    hostname === "host.docker.internal" ||
+    hostname === "gateway.docker.internal" ||
+    hostname.endsWith(".host.docker.internal") ||
     hostname.endsWith(".localhost") ||
     hostname.endsWith(".local") ||
     /\.(?:nip\.io|sslip\.io)$/.test(hostname) ||
@@ -272,6 +275,20 @@ export async function proxy(request: NextRequest) {
     const localhostMatch = hostname.match(/^([a-z0-9-]+)\.localhost$/);
     if (localhostMatch) {
       label = localhostMatch[1];
+    }
+  }
+
+  if (!label) {
+    const dockerMatch = hostname.match(/^([a-z0-9-]+)\.host\.docker\.internal$/);
+    if (dockerMatch) {
+      label = dockerMatch[1];
+    }
+  }
+
+  if (!label) {
+    const serviceHeader = request.headers.get("x-portside-service")?.toLowerCase();
+    if (serviceHeader && /^[a-z0-9-]+$/.test(serviceHeader)) {
+      label = serviceHeader;
     }
   }
 

@@ -33,6 +33,7 @@ const SECTIONS: DocSection[] = [
       { id: "localhost-subdomains", title: "Localhost Subdomains" },
       { id: "port-mapping", title: "Port Mapping & Proxying" },
       { id: "port-80-setup", title: "Running on Standard Port 80" },
+      { id: "docker-containers", title: "Docker & Container Support" },
     ],
   },
   {
@@ -402,6 +403,72 @@ export default function DocsPage() {
               <p className="text-sm text-slate-300 leading-relaxed">
                 By default, PortSide binds to port 80 so URLs do not require a trailing port number. If another application occupies port 80, run the native launcher as Administrator to automatically reassign or configure an alternate application port in dashboard preferences.
               </p>
+            </div>
+
+            <div id="docker-containers" className="rounded-2xl border border-sky-500/30 bg-slate-900/60 p-6 space-y-4 scroll-mt-28">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400 text-xs font-mono font-bold">🐳</span>
+                  Docker &amp; Container Support (All Short URLs)
+                </h3>
+                <span className="text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">
+                  Zero-Config Sync
+                </span>
+              </div>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Portside provides first-class support for containerized workflows, including <strong className="text-white">Docker Compose, devcontainers, Sub2API, Ollama, and microservices</strong>. When applications run inside isolated Linux container namespaces, they can dial all Portside short URLs directly without connection failures.
+              </p>
+
+              <div className="space-y-3 pt-1">
+                <h4 className="text-xs font-mono font-semibold uppercase text-sky-400 tracking-wider">
+                  How PortSide Resolves Docker Short URLs
+                </h4>
+                <ul className="space-y-2 text-xs text-slate-300 list-disc list-inside">
+                  <li>
+                    <strong className="text-white">Automatic Container Sync:</strong> The Portside launcher runs a background daemon that synchronizes all registered <code className="font-mono text-sky-300">*.localhost</code> routes to the host gateway (<code className="font-mono text-sky-300">192.168.65.254</code>) inside running Docker containers.
+                  </li>
+                  <li>
+                    <strong className="text-white">Docker Gateway Bridge:</strong> Requests from <code className="font-mono text-sky-300">host.docker.internal</code> and internal container subnets are recognized as local network traffic and routed immediately.
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <h4 className="text-xs font-mono font-semibold uppercase text-sky-400 tracking-wider">
+                  Docker Compose Setup (Recommended)
+                </h4>
+                <p className="text-xs text-slate-400">
+                  Add <code className="font-mono text-sky-300">extra_hosts</code> to map your services to the host gateway:
+                </p>
+                <div className="rounded-xl border border-white/10 bg-black/50 p-4 font-mono text-xs text-emerald-300 space-y-1 overflow-x-auto">
+                  <p className="text-slate-500"># In your docker-compose.yml service definition:</p>
+                  <p className="text-slate-300">services:</p>
+                  <p className="text-slate-300">&nbsp;&nbsp;my-service:</p>
+                  <p className="text-slate-300">&nbsp;&nbsp;&nbsp;&nbsp;image: my-app:latest</p>
+                  <p className="text-sky-300">&nbsp;&nbsp;&nbsp;&nbsp;extra_hosts:</p>
+                  <p className="text-emerald-400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- &quot;host.docker.internal:host-gateway&quot;</p>
+                  <p className="text-emerald-400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- &quot;router.localhost:host-gateway&quot;</p>
+                  <p className="text-emerald-400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- &quot;api.localhost:host-gateway&quot;</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <h4 className="text-xs font-mono font-semibold uppercase text-sky-400 tracking-wider">
+                  Alternative Container Routes
+                </h4>
+                <div className="grid gap-3 sm:grid-cols-2 text-xs">
+                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-1">
+                    <p className="font-bold text-white">Path-Based Gateway</p>
+                    <p className="font-mono text-sky-300">http://host.docker.internal/s/&lt;service&gt;</p>
+                    <p className="text-slate-400">Proxies directly through Docker Desktop&#39;s built-in host bridge.</p>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-1">
+                    <p className="font-bold text-white">Wildcard IP DNS</p>
+                    <p className="font-mono text-sky-300">http://&lt;service&gt;.192.168.65.254.nip.io</p>
+                    <p className="text-slate-400">Public DNS resolution directly to your Docker gateway IP.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
