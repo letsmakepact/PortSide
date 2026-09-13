@@ -275,6 +275,7 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
         "www",
         "dev",
         "internal",
+        "social",
       ]);
       if (RESERVED_HANDLES.has(rawInput) && !isPact) {
         throw new Error(`The handle '${rawInput}' is reserved by the PortSide platform.`);

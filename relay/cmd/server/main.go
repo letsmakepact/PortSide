@@ -14,6 +14,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -294,7 +295,7 @@ func (s *RelayServer) handleClientConn(conn net.Conn) {
 	validTicket, ticketPayload := verifySessionTicket(hs.SessionTicket, hs.MachineId)
 
 	// Strictly verify that reserved handles can only be registered by authorized identities
-	isReserved := handle == "pact" || handle == "letsmakepact" || handle == "admin" || handle == "root" || handle == "portside"
+	isReserved := handle == "pact" || handle == "letsmakepact" || handle == "admin" || handle == "root" || handle == "portside" || handle == "social"
 	if isReserved && !isPact && (ticketPayload == nil || ticketPayload.Email != "pact@virtuoushigh.com") {
 		ack := protocol.HandshakeAckPayload{
 			Success: false,
@@ -341,6 +342,11 @@ func (s *RelayServer) handleClientConn(conn net.Conn) {
 	}
 	s.clients[handle] = session
 	s.clientsMu.Unlock()
+
+	// Persist claim marker so handle is recognized as claimed even when offline
+	claimDir := filepath.Join(s.cacheDir, handle)
+	_ = os.MkdirAll(claimDir, 0755)
+	_ = os.WriteFile(filepath.Join(claimDir, "claimed"), []byte(time.Now().Format(time.RFC3339)), 0644)
 
 	ack := protocol.HandshakeAckPayload{
 		Success:        true,
@@ -537,14 +543,20 @@ func (s *RelayServer) handleOfflineRequest(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// 4. Standalone Showcase page for Profile requests
+	// 4. If domain is not claimed, render the unclaimed domain purchase promotion page
+	if !s.isHandleClaimed(host, handle) {
+		s.renderUnclaimedDomainPage(w, host, handle)
+		return
+	}
+
+	// 5. Standalone Showcase page for Profile requests on claimed domains
 	if path == "/" || path == "/profile" || path == "/@me" || path == "/about" {
 		if s.renderCachedShowcase(w, handle) {
 			return
 		}
 	}
 
-	// 5. Standby for un-cached nodes or custom services
+	// 6. Standby for claimed nodes that are offline
 	s.renderOfflinePage(w, host, handle)
 }
 
@@ -971,6 +983,251 @@ func (s *RelayServer) renderCachedShowcase(w http.ResponseWriter, handle string)
 		skillsHtml.String(),
 	)
 	return true
+}
+
+func (s *RelayServer) isHandleClaimed(host, handle string) bool {
+	handle = strings.ToLower(strings.TrimSpace(handle))
+	if handle == "" {
+		return false
+	}
+
+	// Reserved platform handles are always claimed
+	if handle == "pact" || handle == "letsmakepact" || handle == "admin" || handle == "root" || handle == "portside" || handle == "social" {
+		return true
+	}
+
+	// Active tunnel session
+	s.clientsMu.RLock()
+	_, active := s.clients[handle]
+	s.clientsMu.RUnlock()
+	if active {
+		return true
+	}
+
+	// Local cache directory check
+	dir := filepath.Join(s.cacheDir, handle)
+	if fi, err := os.Stat(dir); err == nil && fi.IsDir() {
+		if _, err := os.Stat(filepath.Join(dir, "profile.json")); err == nil {
+			return true
+		}
+		if _, err := os.Stat(filepath.Join(dir, "profile.html")); err == nil {
+			return true
+		}
+		if _, err := os.Stat(filepath.Join(dir, "claimed")); err == nil {
+			return true
+		}
+	}
+
+	// Authoritative verification via central web API
+	client := &http.Client{Timeout: 2 * time.Second}
+	verifyUrl := fmt.Sprintf("https://%s/api/host/verify?host=%s", s.baseDomain, url.QueryEscape(host))
+	resp, err := client.Get(verifyUrl)
+	if err == nil {
+		defer resp.Body.Close()
+		if resp.StatusCode == http.StatusOK {
+			var res struct {
+				Known bool `json:"known"`
+			}
+			if err := json.NewDecoder(resp.Body).Decode(&res); err == nil && res.Known {
+				_ = os.MkdirAll(dir, 0755)
+				_ = os.WriteFile(filepath.Join(dir, "claimed"), []byte("true"), 0644)
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (s *RelayServer) renderUnclaimedDomainPage(w http.ResponseWriter, host, handle string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+
+	fullDomain := fmt.Sprintf("%s.%s", handle, s.baseDomain)
+	if host != "" {
+		fullDomain = host
+	}
+	escapedHandle := html.EscapeString(handle)
+	escapedDomain := html.EscapeString(fullDomain)
+
+	fmt.Fprintf(w, `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PortSide &middot; Claim %s</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      background: #030712;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      top: 20%%;
+      left: 50%%;
+      transform: translate(-50%%, -50%%);
+      width: 520px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%%, rgba(16, 185, 129, 0.08) 50%%, transparent 75%%);
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .card {
+      position: relative;
+      z-index: 1;
+      background: #0b0f19;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 24px;
+      max-width: 520px;
+      width: 100%%;
+      padding: 40px 32px;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(56, 189, 248, 0.05);
+      text-align: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 9999px;
+      color: #34d399;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 24px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%%, 100%% { opacity: 1; transform: scale(1); }
+      50%% { opacity: 0.4; transform: scale(0.85); }
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 0 12px 0;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+    .domain-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 15px;
+      background: #111827;
+      padding: 8px 18px;
+      border-radius: 12px;
+      color: #38bdf8;
+      border: 1px solid #1e293b;
+      margin-bottom: 20px;
+    }
+    .desc {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 0 0 24px 0;
+    }
+    .features {
+      text-align: left;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    .check {
+      color: #38bdf8;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .btn-claim {
+      display: block;
+      width: 100%%;
+      background: linear-gradient(135deg, #0284c7 0%%, #2563eb 100%%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.4);
+    }
+    .btn-claim:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 25px rgba(2, 132, 199, 0.55);
+    }
+    .btn-secondary {
+      display: inline-block;
+      margin-top: 16px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s ease;
+    }
+    .btn-secondary:hover {
+      color: #94a3b8;
+    }
+    .footnote {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #475569;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge"><span class="dot"></span> Domain Available to Claim</div>
+    <h1>Claim %s</h1>
+    <div class="domain-pill">%s</div>
+    <p class="desc">This vanity subdomain is currently unclaimed on the PortSide edge network. Claim it to unlock your custom address, developer showcase, and direct encrypted tunnels.</p>
+    
+    <div class="features">
+      <div class="feature-item"><span class="check">&#10003;</span> Exclusive vanity address (<strong>%s</strong>)</div>
+      <div class="feature-item"><span class="check">&#10003;</span> 24/7 Developer Showcase with custom backgrounds</div>
+      <div class="feature-item"><span class="check">&#10003;</span> Live local port tunnels &amp; sub-services</div>
+      <div class="feature-item"><span class="check">&#10003;</span> Automated edge TLS certificates</div>
+    </div>
+
+    <a href="https://buymeacoffee.com/pacts" class="btn-claim" target="_blank" rel="noopener noreferrer">Claim %s ($5.99/mo)</a>
+    <a href="https://portside.lol" class="btn-secondary">Explore PortSide Network &rarr;</a>
+    <div class="footnote">Already a supporter? Launch PortSide on your workstation and link your handle to activate.</div>
+  </div>
+</body>
+</html>`, escapedDomain, escapedDomain, escapedDomain, escapedDomain, escapedHandle)
 }
 
 func (s *RelayServer) renderOfflinePage(w http.ResponseWriter, host, handle string) {
