@@ -38,7 +38,6 @@ import {
   Send,
 } from "lucide-react";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
-import { RoutingArchitectureSimulator } from "@/components/home/RoutingArchitectureSimulator";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useI18n } from "@/lib/i18n";
 
@@ -388,15 +387,13 @@ export default function Home() {
             </div>
 
             <div className="pt-8 text-center">
-              <a href="#simulator" className="inline-flex flex-col items-center gap-1 text-slate-500 hover:text-slate-300 text-xs transition">
-                <span className="text-[11px] font-mono">Explore Architecture</span>
+              <a href="#features" className="inline-flex flex-col items-center gap-1 text-slate-500 hover:text-slate-300 text-xs transition">
+                <span className="text-[11px] font-mono">Explore Features</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
         </section>
-
-        <RoutingArchitectureSimulator />
 
         <section id="features" className="relative py-20 sm:py-28 border-b border-[#1f2937] bg-[#0b0f17]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -1571,7 +1568,6 @@ export default function Home() {
               <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">{t.footer.productHeading}</p>
               <ul className="space-y-1.5 text-xs">
                 <li><a href="#features" className="hover:text-white transition">{t.footer.features}</a></li>
-                <li><a href="#simulator" className="hover:text-white transition">{t.footer.architecture}</a></li>
                 <li><a href="#supporter" className="hover:text-white transition">{t.footer.supporterPlan}</a></li>
                 <li><a href="#downloads" className="hover:text-white transition">{t.footer.downloadList}</a></li>
               </ul>
