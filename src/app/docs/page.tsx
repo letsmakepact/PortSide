@@ -77,9 +77,7 @@ const SECTIONS: DocSection[] = [
       { id: "perks-overview", title: "Supporter Perks Matrix" },
       { id: "vanity-domains", title: "Dedicated *.portside.lol Subdomains" },
       { id: "remote-tunnels", title: "Encrypted Edge Tunnels (Remote 5G)" },
-      { id: "remote-subdomains", title: "Multi-Service Remote Routing" },
-      { id: "custom-cname", title: "Custom Apex Domain (CNAME) Routing" },
-      { id: "offline-tickets", title: "Cryptographic Offline Tickets (PSL1)" },
+      { id: "remote-projects", title: "Direct Project Edge Routing (/s/<project>)" },
       { id: "how-to-unlock", title: "How to Unlock & Redeem Perks" },
     ],
   },
@@ -168,7 +166,7 @@ export default function DocsPage() {
         name: "What perks are included in the PortSide Supporter tier?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Supporters receive dedicated *.portside.lol vanity subdomains, encrypted remote edge tunnels for 5G & webhook testing, multi-service remote routing, interactive LAN Cockpit (/lan) with Smart TV navigation, isolated Dev Wi-Fi Hotspot with private DNS gateway (192.168.137.1), custom local root domains (*.test, *.lan), zero-config *.local mDNS routing, public developer showcase profiles with custom themes, custom apex domain CNAME delegation, and cryptographic offline activation tickets (PSL1).",
+          text: "Supporters receive dedicated *.portside.lol vanity subdomains, encrypted remote edge tunnels for 5G & webhook testing, direct project edge routing (/s/<project>), interactive LAN Cockpit (/lan) with Smart TV navigation, isolated Dev Wi-Fi Hotspot with private DNS gateway (192.168.137.1), custom local root domains (*.test, *.lan, *.portside), zero-config *.local mDNS routing, and public developer showcase profiles with custom themes.",
         },
       },
       {
@@ -684,12 +682,12 @@ export default function DocsPage() {
                         <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
                       </tr>
                       <tr className="bg-sky-500/[0.04]">
-                        <td className="py-2.5 px-4 font-medium text-white">Encrypted Cloudflare edge tunnels (Remote 5G &amp; Webhooks)</td>
+                        <td className="py-2.5 px-4 font-medium text-white">Encrypted Remote Edge Tunnels (Remote 5G &amp; Webhooks)</td>
                         <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
                         <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
                       </tr>
                       <tr className="bg-sky-500/[0.04]">
-                        <td className="py-2.5 px-4 font-medium text-white">Multi-Service Remote Subdomains (&lt;svc&gt;.&lt;handle&gt;.portside.lol)</td>
+                        <td className="py-2.5 px-4 font-medium text-white">Direct Project Edge Routing (/s/&lt;project&gt;)</td>
                         <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
                         <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
                       </tr>
@@ -723,16 +721,6 @@ export default function DocsPage() {
                         <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
                         <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
                       </tr>
-                      <tr className="bg-sky-500/[0.04]">
-                        <td className="py-2.5 px-4 font-medium text-white">Custom Apex Domain (CNAME) Delegation</td>
-                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
-                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
-                      </tr>
-                      <tr className="bg-sky-500/[0.04]">
-                        <td className="py-2.5 px-4 font-medium text-white">Cryptographic Offline Activation Tickets (PSL1)</td>
-                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
-                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -746,47 +734,27 @@ export default function DocsPage() {
                     <span>Dedicated *.portside.lol Vanity Subdomains</span>
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Claim a permanent branded namespace under <code className="font-mono text-sky-300">*.portside.lol</code> (e.g. <code className="font-mono text-white">https://alex.portside.lol</code>). Your vanity handle remains permanently tied to your supporter account and provisions automatic SSL/TLS certificates through Cloudflare's global edge network.
+                    Claim a permanent branded namespace under <code className="font-mono text-sky-300">*.portside.lol</code> (e.g. <code className="font-mono text-white">https://alex.portside.lol</code>). Your vanity handle remains permanently tied to your supporter account and provisions automatic SSL/TLS certificates through our global edge network.
                   </p>
                 </div>
 
                 <div id="remote-tunnels" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
                     <Lock className="h-4 w-4 text-emerald-400" />
-                    <span>Encrypted Cloudflare Edge Tunnels (Remote 5G / Webhooks)</span>
+                    <span>Encrypted Remote Edge Tunnels (Remote 5G / Webhooks)</span>
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
                     Tunnel your local development servers to the global internet without opening firewall ports, configuring port forwarding, or exposing your physical machine IP. Ideal for testing Stripe, GitHub, or Shopify webhooks, sharing live previews with clients, or testing on mobile 5G/LTE networks outside your home.
                   </p>
                 </div>
 
-                <div id="remote-subdomains" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                <div id="remote-projects" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
                     <Layers className="h-4 w-4 text-indigo-400" />
-                    <span>Multi-Service Remote Routing</span>
+                    <span>Direct Project Edge Routing (/s/&lt;project&gt;)</span>
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Route specific mapped services over subdomains: <code className="font-mono text-emerald-300">https://&lt;service&gt;.&lt;handle&gt;.portside.lol</code> (e.g., <code className="font-mono text-white">https://api.alex.portside.lol</code> or <code className="font-mono text-white">https://docs.alex.portside.lol</code>), or via path-based routing (<code className="font-mono text-slate-300">/s/&lt;service&gt;</code>). Each service routes to its designated local port without interfering with other running apps.
-                  </p>
-                </div>
-
-                <div id="custom-cname" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Server className="h-4 w-4 text-amber-400" />
-                    <span>Custom Apex Domain (CNAME) Routing</span>
-                  </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Attach your personal or business domain (e.g. <code className="font-mono text-amber-300">dev.yourcompany.com</code>) directly to your local development hardware. Set a CNAME record to <code className="font-mono text-white">&lt;handle&gt;.portside.lol</code> and PortSide verifies and routes queries with full automated TLS edge termination.
-                  </p>
-                </div>
-
-                <div id="offline-tickets" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <KeyRound className="h-4 w-4 text-sky-400" />
-                    <span>Cryptographic Offline Activation Tickets (PSL1)</span>
-                  </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    PortSide licenses use Ed25519-signed cryptographic tokens beginning with <code className="font-mono text-sky-300">PSL1.</code>. Once activated, the desktop launcher caches the verified session locally. You can code on airplanes, off-grid locations, and isolated environments without needing continuous online phone-home calls.
+                    Allow clients or collaborators to test individual local dev services directly over your vanity tunnel via <code className="font-mono text-emerald-300">https://&lt;handle&gt;.portside.lol/s/&lt;project&gt;</code>. Each service routes to its designated local port seamlessly without exposing your local network or other applications.
                   </p>
                 </div>
 
@@ -812,7 +780,7 @@ export default function DocsPage() {
                         <span>Option 2: Redeem Promo or Giveaway Key</span>
                       </h4>
                       <p className="text-slate-400">
-                        Received a promo or giveaway key from Discord or developer events? Visit <Link href="/redeem" className="text-sky-400 underline font-mono">/redeem</Link> or paste your <code className="font-mono text-sky-300">PSL1.</code> key in desktop settings to unlock all perks without a credit card.
+                        Received a promo or giveaway key from Discord or developer events? Visit <Link href="/redeem" className="text-sky-400 underline font-mono">/redeem</Link> or paste your supporter license key in desktop settings to unlock all perks without a credit card.
                       </p>
                     </div>
                   </div>
@@ -959,9 +927,9 @@ export default function DocsPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2">
-                <h3 className="font-bold text-white text-sm">Can I use PortSide and all Supporter perks offline?</h3>
+                <h3 className="font-bold text-white text-sm">Can I test devices offline without an active internet connection?</h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Yes! PortSide's cryptographic activation tickets (<code className="font-mono text-sky-300">PSL1.</code>) verify offline without needing internet access. The Developer Wi-Fi Hotspot and private local DNS gateway (<code className="font-mono text-emerald-400">192.168.137.1</code>) also operate entirely off-grid without touching external servers.
+                  Yes! Developer Wi-Fi Hotspot mode and the built-in private local DNS gateway (<code className="font-mono text-emerald-400">192.168.137.1</code>) operate completely off-grid without touching external servers or requiring internet connectivity.
                 </p>
               </div>
 
