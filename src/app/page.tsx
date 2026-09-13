@@ -192,9 +192,13 @@ export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showNavDownload, setShowNavDownload] = useState(false);
   const [selectedOs, setSelectedOs] = useState<"windows" | "macos" | "linux">("windows");
-  const [activeShowcaseMode, setActiveShowcaseMode] = useState<"public" | "lan">("public");
   const [showcaseSubdomain, setShowcaseSubdomain] = useState("pact");
-  const [showcaseTheme, setShowcaseTheme] = useState<"obsidian" | "cyberpunk" | "emerald" | "sunset">("obsidian");
+  const [showcaseBgPreset, setShowcaseBgPreset] = useState<
+    "cyber-mesh" | "matrix-emerald" | "midnight-neon" | "obsidian-glow" | "pure-carbon"
+  >("cyber-mesh");
+  const [showcaseAccent, setShowcaseAccent] = useState<
+    "sky" | "cyan" | "emerald" | "violet" | "amber" | "rose"
+  >("sky");
   const [copiedCliCmd, setCopiedCliCmd] = useState<string | null>(null);
 
   useEffect(() => {
@@ -810,104 +814,106 @@ export default function Home() {
             <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-medium tracking-wide">
                 <Crown className="w-3.5 h-3.5 text-amber-400" />
-                <span>Supporter Superpower &middot; Dedicated Vanity Domains</span>
+                <span>Supporter Superpower &middot; Full-Background Profiles</span>
               </div>
               <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-                Your name on the web. <br className="hidden sm:inline" />
+                Your identity on the edge. <br className="hidden sm:inline" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-sky-200 to-cyan-300">
-                  Public showcase. Private gateway.
+                  Full-background themes. Real local ports.
                 </span>
               </h2>
               <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                Claim your permanent handle under <span className="text-slate-200 font-mono font-medium">username.portside.lol</span>. Turn your root URL into a polished developer portfolio with live staging previews, and use authenticated <span className="text-sky-300 font-mono font-medium">/lan</span> to inspect databases, test APIs, and debug services straight from your phone on 5G.
+                Turn your vanity domain (<span className="text-slate-200 font-mono font-medium">username.portside.lol</span>) into an immersive Steam-style developer node. Showcase your live staging builds under clean <span className="text-sky-300 font-mono font-medium">/s/&lt;project&gt;</span> paths with dynamic full-page backdrops, or use authenticated <span className="text-amber-300 font-mono font-medium">/lan</span> to inspect backend daemons straight from 5G.
               </p>
 
-              <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
-                {/* Mode Switcher */}
-                <div
-                  role="tablist"
-                  aria-label="Showcase view mode"
-                  className="inline-flex p-1.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-xl shadow-2xl gap-1"
-                >
-                  <button
-                    type="button"
-                    role="tab"
-                    id="tab-public"
-                    aria-selected={activeShowcaseMode === "public"}
-                    aria-controls="panel-showcase"
-                    onClick={() => setActiveShowcaseMode("public")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                      activeShowcaseMode === "public"
-                        ? "bg-sky-500 text-slate-950 font-bold shadow-lg shadow-sky-500/25 ring-1 ring-sky-300"
-                        : "text-slate-400 hover:text-white hover:bg-slate-900/60"
-                    }`}
-                  >
-                    <Globe className="w-3.5 h-3.5 shrink-0" />
-                    <span>Public Showcase</span>
-                    <span className="hidden sm:inline text-[10px] font-mono opacity-80">(/)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    role="tab"
-                    id="tab-lan"
-                    aria-selected={activeShowcaseMode === "lan"}
-                    aria-controls="panel-showcase"
-                    onClick={() => setActiveShowcaseMode("lan")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                      activeShowcaseMode === "lan"
-                        ? "bg-amber-400 text-slate-950 font-bold shadow-lg shadow-amber-400/25 ring-1 ring-amber-200"
-                        : "text-slate-400 hover:text-white hover:bg-slate-900/60"
-                    }`}
-                  >
-                    <Lock className="w-3.5 h-3.5 shrink-0" />
-                    <span>Private Gateway</span>
-                    <span className="hidden sm:inline text-[10px] font-mono opacity-80">(/lan)</span>
-                  </button>
+              {/* Interactive Theme Controls */}
+              <div className="pt-3 flex flex-col items-center gap-3">
+                {/* 1. Full-Page Wallpaper Presets */}
+                <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-xl shadow-2xl">
+                  <span className="text-slate-500 font-mono text-[11px] px-2.5 flex items-center gap-1.5">
+                    <Palette className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Backdrop:</span>
+                  </span>
+                  {[
+                    { id: "cyber-mesh", label: "Cyber Mesh", dot: "bg-sky-400" },
+                    { id: "matrix-emerald", label: "Matrix Emerald", dot: "bg-emerald-400" },
+                    { id: "midnight-neon", label: "Midnight Neon", dot: "bg-purple-400" },
+                    { id: "obsidian-glow", label: "Obsidian Glow", dot: "bg-slate-400" },
+                    { id: "pure-carbon", label: "Pure Carbon", dot: "bg-zinc-400" },
+                  ].map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setShowcaseBgPreset(p.id as any)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer ${
+                        showcaseBgPreset === p.id
+                          ? "bg-slate-800 text-white font-semibold shadow-xs ring-1 ring-white/20"
+                          : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                      }`}
+                    >
+                      <span className={`w-2 h-2 rounded-full ${p.dot}`} />
+                      <span>{p.label}</span>
+                    </button>
+                  ))}
                 </div>
 
-                {/* Theme Selector (shown on public mode) */}
-                {activeShowcaseMode === "public" && (
-                  <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/60 border border-slate-800/60 text-xs">
-                    <span className="text-slate-500 font-mono text-[11px] px-2 flex items-center gap-1">
-                      <Palette className="w-3 h-3 text-purple-400" />
-                      <span className="hidden sm:inline">Theme:</span>
-                    </span>
-                    {(
-                      [
-                        { id: "obsidian", label: "Obsidian", dot: "bg-sky-400" },
-                        { id: "cyberpunk", label: "Cyberpunk", dot: "bg-pink-400" },
-                        { id: "emerald", label: "Emerald", dot: "bg-emerald-400" },
-                        { id: "sunset", label: "Sunset", dot: "bg-amber-400" },
-                      ] as const
-                    ).map((t) => (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => setShowcaseTheme(t.id)}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-mono transition cursor-pointer ${
-                          showcaseTheme === t.id
-                            ? "bg-slate-800 text-white font-semibold shadow-xs"
-                            : "text-slate-400 hover:text-slate-200"
-                        }`}
-                      >
-                        <span className={`w-2 h-2 rounded-full ${t.dot}`} />
-                        <span>{t.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {/* 2. 6 Accent Color Swatches */}
+                <div className="flex items-center gap-2 p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/60">
+                  <span className="text-slate-500 font-mono text-[11px] px-2">Accent:</span>
+                  {[
+                    { id: "sky", label: "Sky", color: "bg-sky-500" },
+                    { id: "cyan", label: "Cyan", color: "bg-cyan-400" },
+                    { id: "emerald", label: "Emerald", color: "bg-emerald-400" },
+                    { id: "violet", label: "Violet", color: "bg-violet-400" },
+                    { id: "amber", label: "Amber", color: "bg-amber-400" },
+                    { id: "rose", label: "Rose", color: "bg-rose-400" },
+                  ].map((a) => (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => setShowcaseAccent(a.id as any)}
+                      title={`${a.label} Accent`}
+                      className={`h-5 w-5 rounded-full ${a.color} transition-all cursor-pointer flex items-center justify-center ${
+                        showcaseAccent === a.id
+                          ? "ring-2 ring-white scale-110 shadow-md"
+                          : "opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      {showcaseAccent === a.id && <span className="w-1.5 h-1.5 rounded-full bg-black/80" />}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
+            {/* Showcase Viewport Container */}
             <div
               id="panel-showcase"
-              role="tabpanel"
-              aria-labelledby={activeShowcaseMode === "public" ? "tab-public" : "tab-lan"}
-              className="rounded-2xl border border-slate-800 bg-[#070d17] shadow-2xl overflow-hidden transition-all duration-300 relative group"
+              className="rounded-3xl border border-slate-800/90 shadow-2xl overflow-hidden transition-all duration-500 relative group"
             >
+              {/* Dynamic Full-Page Background Gradient Layer */}
+              <div
+                className={`absolute inset-0 z-0 pointer-events-none transition-all duration-700 bg-gradient-to-b ${
+                  showcaseBgPreset === "matrix-emerald"
+                    ? "from-emerald-950/70 via-[#06140e]/95 to-[#07090e]"
+                    : showcaseBgPreset === "midnight-neon"
+                    ? "from-purple-950/70 via-[#120a1f]/95 to-[#07090e]"
+                    : showcaseBgPreset === "obsidian-glow"
+                    ? "from-slate-900/70 via-[#0a0d14]/95 to-[#07090e]"
+                    : showcaseBgPreset === "pure-carbon"
+                    ? "from-zinc-900/70 via-[#0c0c0e]/95 to-[#07090e]"
+                    : "from-sky-950/70 via-[#0a1020]/95 to-[#07090e]"
+                }`}
+              />
+
+              {/* Radial Vignette Mask */}
+              <div
+                className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(7,9,14,0.95)_90%)] pointer-events-none"
+                aria-hidden="true"
+              />
+
               {/* Browser Address Bar */}
-              <div className="px-4 sm:px-6 py-3 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div className="px-4 sm:px-6 py-3.5 bg-slate-950/80 backdrop-blur-md border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3 relative z-10">
                 <div className="flex items-center gap-3 flex-1 min-w-[280px] max-w-xl">
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
@@ -915,7 +921,7 @@ export default function Home() {
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                   </div>
 
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono w-full focus-within:border-sky-500/60 focus-within:ring-1 focus-within:ring-sky-500/30 transition shadow-inner">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-white/[0.08] text-xs font-mono w-full focus-within:border-sky-500/60 focus-within:ring-1 focus-within:ring-sky-500/30 transition shadow-inner">
                     <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span className="text-slate-500 select-none">https://</span>
                     <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-sky-500/10 border border-sky-500/30 text-sky-300 font-bold focus-within:bg-sky-500/20 transition">
@@ -926,359 +932,245 @@ export default function Home() {
                         onChange={(e) => setShowcaseSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
                         placeholder="yourname"
                         className="bg-transparent text-sky-300 font-bold outline-none text-xs text-center"
-                        title="Type to customize vanity handle"
+                        title="Type to test custom vanity subdomain"
                       />
                     </span>
-                    <span className="text-slate-300 select-none truncate font-medium">
-                      .portside.lol{activeShowcaseMode === "lan" ? "/lan" : ""}
-                    </span>
+                    <span className="text-slate-300 select-none truncate font-medium">.portside.lol</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
-                  <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-slate-800 text-slate-300 shadow-xs">
+                  <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/[0.08] text-slate-300">
                     <Activity className="w-3 h-3 text-emerald-400 shrink-0" />
-                    <span>1.2ms Edge RTT</span>
+                    <span>0.2ms Edge RTT</span>
                     <span className="text-slate-600">&middot;</span>
                     <span className="text-slate-400 font-sans">Daemon v1.4.2</span>
                   </div>
 
-                  {activeShowcaseMode === "public" ? (
-                    <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5 font-medium shadow-xs">
-                      <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                      <span>Live Edge Route</span>
-                    </span>
-                  ) : (
-                    <span className="px-2.5 py-1 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-300 flex items-center gap-1.5 font-medium shadow-xs">
-                      <KeyRound className="w-3 h-3" />
-                      <span>Session Verified</span>
-                    </span>
-                  )}
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5 font-medium">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Live Supporter Node</span>
+                  </span>
                 </div>
               </div>
 
-              {/* Showcase Window Body */}
-              <div className="p-5 sm:p-8">
-                {activeShowcaseMode === "public" ? (
-                  <div className="space-y-6">
-                    {/* Developer Profile Header Card */}
-                    <div
-                      className={`p-5 sm:p-6 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl ${
-                        showcaseTheme === "cyberpunk"
-                          ? "bg-gradient-to-r from-pink-950/30 via-slate-900/60 to-purple-950/30 border-pink-500/30"
-                          : showcaseTheme === "emerald"
-                          ? "bg-gradient-to-r from-emerald-950/30 via-slate-900/60 to-teal-950/30 border-emerald-500/30"
-                          : showcaseTheme === "sunset"
-                          ? "bg-gradient-to-r from-amber-950/30 via-slate-900/60 to-orange-950/30 border-amber-500/30"
-                          : "bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-slate-950/80 border-slate-800/90"
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={`w-14 h-14 rounded-2xl border flex items-center justify-center font-mono font-bold text-xl shrink-0 shadow-inner transition-colors ${
-                            showcaseTheme === "cyberpunk"
-                              ? "bg-pink-500/20 border-pink-500/40 text-pink-300"
-                              : showcaseTheme === "emerald"
-                              ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                              : showcaseTheme === "sunset"
-                              ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
-                              : "bg-sky-500/20 border-sky-500/40 text-sky-300"
+              {/* Steam-Style Profile Body */}
+              <div className="p-6 sm:p-10 relative z-10 max-w-4xl mx-auto space-y-8">
+                {/* Profile Identity Card */}
+                <div className="p-6 sm:p-8 rounded-2xl bg-black/50 border border-white/[0.08] backdrop-blur-xl shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  <div className="flex items-start gap-5">
+                    {/* Node Avatar with Ring */}
+                    <div className="relative shrink-0">
+                      <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl border border-white/20 bg-slate-900/90 shadow-2xl flex items-center justify-center font-mono font-bold text-2xl text-white ring-2 ring-white/10 ring-offset-2 ring-offset-black">
+                        {(showcaseSubdomain || "p").charAt(0).toUpperCase()}
+                      </div>
+                      <span
+                        className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg bg-[#07090e] border border-white/20 text-sky-400 shadow-md"
+                        title="PortSide Node"
+                      >
+                        <AnchorLogo className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+
+                    {/* Meta */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                          {showcaseSubdomain || "pact"}
+                        </h3>
+                        <span className="font-mono text-xs text-slate-400">
+                          @{showcaseSubdomain || "pact"}
+                        </span>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
+                            showcaseAccent === "cyan"
+                              ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                              : showcaseAccent === "emerald"
+                              ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                              : showcaseAccent === "violet"
+                              ? "bg-violet-500/15 text-violet-300 border border-violet-500/30"
+                              : showcaseAccent === "amber"
+                              ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                              : showcaseAccent === "rose"
+                              ? "bg-rose-500/15 text-rose-300 border border-rose-500/30"
+                              : "bg-sky-500/15 text-sky-300 border border-sky-500/30"
                           }`}
                         >
-                          {(showcaseSubdomain || "p").charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-lg font-bold text-white tracking-tight">
-                              {showcaseSubdomain || "pact"}
-                            </span>
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono text-sky-300 bg-sky-500/15 border border-sky-500/30 font-medium">
-                              PortSide Verified
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-1">
-                            Full-Stack Engineer &middot; Distributed Systems &middot;{" "}
-                            <span className="text-slate-300">{showcaseSubdomain || "pact"}@virtuoushigh.com</span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
-                        <a
-                          href="https://github.com/letsmakepact"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3.5 py-2 min-h-[40px] rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-mono text-slate-300 transition flex items-center justify-center gap-2 shadow-xs"
-                        >
-                          <span>GitHub</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-                        </a>
-                        <a
-                          href="https://t.me/pactwithdevil"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3.5 py-2 min-h-[40px] rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-xs font-mono text-sky-300 transition flex items-center justify-center gap-2 shadow-xs"
-                        >
-                          <span>Telegram</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
-                        </a>
-                      </div>
-                    </div>
-
-                    {/* Live Hosted Projects Grid */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-xs px-1">
-                        <span className="font-semibold text-slate-200 flex items-center gap-2">
-                          <Globe className="w-3.5 h-3.5 text-sky-400" />
-                          <span>Live Forwarded Services (/s/&lt;project&gt;)</span>
-                        </span>
-                        <span className="text-slate-500 font-mono text-[11px]">
-                          Edge routed to local workstation
+                          <ShieldCheck className="w-3 h-3" />
+                          <span>verified supporter</span>
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                        {/* Project 1 */}
-                        <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-slate-700 transition flex flex-col justify-between space-y-3 shadow-md">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">ecommerce-storefront</span>
-                              <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 font-medium">
-                                200 OK
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              Next.js 15 SSR storefront with live checkout and stripe webhook testing.
-                            </p>
-                          </div>
-                          <div className="space-y-2 pt-2.5 border-t border-slate-800/80">
-                            <div className="flex items-center justify-between text-[11px] font-mono">
-                              <span className="text-slate-500">127.0.0.1:3000</span>
-                              <span className="text-sky-400 font-medium">/s/shop</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleCopyCliCmd(`https://${showcaseSubdomain || "pact"}.portside.lol/s/shop`)
-                              }
-                              className="w-full py-2 px-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-[11px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
-                            >
-                              <span className="truncate">https://{showcaseSubdomain || "pact"}.portside.lol/s/shop</span>
-                              {copiedCliCmd === `https://${showcaseSubdomain || "pact"}.portside.lol/s/shop` ? (
-                                <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />
-                              ) : (
-                                <Copy className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1.5" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-lg">
+                        Full-Stack Developer &amp; Distributed Systems Architect. Building real-time local proxies and modern web apps.
+                      </p>
 
-                        {/* Project 2 */}
-                        <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-slate-700 transition flex flex-col justify-between space-y-3 shadow-md">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">mobile-dashboard</span>
-                              <span className="px-2 py-0.5 rounded-md bg-sky-500/10 border border-sky-500/20 text-[10px] font-mono text-sky-400 font-medium">
-                                HMR Active
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              Vite + Tailwind HMR web app testing touch gestures and responsive layouts.
-                            </p>
-                          </div>
-                          <div className="space-y-2 pt-2.5 border-t border-slate-800/80">
-                            <div className="flex items-center justify-between text-[11px] font-mono">
-                              <span className="text-slate-500">127.0.0.1:5173</span>
-                              <span className="text-sky-400 font-medium">/s/mobile</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleCopyCliCmd(`https://${showcaseSubdomain || "pact"}.portside.lol/s/mobile`)
-                              }
-                              className="w-full py-2 px-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-[11px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
-                            >
-                              <span className="truncate">https://{showcaseSubdomain || "pact"}.portside.lol/s/mobile</span>
-                              {copiedCliCmd === `https://${showcaseSubdomain || "pact"}.portside.lol/s/mobile` ? (
-                                <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />
-                              ) : (
-                                <Copy className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1.5" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Project 3 */}
-                        <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-slate-700 transition flex flex-col justify-between space-y-3 shadow-md">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">api-gateway</span>
-                              <span className="px-2 py-0.5 rounded-md bg-purple-500/10 border border-purple-500/20 text-[10px] font-mono text-purple-400 font-medium">
-                                Proxy Ready
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              High-concurrency Go REST &amp; WebSocket engine routing inbound webhooks.
-                            </p>
-                          </div>
-                          <div className="space-y-2 pt-2.5 border-t border-slate-800/80">
-                            <div className="flex items-center justify-between text-[11px] font-mono">
-                              <span className="text-slate-500">127.0.0.1:8080</span>
-                              <span className="text-sky-400 font-medium">/s/api</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleCopyCliCmd(`https://${showcaseSubdomain || "pact"}.portside.lol/s/api`)
-                              }
-                              className="w-full py-2 px-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-[11px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
-                            >
-                              <span className="truncate">https://{showcaseSubdomain || "pact"}.portside.lol/s/api</span>
-                              {copiedCliCmd === `https://${showcaseSubdomain || "pact"}.portside.lol/s/api` ? (
-                                <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />
-                              ) : (
-                                <Copy className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1.5" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
+                      <div className="flex items-center gap-4 text-xs text-slate-400 pt-1 font-mono flex-wrap">
+                        <span className="flex items-center gap-1.5 text-emerald-400">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          <span>Node Online &amp; Active</span>
+                        </span>
+                        <span>&middot;</span>
+                        <span>Global / Remote</span>
+                        <span>&middot;</span>
+                        <span className="text-slate-300">PortSide Core</span>
                       </div>
                     </div>
                   </div>
-                ) : (
-                  /* Private LAN Cockpit (/lan) */
-                  <div className="space-y-6">
-                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/[0.08] via-amber-500/[0.04] to-slate-950/80 border border-amber-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
-                          <ShieldCheck className="w-6 h-6" />
+
+                  {/* Profile Social Buttons */}
+                  <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end shrink-0">
+                    <a
+                      href="https://github.com/letsmakepact"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3.5 py-2 rounded-xl bg-black/60 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300 transition flex items-center gap-2"
+                    >
+                      <span>GitHub</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+                    </a>
+                    <a
+                      href="https://t.me/pactwithdevil"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3.5 py-2 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-xs font-mono text-sky-300 transition flex items-center gap-2"
+                    >
+                      <span>Telegram</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Live Forwarded Services Grid */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs px-1">
+                    <div>
+                      <h4 className="font-bold text-white text-sm flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-sky-400" />
+                        <span>Live Hosted Projects (/s/&lt;project&gt;)</span>
+                      </h4>
+                      <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
+                        Active projects hosted directly through PortSide. Open and test in real-time.
+                      </p>
+                    </div>
+                    <span className="text-emerald-400 font-mono text-[11px] hidden sm:flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      <span>3 Services Online</span>
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Project 1 */}
+                    <div className="p-4 rounded-xl border border-white/[0.08] bg-black/40 backdrop-blur-md hover:border-white/20 transition flex flex-col justify-between space-y-3 shadow-lg">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-white">ecommerce-storefront</span>
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-mono text-emerald-400 font-medium">
+                            200 OK
+                          </span>
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-bold text-white tracking-tight">Zero-Trust Developer Gateway</span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-medium">
-                              Active Passkey Session
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-1">
-                            Encrypted outbound wire tunnel directly into your workstation. Isolated from public web traffic.
-                          </p>
-                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          Next.js 15 SSR storefront with live checkout and stripe webhook testing.
+                        </p>
                       </div>
 
-                      <div className="flex items-center gap-2 font-mono text-xs text-amber-300 bg-amber-950/60 border border-amber-500/30 px-3.5 py-2 rounded-xl shrink-0 shadow-xs">
-                        <Smartphone className="w-4 h-4 text-amber-400" />
-                        <span>Cellular 5G Paired</span>
+                      <div className="space-y-2 pt-2.5 border-t border-white/[0.06]">
+                        <div className="flex items-center justify-between text-[11px] font-mono">
+                          <span className="text-slate-500">127.0.0.1:3000</span>
+                          <span className="text-sky-400 font-medium">/s/shop</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyCliCmd(`https://${showcaseSubdomain || "pact"}.portside.lol/s/shop`)}
+                          className="w-full py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[11px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
+                        >
+                          <span className="truncate">https://{showcaseSubdomain || "pact"}.portside.lol/s/shop</span>
+                          {copiedCliCmd === `https://${showcaseSubdomain || "pact"}.portside.lol/s/shop` ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1.5" />
+                          )}
+                        </button>
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-xs px-1">
-                        <span className="font-semibold text-slate-200 flex items-center gap-2">
-                          <Lock className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Internal Backend Daemons</span>
-                        </span>
-                        <span className="text-emerald-400 font-mono text-[11px] flex items-center gap-1.5">
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                          <span>Zero Public Ingress</span>
-                        </span>
+                    {/* Project 2 */}
+                    <div className="p-4 rounded-xl border border-white/[0.08] bg-black/40 backdrop-blur-md hover:border-white/20 transition flex flex-col justify-between space-y-3 shadow-lg">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-white">mobile-dashboard</span>
+                          <span className="px-2 py-0.5 rounded-md bg-sky-500/15 border border-sky-500/30 text-[10px] font-mono text-sky-400 font-medium">
+                            HMR Active
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          Vite + Tailwind HMR web app testing touch gestures and responsive layouts.
+                        </p>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                        <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-amber-500/40 transition flex flex-col justify-between space-y-3 shadow-md">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2.5">
-                              <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400">
-                                <Database className="w-4 h-4" />
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-bold text-white font-mono">postgres-pgadmin</h4>
-                                <span className="text-[10px] font-mono text-slate-400">127.0.0.1:5432</span>
-                              </div>
-                            </div>
-                            <span className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[10px] font-mono shrink-0">
-                              /lan/db
-                            </span>
-                          </div>
-                          <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px] font-mono text-slate-400">
-                            <div className="flex justify-between text-[10px]">
-                              <span className="text-slate-500">Connection Pool:</span>
-                              <span className="text-emerald-400">8 active</span>
-                            </div>
-                            <div className="flex justify-between text-[10px]">
-                              <span className="text-slate-500">Internal Latency:</span>
-                              <span className="text-slate-300">0.2ms</span>
-                            </div>
-                          </div>
+                      <div className="space-y-2 pt-2.5 border-t border-white/[0.06]">
+                        <div className="flex items-center justify-between text-[11px] font-mono">
+                          <span className="text-slate-500">127.0.0.1:5173</span>
+                          <span className="text-sky-400 font-medium">/s/mobile</span>
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyCliCmd(`https://${showcaseSubdomain || "pact"}.portside.lol/s/mobile`)}
+                          className="w-full py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[11px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
+                        >
+                          <span className="truncate">https://{showcaseSubdomain || "pact"}.portside.lol/s/mobile</span>
+                          {copiedCliCmd === `https://${showcaseSubdomain || "pact"}.portside.lol/s/mobile` ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1.5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
 
-                        <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-amber-500/40 transition flex flex-col justify-between space-y-3 shadow-md">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2.5">
-                              <div className="p-2 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-400">
-                                <Cpu className="w-4 h-4" />
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-bold text-white font-mono">ollama-ai-engine</h4>
-                                <span className="text-[10px] font-mono text-slate-400">127.0.0.1:11434</span>
-                              </div>
-                            </div>
-                            <span className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[10px] font-mono shrink-0">
-                              /lan/ai
-                            </span>
-                          </div>
-                          <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px] font-mono text-slate-400">
-                            <div className="flex justify-between text-[10px]">
-                              <span className="text-slate-500">Loaded Model:</span>
-                              <span className="text-violet-300 truncate max-w-[110px]">llama3.3:70b</span>
-                            </div>
-                            <div className="flex justify-between text-[10px]">
-                              <span className="text-slate-500">Token Stream:</span>
-                              <span className="text-emerald-400">38 tok/s</span>
-                            </div>
-                          </div>
+                    {/* Project 3 */}
+                    <div className="p-4 rounded-xl border border-white/[0.08] bg-black/40 backdrop-blur-md hover:border-white/20 transition flex flex-col justify-between space-y-3 shadow-lg">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-white">api-gateway</span>
+                          <span className="px-2 py-0.5 rounded-md bg-purple-500/15 border border-purple-500/30 text-[10px] font-mono text-purple-400 font-medium">
+                            Healthy
+                          </span>
                         </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          High-concurrency Go REST &amp; WebSocket engine routing inbound webhooks.
+                        </p>
+                      </div>
 
-                        <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-amber-500/40 transition flex flex-col justify-between space-y-3 shadow-md">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2.5">
-                              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                                <Server className="w-4 h-4" />
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-bold text-white font-mono">redis-commander</h4>
-                                <span className="text-[10px] font-mono text-slate-400">127.0.0.1:6379</span>
-                              </div>
-                            </div>
-                            <span className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[10px] font-mono shrink-0">
-                              /lan/redis
-                            </span>
-                          </div>
-                          <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px] font-mono text-slate-400">
-                            <div className="flex justify-between text-[10px]">
-                              <span className="text-slate-500">Allocated RAM:</span>
-                              <span className="text-slate-300">24.6 MB</span>
-                            </div>
-                            <div className="flex justify-between text-[10px]">
-                              <span className="text-slate-500">Cache Hit Ratio:</span>
-                              <span className="text-emerald-400">99.4%</span>
-                            </div>
-                          </div>
+                      <div className="space-y-2 pt-2.5 border-t border-white/[0.06]">
+                        <div className="flex items-center justify-between text-[11px] font-mono">
+                          <span className="text-slate-500">127.0.0.1:8080</span>
+                          <span className="text-sky-400 font-medium">/s/api</span>
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyCliCmd(`https://${showcaseSubdomain || "pact"}.portside.lol/s/api`)}
+                          className="w-full py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[11px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
+                        >
+                          <span className="truncate">https://{showcaseSubdomain || "pact"}.portside.lol/s/api</span>
+                          {copiedCliCmd === `https://${showcaseSubdomain || "pact"}.portside.lol/s/api` ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-1.5" />
+                          )}
+                        </button>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Showcase Action Bar */}
-              <div className="px-5 sm:px-8 py-4 bg-slate-900/80 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="px-6 sm:px-10 py-5 bg-black/70 backdrop-blur-md border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
                 <p className="text-xs text-slate-400 text-center sm:text-left flex items-center gap-2 font-mono">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>
-                    {activeShowcaseMode === "public"
-                      ? `Anyone can explore your live projects and bio directly at ${showcaseSubdomain || "pact"}.portside.lol.`
-                      : "Protected /lan routes are encrypted via local session token. Unreachable without credentials."}
+                    Supporters can customize full-page wallpapers, animated GIFs, or ambient dark presets.
                   </span>
                 </p>
 
@@ -1300,31 +1192,31 @@ export default function Home() {
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
               <div className="p-5 rounded-2xl bg-[#070d17] border border-slate-800/80 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-wider">
-                  <Shield className="w-4 h-4 text-sky-400 shrink-0" />
-                  <span>Zero Port Forwarding</span>
+                  <Palette className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>Whole Background Wallpapers</span>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Encrypted outbound edge tunnels mean your home IP and router stay sealed. No public port exposure or NAT configuration required.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-2xl bg-[#070d17] border border-slate-800/80 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
-                  <Globe className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>Direct Project Routing</span>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Every project maps cleanly under your domain via <code className="text-amber-300 font-mono">/s/&lt;project&gt;</code> without fragile nested subdomains or DNS lag.
+                  No boring small banners. PortSide themes the entire browser canvas with atmospheric Steam-style wallpapers, animated GIFs, or ambient dark presets.
                 </p>
               </div>
 
               <div className="p-5 rounded-2xl bg-[#070d17] border border-slate-800/80 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
-                  <Smartphone className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Cellular 5G Mobility</span>
+                  <Globe className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Direct Path Routing (/s/&lt;project&gt;)</span>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Reach your internal databases, AI models, and staging tools securely on your mobile browser while away from your desk.
+                  Every service routes cleanly under your domain via <code className="text-emerald-300 font-mono">/s/&lt;project&gt;</code> without broken nested subdomains or DNS lag.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#070d17] border border-slate-800/80 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+                  <Shield className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>Zero Inbound Exposure</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Encrypted outbound tunnels connect directly to our edge network. Your home IP and router stay sealed with zero open inbound ports.
                 </p>
               </div>
             </div>
