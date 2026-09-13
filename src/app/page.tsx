@@ -34,6 +34,8 @@ import {
   Laptop,
   Eye,
   EyeOff,
+  FolderGit2,
+  Send,
 } from "lucide-react";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
 import { RoutingArchitectureSimulator } from "@/components/home/RoutingArchitectureSimulator";
@@ -396,79 +398,254 @@ export default function Home() {
 
         <RoutingArchitectureSimulator />
 
-        <section id="features" className="relative py-16 border-b border-[#1f2937] bg-[#0b0f17]">
+        <section id="features" className="relative py-20 sm:py-28 border-b border-[#1f2937] bg-[#0b0f17]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                {t.nav.docs}
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-500/20 bg-sky-950/40 text-sky-400 text-xs font-mono mb-3">
+                <Zap className="w-3.5 h-3.5" />
+                <span>Engineered For Speed</span>
               </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                {t.features.title}
+              <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+                Built for developers who value their time.
               </h2>
-              <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
-                {t.features.subtitle}
+              <p className="mt-3 text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Everything required to proxy local processes, verify endpoints on real devices, and run multi-project architectures without fighting operating system friction.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
-                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
-                  <Server className="w-4 h-4" />
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {/* Card 1: RFC 6761 Loopback (Span 2 cols on lg) */}
+              <div className="lg:col-span-2 rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-sky-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-sky-400 bg-sky-950/50 border border-sky-800/40 px-2.5 py-1 rounded-full font-medium">
+                      RFC 6761 Compliant
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Zero-Config *.localhost on Port 80
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed max-w-xl">
+                    Stop remembering if your frontend is on <code className="text-slate-300 font-mono">:3000</code> or <code className="text-slate-300 font-mono">:5173</code>. Portside binds Port 80 on loopback. Modern browser engines resolve all <code className="text-sky-300 font-mono">*.localhost</code> subdomains straight to 127.0.0.1 with zero <code className="text-slate-300 font-mono">/etc/hosts</code> editing.
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white text-sm">{t.features.feature1Title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {t.features.feature1Desc}
-                </p>
+
+                {/* Visual Transform Demonstration */}
+                <div className="mt-6 pt-5 border-t border-white/[0.06] grid sm:grid-cols-2 gap-3 font-mono text-xs">
+                  <div className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-800/30 space-y-1">
+                    <span className="text-[10px] text-rose-400 uppercase tracking-wider block font-semibold">
+                      Without PortSide
+                    </span>
+                    <div className="text-slate-400 line-through">http://localhost:3000</div>
+                    <div className="text-slate-400 line-through">http://localhost:8080</div>
+                    <span className="text-[10px] text-rose-400 block pt-1">Port conflicts &amp; shared cookie collisions</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-800/30 space-y-1">
+                    <span className="text-[10px] text-emerald-400 uppercase tracking-wider block font-semibold">
+                      With PortSide
+                    </span>
+                    <div className="text-sky-300 font-medium">http://shop.localhost/</div>
+                    <div className="text-emerald-300 font-medium">http://api.localhost/</div>
+                    <span className="text-[10px] text-emerald-400 block pt-1">Clean subdomains &middot; Isolated sessions</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
-                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-emerald-400">
-                  <Globe className="w-4 h-4" />
+              {/* Card 2: Mobile & Smart TV LAN Pairing (Span 1 col) */}
+              <div className="rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                      <Smartphone className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/50 border border-cyan-800/40 px-2.5 py-1 rounded-full font-medium">
+                      Wi-Fi / LAN
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Real Device LAN Cockpit
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                    Test touch targets and viewport responsiveness on physical iPhones, Androids, and Smart TVs over local Wi-Fi without installing third-party apps.
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white text-sm">{t.features.feature4Title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {t.features.feature4Desc}
-                </p>
+
+                <div className="mt-6 pt-5 border-t border-white/[0.06] space-y-2 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06] flex items-center justify-between">
+                    <span className="text-slate-300">Camera QR Code:</span>
+                    <span className="text-cyan-300 font-semibold">Auto-Scan</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06] flex items-center justify-between">
+                    <span className="text-slate-300">TV Remote D-Pad:</span>
+                    <span className="text-cyan-300 font-semibold">10-Foot UI</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
-                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
-                  <Tv className="w-4 h-4" />
+              {/* Card 3: Dev Wi-Fi Hotspot (Span 1 col) */}
+              <div className="rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-amber-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                      <Radio className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-amber-400 bg-amber-950/50 border border-amber-800/40 px-2.5 py-1 rounded-full font-medium">
+                      Hardware Radio
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Dev Wi-Fi Hotspot
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                    Public guest networks in hotels, trains, and cafés enforce Client Isolation firewalls. Broadcast an isolated developer network straight from your laptop.
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white text-sm">{t.features.feature3Title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {t.features.feature3Desc}
-                </p>
+
+                <div className="mt-6 pt-5 border-t border-white/[0.06] space-y-2 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06] flex items-center justify-between">
+                    <span className="text-slate-400">Private Gateway:</span>
+                    <span className="text-amber-300 font-semibold">192.168.137.1</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06] flex items-center justify-between">
+                    <span className="text-slate-400">Local Root Domains:</span>
+                    <span className="text-sky-300">*.test &middot; *.lan</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
-                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-amber-400">
-                  <Radio className="w-4 h-4" />
+              {/* Card 4: Encrypted Remote Edge Tunnels (Span 2 cols on lg) */}
+              <div className="lg:col-span-2 rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-emerald-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <Send className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/50 border border-emerald-800/40 px-2.5 py-1 rounded-full font-medium">
+                      Supporter Edge
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Encrypted Remote Edge Tunnels &amp; Webhook Delivery
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed max-w-xl">
+                    Share live builds with clients, teammates, or test on 5G cellular. Outbound encrypted edge tunnels bypass NAT and home router firewalls without opening incoming ports or exposing your physical machine IP.
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white text-sm">{t.features.feature6Title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {t.features.feature6Desc}
-                </p>
+
+                <div className="mt-6 pt-5 border-t border-white/[0.06] grid sm:grid-cols-3 gap-3 text-xs">
+                  <div className="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1">
+                    <span className="text-white font-semibold block">Direct Project Routing</span>
+                    <p className="text-slate-400 text-[11px] leading-relaxed">
+                      Route individual services cleanly via <code className="text-emerald-300 font-mono">/s/&lt;project&gt;</code>.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1">
+                    <span className="text-white font-semibold block">Stripe &amp; GitHub Webhooks</span>
+                    <p className="text-slate-400 text-[11px] leading-relaxed">
+                      Receive incoming webhooks directly to local ports with instant edge delivery.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1">
+                    <span className="text-white font-semibold block">Permanent Vanity Handles</span>
+                    <p className="text-slate-400 text-[11px] leading-relaxed">
+                      Keep your dedicated handle reserved under <code className="text-sky-300 font-mono">*.portside.lol</code>.
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
-                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
-                  <Palette className="w-4 h-4" />
+              {/* Card 5: Projects & Workspaces (Span 1 col) */}
+              <div className="rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-indigo-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                      <FolderGit2 className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-indigo-400 bg-indigo-950/50 border border-indigo-800/40 px-2.5 py-1 rounded-full font-medium">
+                      Multi-Repo
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Projects &amp; Workspaces
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                    Group related microservices by client or repository. Start, stop, and inspect entire development stacks with a single click.
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white text-sm">{t.features.feature5Title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {t.features.feature5Desc}
-                </p>
+
+                <div className="mt-6 pt-5 border-t border-white/[0.06] space-y-2 font-mono text-xs">
+                  <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.04] flex items-center justify-between">
+                    <span className="text-slate-300">E-Commerce Platform</span>
+                    <span className="text-emerald-400 text-[10px]">2 Online</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.04] flex items-center justify-between">
+                    <span className="text-slate-300">Developer Design System</span>
+                    <span className="text-emerald-400 text-[10px]">1 Online</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
-                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-emerald-400">
-                  <Activity className="w-4 h-4" />
+              {/* Card 6: Native Engine Performance (Span 1 col) */}
+              <div className="rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-emerald-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <Cpu className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/50 border border-emerald-800/40 px-2.5 py-1 rounded-full font-medium">
+                      Zero Overhead
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Lightweight Native Engine
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                    Written in high-performance Go. Zero Node.js runtime required for core routing, minimal RAM consumption, and sub-millisecond packet multiplexing.
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white text-sm">{t.features.feature2Title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {t.features.feature2Desc}
-                </p>
+
+                <div className="mt-6 pt-5 border-t border-white/[0.06] grid grid-cols-2 gap-2 font-mono text-xs text-center">
+                  <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.04]">
+                    <span className="text-[10px] text-slate-500 block">Daemon RAM</span>
+                    <span className="text-white font-semibold">~12 MB</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.04]">
+                    <span className="text-[10px] text-slate-500 block">Proxy Latency</span>
+                    <span className="text-emerald-400 font-semibold">&lt; 0.2ms</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 7: Developer Profile Showcase (Span 1 col) */}
+              <div className="rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0d131f] p-6 sm:p-8 flex flex-col justify-between hover:border-purple-500/40 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                      <Palette className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-purple-400 bg-purple-950/50 border border-purple-800/40 px-2.5 py-1 rounded-full font-medium">
+                      Public Showcase
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Branded Developer Portfolio
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                    Turn your vanity domain (<code className="text-purple-300 font-mono text-[11px]">handle.portside.lol</code>) into a public portfolio with bio tags, running project links, and customizable themes.
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-5 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-400">Themes Included:</span>
+                  <span className="text-purple-300 font-medium">6 Built-in Styles</span>
+                </div>
               </div>
             </div>
           </div>
