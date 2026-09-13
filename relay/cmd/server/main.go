@@ -1047,7 +1047,6 @@ func (s *RelayServer) renderUnclaimedDomainPage(w http.ResponseWriter, host, han
 	if host != "" {
 		fullDomain = host
 	}
-	escapedHandle := html.EscapeString(handle)
 	escapedDomain := html.EscapeString(fullDomain)
 
 	fmt.Fprintf(w, `<!DOCTYPE html>
@@ -1057,177 +1056,390 @@ func (s *RelayServer) renderUnclaimedDomainPage(w http.ResponseWriter, host, han
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PortSide &middot; Claim %s</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #030712;
-      color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #0b0f17;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       min-height: 100vh;
-      margin: 0;
-      padding: 24px;
-      position: relative;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: "";
-      position: absolute;
-      top: 20%%;
-      left: 50%%;
-      transform: translate(-50%%, -50%%);
-      width: 520px;
-      height: 360px;
-      background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%%, rgba(16, 185, 129, 0.08) 50%%, transparent 75%%);
-      filter: blur(60px);
-      z-index: 0;
-      pointer-events: none;
-    }
-    .card {
-      position: relative;
-      z-index: 1;
-      background: #0b0f19;
-      border: 1px solid rgba(56, 189, 248, 0.22);
-      border-radius: 24px;
-      max-width: 520px;
-      width: 100%%;
-      padding: 40px 32px;
-      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(56, 189, 248, 0.05);
-      text-align: center;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      border-radius: 9999px;
-      color: #34d399;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 24px;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 9999px;
-      background: #34d399;
-      box-shadow: 0 0 10px #34d399;
-      animation: pulse 2s infinite ease-in-out;
-    }
-    @keyframes pulse {
-      0%%, 100%% { opacity: 1; transform: scale(1); }
-      50%% { opacity: 0.4; transform: scale(0.85); }
-    }
-    h1 {
-      font-size: 26px;
-      font-weight: 800;
-      margin: 0 0 12px 0;
-      color: #ffffff;
-      letter-spacing: -0.02em;
-    }
-    .domain-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 15px;
-      background: #111827;
-      padding: 8px 18px;
-      border-radius: 12px;
-      color: #38bdf8;
-      border: 1px solid #1e293b;
-      margin-bottom: 20px;
-    }
-    .desc {
-      color: #94a3b8;
-      font-size: 14px;
-      line-height: 1.65;
-      margin: 0 0 24px 0;
-    }
-    .features {
-      text-align: left;
-      background: rgba(15, 23, 42, 0.65);
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 16px 20px;
-      margin-bottom: 28px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    .feature-item {
+    .header {
+      border-bottom: 1px solid #1f2937;
+      background: rgba(11, 15, 23, 0.95);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+    .brand-sub {
+      font-size: 9px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #64748b;
+      letter-spacing: 0.08em;
+      margin-top: 1px;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-link {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: #38bdf8; }
+    .github-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .github-btn:hover {
+      background: #161f30;
+      color: #ffffff;
+    }
+    .main-wrap {
+      flex: 1;
+      max-width: 600px;
+      width: 100%%;
+      margin: 0 auto;
+      padding: 48px 20px 60px;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      color: #94a3b8;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin-bottom: 16px;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%%;
+      background: #34d399;
+    }
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .highlight {
+      color: #38bdf8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .page-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 12px;
+      padding: 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .tier-label {
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 600;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tier-badge {
+      font-size: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #34d399;
+      background: rgba(6, 78, 59, 0.6);
+      border: 1px solid rgba(6, 95, 70, 0.8);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .price-val {
+      font-size: 34px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+    }
+    .price-period {
+      font-size: 12px;
+      color: #94a3b8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .price-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: -12px;
+    }
+    .spec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 6px 0;
+    }
+    .spec-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
       font-size: 13px;
       color: #cbd5e1;
+      line-height: 1.4;
     }
-    .check {
+    .check-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .code-pill {
       color: #38bdf8;
-      font-weight: bold;
-      font-size: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #0d131f;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      font-size: 12px;
     }
     .btn-claim {
-      display: block;
-      width: 100%%;
-      background: linear-gradient(135deg, #0284c7 0%%, #2563eb 100%%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #0284c7;
       color: #ffffff;
+      border: 1px solid #0284c7;
+      border-radius: 6px;
+      padding: 11px 20px;
+      font-size: 13px;
+      font-weight: 600;
       text-decoration: none;
-      padding: 14px 24px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.4);
+      cursor: pointer;
+      transition: background 0.15s;
     }
     .btn-claim:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 25px rgba(2, 132, 199, 0.55);
+      background: #0369a1;
     }
-    .btn-secondary {
-      display: inline-block;
-      margin-top: 16px;
-      color: #64748b;
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.15s ease;
-    }
-    .btn-secondary:hover {
-      color: #94a3b8;
-    }
-    .footnote {
-      margin-top: 20px;
+    .redeem-note {
+      text-align: center;
       font-size: 11px;
-      color: #475569;
+      color: #64748b;
       line-height: 1.5;
+    }
+    .redeem-note a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+    .redeem-note a:hover {
+      text-decoration: underline;
+    }
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 24px 20px;
+      max-width: 1120px;
+      margin: 0 auto;
+      width: 100%%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #64748b;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    @media (max-width: 640px) {
+      .footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+      .nav-link { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="badge"><span class="dot"></span> Domain Available to Claim</div>
-    <h1>Claim %s</h1>
-    <div class="domain-pill">%s</div>
-    <p class="desc">This vanity subdomain is currently unclaimed on the PortSide edge network. Claim it to unlock your custom address, developer showcase, and direct encrypted tunnels.</p>
-    
-    <div class="features">
-      <div class="feature-item"><span class="check">&#10003;</span> Exclusive vanity address (<strong>%s</strong>)</div>
-      <div class="feature-item"><span class="check">&#10003;</span> 24/7 Developer Showcase with custom backgrounds</div>
-      <div class="feature-item"><span class="check">&#10003;</span> Live local port tunnels &amp; sub-services</div>
-      <div class="feature-item"><span class="check">&#10003;</span> Automated edge TLS certificates</div>
+  <header class="header">
+    <div class="header-inner">
+      <a href="https://portside.lol" class="brand">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="3"/>
+            <line x1="12" y1="22" x2="12" y2="8"/>
+            <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Portside</span>
+          <span class="brand-sub">PORT 80 PROXY</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="https://portside.lol/docs" class="nav-link">Docs &rarr;</a>
+        <a href="https://portside.lol/pricing" class="nav-link">Pricing</a>
+        <a href="https://github.com/letsmakepact/PortSide" target="_blank" rel="noreferrer" class="github-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-wrap">
+    <div class="hero">
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        <span>Available Subdomain Namespace</span>
+      </div>
+      <h1 class="page-title">Claim <span class="highlight">%s</span></h1>
+      <p class="page-desc">This vanity subdomain is currently open on the PortSide edge network. Lock it down to enable 24/7 developer showcases, live local tunneling, and automated TLS.</p>
     </div>
 
-    <a href="https://buymeacoffee.com/pacts" class="btn-claim" target="_blank" rel="noopener noreferrer">Claim %s ($5.99/mo)</a>
-    <a href="https://portside.lol" class="btn-secondary">Explore PortSide Network &rarr;</a>
-    <div class="footnote">Already a supporter? Launch PortSide on your workstation and link your handle to activate.</div>
+    <div class="card">
+      <div class="card-header">
+        <span class="tier-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Supporter Tier
+        </span>
+        <span class="tier-badge">Instant Activation</span>
+      </div>
+
+      <div>
+        <div class="price-row">
+          <span class="price-val">$5.99</span>
+          <span class="price-period">/ month</span>
+        </div>
+        <div class="price-sub">Billed monthly via Buy Me a Coffee. Cancel anytime.</div>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-item">
+          <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Dedicated vanity subdomain namespace (<code class="code-pill">%s</code>)</span>
+        </div>
+        <div class="spec-item">
+          <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>24/7 Developer Showcase with custom backgrounds &amp; project links</span>
+        </div>
+        <div class="spec-item">
+          <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Encrypted remote edge tunnels to your local dev ports</span>
+        </div>
+        <div class="spec-item">
+          <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Automated edge TLS wildcard certificates</span>
+        </div>
+      </div>
+
+      <a href="https://buymeacoffee.com/pacts" target="_blank" rel="noopener noreferrer" class="btn-claim">
+        <span>Subscribe for $5.99/mo on Buy Me a Coffee</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+
+      <div class="redeem-note">
+        Already a supporter? <a href="https://portside.lol/redeem" target="_blank">Redeem your key</a> or launch PortSide to link your instance.
+      </div>
+    </div>
   </div>
+
+  <footer class="footer">
+    <div class="footer-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="3"/>
+        <line x1="12" y1="22" x2="12" y2="8"/>
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+      </svg>
+      <span>powered by portside</span>
+    </div>
+    <div class="footer-right">Zero third-party cloud hosting</div>
+  </footer>
 </body>
-</html>`, escapedDomain, escapedDomain, escapedDomain, escapedDomain, escapedHandle)
+</html>`, escapedDomain, escapedDomain, escapedDomain)
 }
 
 func (s *RelayServer) renderOfflinePage(w http.ResponseWriter, host, handle string) {
