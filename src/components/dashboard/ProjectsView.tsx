@@ -80,19 +80,15 @@ export function ProjectsView() {
               <div
                 key={p.id}
                 className={cn(
-                  "group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-brand-surface dark:bg-brand-surface-dark p-5 shadow-xs transition duration-200 hover:shadow-md backdrop-blur-xs",
+                  "group relative flex flex-col justify-between overflow-hidden rounded-lg border bg-[#111827] p-5 transition hover:border-slate-700 hover:bg-[#131b2c]",
                   accentStyle === "bordered"
-                    ? cn("border-2", c.border)
-                    : "border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700",
-                  accentStyle === "gradient" && "bg-gradient-to-b from-white/90 via-white to-white dark:from-slate-900/90 dark:via-[#0f172a] dark:to-[#0f172a]",
+                    ? cn("border", c.border)
+                    : "border-[#1f2937]",
                   p.id < 0 && "animate-pulse",
                 )}
               >
                 {accentStyle === "glow" && (
-                  <div className={cn("absolute inset-x-0 top-0 h-1 rounded-t", c.dot)} />
-                )}
-                {accentStyle === "gradient" && (
-                  <div className={cn("absolute inset-x-0 top-0 h-16 bg-gradient-to-b opacity-15 pointer-events-none", c.gradient)} />
+                  <div className={cn("absolute inset-x-0 top-0 h-1", c.dot)} />
                 )}
                 {accentStyle === "solid" && (
                   <div className={cn("absolute inset-x-0 top-0 h-0.5", c.dot)} />

@@ -28,8 +28,7 @@ export async function POST(req: Request) {
     }
 
     const webPortalUrl = "https://portside.lol";
-
-    let isPremiumAccount = user.tier === "supporter" || (cleanEmail === "pact@virtuoushigh.com" && machineId === "PS-CABDA074-A01FD367");
+    let isPremiumAccount = false;
 
     try {
       const serverCheckRes = await fetch(

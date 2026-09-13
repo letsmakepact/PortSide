@@ -398,7 +398,7 @@ export default function DocsPage() {
             <div id="docker-containers" className="rounded-2xl border border-sky-500/30 bg-slate-900/60 p-6 space-y-4 scroll-mt-28">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400 text-xs font-mono font-bold">🐳</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400 text-xs font-mono font-bold">D</span>
                   Docker &amp; Container Support (All Short URLs)
                 </h3>
                 <span className="text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">

@@ -6,18 +6,25 @@ import { DashboardProvider } from "@/components/dashboard/DashboardProvider";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { DemoBanner } from "@/components/dashboard/DemoBanner";
 
+import { isServerSupporter } from "@/lib/server-checks";
+
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const [services, projects] = await Promise.all([listServices(user.id), listProjects(user.id)]);
+  const [isSupporter, services, projects] = await Promise.all([
+    isServerSupporter(user),
+    listServices(user.id),
+    listProjects(user.id),
+  ]);
 
   return (
     <DashboardProvider
       user={{
         ...user,
+        tier: isSupporter ? "supporter" : "free",
         createdAt: user.createdAt.toISOString(),
         supporterSince: user.supporterSince ? user.supporterSince.toISOString() : null,
       }}

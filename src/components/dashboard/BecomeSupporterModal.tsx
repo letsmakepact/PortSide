@@ -91,7 +91,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
       open={open}
       onClose={onClose}
       title="Become a Supporter"
-      description="$4.99/mo. Every perk unlocks instantly."
+      description="$5.99/mo. Every perk unlocks instantly."
       size="lg"
     >
       <div className="space-y-5">
@@ -101,9 +101,9 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" /></svg>
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-900 dark:text-white">Support PortSide monthly — $4.99/mo</p>
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">Support PortSide monthly — $5.99/mo</p>
               <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                Unlock your custom vanity subdomain (*.portside.lol), instant mobile & TV device access, dev Wi-Fi hotspot broadcasting, and unlimited routes for $4.99/mo on Buy Me a Coffee.
+                Unlock your custom vanity subdomain (*.portside.lol), instant mobile & TV device access, dev Wi-Fi hotspot broadcasting, and unlimited routes for $5.99/mo on Buy Me a Coffee.
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ export function BecomeSupporterModal({ open, onClose }: { open: boolean; onClose
               rel="noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-amber-500/25 transition hover:bg-amber-600"
             >
-              Become a supporter for $4.99/mo on Buy Me a Coffee
+              Become a supporter for $5.99/mo on Buy Me a Coffee
             </a>
 
             {activeSubMode === "buttons" && (

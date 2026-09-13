@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { services } from "@/db/schema";
+import { getProfile } from "@/lib/profile";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,20 @@ type Ctx = { params: Promise<{ host: string; path?: string[] }> };
 async function handle(req: NextRequest, ctx: Ctx) {
   const { host, path = [] } = await ctx.params;
   const label = host.toLowerCase();
+
+  const isPublicTunnel = req.headers.get("x-portside-public-tunnel") === "true";
+  if (isPublicTunnel) {
+    const prof = await getProfile();
+    const visible = prof.visibleServices || [];
+    if (!visible.includes(label)) {
+      return errorPage(
+        403,
+        `${label}.portside.lol is private`,
+        "This service route is marked private by the developer and is not published on their public profile.",
+        label,
+      );
+    }
+  }
 
   const [svc] = await db.select().from(services).where(eq(services.hostname, label)).limit(1);
 

@@ -36,6 +36,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { RoutingArchitectureSimulator } from "@/components/home/RoutingArchitectureSimulator";
 
 interface ReleaseAsset {
   name: string;
@@ -167,7 +168,7 @@ const FAQS = [
   },
   {
     q: "Can I use Global Tunnels to share work with clients or test on 5G?",
-    a: "Yes! Supporter tunnels provision sovereign encrypted connections through Our high-speed edge infrastructure directly to your chosen local service. Anyone with your tunnel URL can access the build from anywhere in the world on 5G or remote Wi-Fi, without configuring router port forwarding or exposing your home IP.",
+    a: "Yes! Supporter tunnels provision primary encrypted connections through Our high-speed edge infrastructure directly to your chosen local service. Anyone with your tunnel URL can access the build from anywhere in the world on 5G or remote Wi-Fi, without configuring router port forwarding or exposing your home IP.",
   },
   {
     q: "How does the standalone desktop launcher work?",
@@ -188,6 +189,9 @@ export default function Home() {
   const [showNavDownload, setShowNavDownload] = useState(false);
   const [selectedOs, setSelectedOs] = useState<"windows" | "macos" | "linux">("windows");
   const [activeShowcaseMode, setActiveShowcaseMode] = useState<"public" | "lan">("public");
+  const [showcaseSubdomain, setShowcaseSubdomain] = useState("pact");
+  const [showcaseViewMode, setShowcaseViewMode] = useState<"preview" | "wire">("preview");
+  const [copiedCliCmd, setCopiedCliCmd] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -247,49 +251,54 @@ export default function Home() {
     setTimeout(() => setCopiedUrl(false), 2000);
   };
 
+  const handleCopyCliCmd = (cmd: string) => {
+    navigator.clipboard.writeText(cmd);
+    setCopiedCliCmd(cmd);
+    setTimeout(() => setCopiedCliCmd(null), 2000);
+  };
+
   const currentSim = SIMULATOR_TABS[activeTab];
 
   return (
-    <div className="min-h-screen bg-[#060b13] text-slate-100 flex flex-col font-sans selection:bg-sky-500/30">
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#060b13]/85 backdrop-blur-md">
+    <div className="min-h-screen bg-[#0b0f17] text-slate-100 flex flex-col font-sans selection:bg-sky-500/30">
+      <header className="sticky top-0 z-50 border-b border-[#1f2937] bg-[#0b0f17]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 relative flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <AnchorLogo size={36} />
+            <AnchorLogo size={32} />
             <div className="flex flex-col">
-              <span className="font-bold text-lg tracking-tight text-white leading-none">
+              <span className="font-semibold text-base tracking-tight text-white leading-none">
                 Portside
               </span>
-              <span className="text-[10px] font-mono text-sky-400 tracking-wider">
-                PORT 80 SUITE
+              <span className="text-[10px] font-mono text-slate-400 tracking-wider mt-0.5">
+                PORT 80 PROXY
               </span>
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm text-slate-300 font-medium absolute left-1/2 -translate-x-1/2">
-            <a href="#features" className="hover:text-white transition">Features</a>
-            <Link href="/docs" className="text-sky-400 hover:text-sky-300 transition font-medium flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-400 absolute left-1/2 -translate-x-1/2">
+            <Link href="/docs" className="text-sky-400 hover:text-sky-300 transition font-mono flex items-center gap-1">
               <span>Docs</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <a
               href="https://github.com/letsmakepact/PortSide"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white border border-white/10 transition"
+              className="inline-flex items-center gap-1.5 rounded-md bg-[#111827] hover:bg-[#161f30] px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white border border-[#1f2937] transition"
             >
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
               <span className="hidden sm:inline">GitHub</span>
             </a>
             <a
               href="#downloads"
-              className={`inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-xs font-bold text-[#060b13] transition-all duration-300 shadow-md shadow-sky-500/20 cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 rounded-md bg-sky-600 hover:bg-sky-500 text-xs font-medium text-white transition-all duration-300 ${
                 showNavDownload
-                  ? "opacity-100 scale-100 max-w-[140px] px-3.5 py-1.5 pointer-events-auto"
+                  ? "opacity-100 scale-100 max-w-[140px] px-3 py-1.5 pointer-events-auto"
                   : "opacity-0 scale-90 max-w-0 px-0 py-1.5 pointer-events-none overflow-hidden"
               }`}
             >
@@ -301,71 +310,65 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section id="hero" className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center py-6 sm:py-8 md:py-10 overflow-hidden">
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[130px] pointer-events-none" />
-          <div className="absolute bottom-10 right-1/4 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[110px] pointer-events-none" />
-
+        <section id="hero" className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center py-12 sm:py-16 md:py-20 border-b border-[#1f2937]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 w-full my-auto">
-            <div className="flex justify-center mb-5">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/25 text-sky-300 text-xs font-medium backdrop-blur-sm shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-                <span>PortSide {downloads.version} is Live</span>
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#111827] border border-[#1f2937] text-slate-300 text-xs font-mono">
+                <span>PortSide {downloads.version}</span>
               </div>
             </div>
 
-            <div className="flex justify-center mb-5">
-              <div className="animate-float">
-                <AnchorLogo size={80} />
-              </div>
+            <div className="flex justify-center mb-6">
+              <AnchorLogo size={64} />
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              Name your <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-sky-200 to-cyan-300">localhost</span>.
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-tight">
+              Name your <span className="text-sky-400 font-mono">*.localhost</span>.
               <br />
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-300">
-                Broadcast to the world.
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-normal text-slate-400">
+                Direct loopback routing on Port 80.
               </span>
             </h1>
 
-            <p className="mt-4 text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              Stop memorizing <code className="text-rose-300 font-mono bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-500/20">:3000</code>, <code className="text-rose-300 font-mono bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-500/20">:8080</code>, or <code className="text-rose-300 font-mono bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-500/20">:5173</code>. Portside routes custom subdomains on standard Port 80, broadcasts wildcard <code className="text-cyan-300 font-mono bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-500/20">*.local</code> to phones & TVs, and deploys encrypted global tunnels.
+            <p className="mt-5 text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Stop memorizing <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">:3000</code>, <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">:8080</code>, or <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">:5173</code>. Portside routes clean subdomains on HTTP port 80, broadcasts <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">*.local</code> to local Wi-Fi, and deploys encrypted edge tunnels.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3.5">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <a
                 href={downloads.windows.url}
-                className="rounded-xl bg-sky-500 hover:bg-sky-400 text-[#060b13] px-6 py-3 font-bold text-xs sm:text-sm shadow-xl shadow-sky-500/25 transition transform active:scale-95 flex items-center gap-2 group cursor-pointer"
+                className="rounded-md bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 font-medium text-xs sm:text-sm transition flex items-center gap-2 border border-sky-500"
               >
-                <Download className="w-4 h-4 text-[#060b13] group-hover:translate-y-0.5 transition-transform" />
+                <Download className="w-4 h-4 text-white" />
                 <span>Download for Windows</span>
-                <span className="text-[11px] font-mono font-normal opacity-80">(.exe)</span>
+                <span className="text-[11px] font-mono text-sky-200">(.exe)</span>
               </a>
 
               <a
                 href="#downloads"
-                className="rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 px-5 py-3 font-semibold text-xs sm:text-sm transition flex items-center gap-2 cursor-pointer"
+                className="rounded-md bg-[#111827] hover:bg-[#161f30] text-slate-200 border border-[#1f2937] px-4 py-2.5 font-medium text-xs sm:text-sm transition flex items-center gap-2"
               >
-                <Layers className="w-4 h-4 text-sky-400" />
+                <Layers className="w-4 h-4 text-slate-400" />
                 <span>All Platforms</span>
               </a>
             </div>
 
-            <div className="mt-5 max-w-lg mx-auto">
-              <div className="flex items-center justify-between rounded-xl border border-white/10 bg-[#0a101d] px-3.5 py-2 text-left text-xs font-mono">
+            <div className="mt-6 max-w-lg mx-auto">
+              <div className="flex items-center justify-between rounded-md border border-[#1f2937] bg-[#0d131f] px-3.5 py-2 text-left text-xs font-mono">
                 <div className="flex items-center gap-2 text-slate-400 truncate mr-3">
-                  <Terminal className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                  <span className="text-sky-300 select-all truncate text-[11px]">
+                  <Terminal className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="text-slate-200 select-all truncate text-[11px]">
                     {curlCommand}
                   </span>
                 </div>
                 <button
                   onClick={handleCopyCurl}
-                  className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-white/5 hover:bg-white/10 px-2 py-1 text-[10px] font-medium text-slate-300 hover:text-white transition cursor-pointer"
+                  className="shrink-0 inline-flex items-center gap-1 rounded bg-[#161f30] hover:bg-[#1f2937] border border-[#27354a] px-2 py-1 text-[10px] font-medium text-slate-300 hover:text-white transition"
                 >
                   {copiedCurl ? (
                     <>
                       <Check className="w-3 h-3 text-emerald-400" />
-                      <span className="text-emerald-400">Copied!</span>
+                      <span className="text-emerald-400">Copied</span>
                     </>
                   ) : (
                     <>
@@ -377,461 +380,227 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="pt-6 pb-2 text-center">
+            <div className="pt-8 text-center">
               <a href="#simulator" className="inline-flex flex-col items-center gap-1 text-slate-500 hover:text-slate-300 text-xs transition">
-                <span className="text-[11px]">Explore the Interactive Engine</span>
-                <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
+                <span className="text-[11px] font-mono">Explore Architecture</span>
+                <ChevronDown className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
         </section>
 
-        <section id="simulator" className="relative py-20 border-t border-white/5 bg-[#080e18]">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-semibold uppercase tracking-wider mb-3">
-                <Zap className="w-3.5 h-3.5" />
-                <span>Interactive Architecture Engine</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                One Unified Suite. Five Powerful Modes.
-              </h2>
-              <p className="mt-3 text-slate-400 text-sm leading-relaxed">
-                Click across the different modes below to see how Portside transforms messy ports into clean domains, global tunnels, and living room launchpads.
-              </p>
-            </div>
+        <RoutingArchitectureSimulator />
 
-            <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-              {SIMULATOR_TABS.map((tab, idx) => {
-                const IconComponent = tab.icon;
-                const isActive = activeTab === idx;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(idx)}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition cursor-pointer border ${
-                      isActive
-                        ? "bg-sky-500/15 border-sky-500/40 text-sky-200 shadow-lg shadow-sky-500/10"
-                        : "bg-white/5 border-white/5 text-slate-400 hover:text-slate-200 hover:border-white/10"
-                    }`}
-                  >
-                    <IconComponent className={`w-4 h-4 ${isActive ? "text-sky-400" : "text-slate-400"}`} />
-                    <span>{tab.label}</span>
-                    <span
-                      className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                        isActive
-                          ? "bg-sky-500/20 text-sky-300"
-                          : "bg-white/5 text-slate-500"
-                      }`}
-                    >
-                      {tab.badge}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-[#060b13] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-              <div className="grid lg:grid-cols-12 gap-8 items-center">
-                <div className="lg:col-span-5 space-y-5">
-                  <div>
-                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-sky-400">
-                      {currentSim.badge}
-                    </span>
-                    <h3 className="text-2xl font-bold text-white mt-1">
-                      {currentSim.title}
-                    </h3>
-                    <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                      {currentSim.desc}
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 pt-2">
-                    <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                      <span className="text-xs text-slate-400">Internal Target</span>
-                      <span className="text-xs font-mono text-rose-300 bg-rose-950/30 px-2 py-0.5 rounded border border-rose-500/20">
-                        {currentSim.target}
-                      </span>
-                    </div>
-
-                    <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-between">
-                      <span className="text-xs text-slate-300 font-medium">Public Clean Address</span>
-                      <button
-                        onClick={() => handleCopyUrl(currentSim.url)}
-                        className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-sky-200 hover:text-white transition cursor-pointer"
-                      >
-                        <span>{currentSim.url}</span>
-                        {copiedUrl ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5 text-sky-400" />
-                        )}
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 pt-1">
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                        <span className="text-[10px] uppercase font-mono text-slate-500 block">Routing Protocol</span>
-                        <span className="text-xs font-semibold text-slate-300 mt-0.5 block">{currentSim.protocol}</span>
-                      </div>
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                        <span className="text-[10px] uppercase font-mono text-slate-500 block">Typical Latency</span>
-                        <span className="text-xs font-semibold text-emerald-400 mt-0.5 block">{currentSim.latency}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-7">
-                  <div className="rounded-xl border border-white/10 bg-[#0a101f] p-5 font-mono text-xs shadow-inner">
-                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
-                      <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full bg-rose-500/60 inline-block" />
-                        <span className="w-3 h-3 rounded-full bg-amber-500/60 inline-block" />
-                        <span className="w-3 h-3 rounded-full bg-emerald-500/60 inline-block" />
-                        <span className="ml-2 text-slate-500 text-[11px]">portside live proxy daemon</span>
-                      </div>
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Online
-                      </span>
-                    </div>
-
-                    <div className="space-y-2.5 text-slate-300 leading-relaxed">
-                      <p className="text-emerald-400">
-                        $ portside proxy --bind 0.0.0.0:80
-                      </p>
-                      <p className="text-slate-400">
-                        [HTTP] Reverse proxy listening on 0.0.0.0:80 (IPv4 & IPv6)
-                      </p>
-                      <p className="text-slate-400">
-                        [ROUTE] Registered service: <span className="text-white font-bold">shop</span> &rarr; 127.0.0.1:8080
-                      </p>
-
-                      {currentSim.id === "localhost" && (
-                        <>
-                          <p className="text-sky-300">
-                            [RFC 6761] Browser request Host: <span className="underline">shop.localhost</span>
-                          </p>
-                          <p className="text-emerald-300">
-                            [OK] Proxying HTTP 1.1 Host header &rarr; 127.0.0.1:8080 (0.2ms)
-                          </p>
-                          <p className="text-slate-500">
-                            ✓ No /etc/hosts modification required · Loopback native
-                          </p>
-                        </>
-                      )}
-
-                      {currentSim.id === "tunnel" && (
-                        <>
-                          <p className="text-amber-300">
-                            [TUNNEL] Our secure edge tunnel established
-                          </p>
-                          <p className="text-sky-300">
-                            [EDGE] Public URL: <span className="underline">https://pact.portside.lol/shop</span>
-                          </p>
-                          <p className="text-emerald-300">
-                            [ENCRYPT] End-to-end TLS active · Zero router port forwarding needed
-                          </p>
-                          <p className="text-slate-500">
-                            ✓ Accessible on 5G mobile networks worldwide
-                          </p>
-                        </>
-                      )}
-
-                      {currentSim.id === "lan" && (
-                        <>
-                          <p className="text-cyan-300">
-                            [LAN] Universal route: <span className="underline">http://192.168.1.168/s/shop</span> (100% Free)
-                          </p>
-                          <p className="text-emerald-300">
-                            [QR] Camera scanned &middot; Mobile browser connected via Wi-Fi (1.2ms)
-                          </p>
-                          <p className="text-amber-300">
-                            [SIGNAL] Open-Air signals active: <span className="underline">shop.local</span> (iOS Supporter)
-                          </p>
-                          <p className="text-slate-500">
-                            ✓ Smart TV D-pad remote launchpad ready at http://192.168.1.168/s/shop
-                          </p>
-                        </>
-                      )}
-
-                      {currentSim.id === "hotspot" && (
-                        <>
-                          <p className="text-amber-300">
-                            [HOTSPOT] Wi-Fi Direct SSID: <span className="font-bold">PortSide-DevNet</span>
-                          </p>
-                          <p className="text-emerald-300">
-                            [DHCP] Hardware AP gateway assigned: 192.168.137.1
-                          </p>
-                          <p className="text-slate-500">
-                            ✓ Completely isolated sandbox from public Wi-Fi firewalls
-                          </p>
-                        </>
-                      )}
-
-                      {currentSim.id === "profile" && (
-                        <>
-                          <p className="text-purple-300">
-                            [VANITY] Domain mapped: <span className="underline">pact.portside.lol</span>
-                          </p>
-                          <p className="text-emerald-300">
-                            [SHOWCASE] Developer profile loaded · 4 projects active · Theme: Cyberpunk
-                          </p>
-                          <p className="text-slate-500">
-                            ✓ Custom About Me bio, skills tags, and interactive demo launchpad
-                          </p>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-white/5">
-                      <div className="rounded-lg bg-black/60 border border-white/10 px-3 py-2 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2 text-slate-400 truncate">
-                          {currentSim.url.startsWith("https://") ? (
-                            <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          ) : (
-                            <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          )}
-                          <span className="text-white font-mono truncate">{currentSim.url}</span>
-                        </div>
-                        <span className="text-[10px] font-mono text-emerald-400 shrink-0">200 OK</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="features" className="relative py-20 border-t border-white/5 bg-[#060b13]">
+        <section id="features" className="relative py-16 border-b border-[#1f2937] bg-[#0b0f17]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
-                Developer Ergonomics
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
+                Capabilities
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-2">
-                Built for Speed, Privacy, and Elegance
+              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+                Designed for local development workflows
               </h2>
-              <p className="mt-3 text-slate-400 text-sm">
-                Everything you need to manage modern microservices, test on real devices, and present work to stakeholders.
+              <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Everything required to proxy local processes, verify endpoints on real devices, and run multi-project architectures.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="p-6 rounded-2xl border border-white/10 bg-[#090f1d] hover:border-sky-500/30 transition space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-105 transition-transform">
-                  <Server className="w-5 h-5" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
+                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
+                  <Server className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-white text-base">RFC 6761 Loopback Proxy</h3>
+                <h3 className="font-semibold text-white text-sm">RFC 6761 Loopback Proxy</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Binds standard Port 80 on loopback. Chrome, Safari, and Firefox resolve all *.localhost subdomains straight to 127.0.0.1 with zero DNS hacks.
+                  Binds HTTP port 80 on loopback. Browsers resolve all *.localhost subdomains directly to 127.0.0.1 with zero hosts file editing.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-white/10 bg-[#090f1d] hover:border-emerald-500/30 transition space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
-                  <Globe className="w-5 h-5" />
+              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
+                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-emerald-400">
+                  <Globe className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-white text-base">Global Remote Encrypted Tunnels</h3>
+                <h3 className="font-semibold text-white text-sm">Encrypted Remote Tunnels</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Supporter feature powered by Our encrypted tunnels. Expose local services to clients and mobile carriers with zero port forwarding.
+                  Supporter feature powered by encrypted tunnels. Expose local services to teammates and mobile carriers without router configuration.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-white/10 bg-[#090f1d] hover:border-cyan-500/30 transition space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
-                  <Tv className="w-5 h-5" />
+              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
+                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
+                  <Tv className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-white text-base">Mobile & Smart TV LAN Launchpad</h3>
+                <h3 className="font-semibold text-white text-sm">Mobile & Smart TV LAN Pairing</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Scan a QR code on your phone or open your host IP on your living room Smart TV for a remote-friendly launchpad with wildcard *.local Open-Air signals.
+                  Scan a QR code on your phone or open your machine IP on a TV for an ergonomic launchpad with *.local Open-Air signals.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-white/10 bg-[#090f1d] hover:border-amber-500/30 transition space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
-                  <Radio className="w-5 h-5" />
+              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
+                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-amber-400">
+                  <Radio className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-white text-base">Isolated Dev Wi-Fi Hotspot</h3>
+                <h3 className="font-semibold text-white text-sm">Isolated Dev Wi-Fi Hotspot</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Broadcast an isolated wireless network straight from your computer hardware. Perfect for testing without corporate firewall blocks.
+                  Broadcast an isolated wireless access point directly from machine hardware. Ideal for testing outside corporate network firewalls.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-white/10 bg-[#090f1d] hover:border-purple-500/30 transition space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
-                  <Palette className="w-5 h-5" />
+              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
+                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
+                  <Palette className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-white text-base">Vanity Domains & Public Showcase</h3>
+                <h3 className="font-semibold text-white text-sm">Vanity Domains & Showcase</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Showcase your developer identity at <code className="text-purple-300 font-mono">username.portside.lol</code> with custom themes, bio, and live service previews.
+                  Curate your public developer profile at <code className="text-slate-300 font-mono text-[11px]">handle.portside.lol</code> with custom bio, skills, and running project links.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl border border-white/10 bg-[#090f1d] hover:border-sky-500/30 transition space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-105 transition-transform">
-                  <Activity className="w-5 h-5" />
+              <div className="p-5 rounded-lg border border-[#1f2937] bg-[#111827] hover:border-slate-700 transition space-y-2.5">
+                <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-emerald-400">
+                  <Activity className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-white text-base">Real-Time Port Health Monitor</h3>
+                <h3 className="font-semibold text-white text-sm">Port Health Telemetry</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Active background probes ping internal ports, track latency, and log online/offline state changes with audit trails.
+                  Background worker probes registered internal ports, tracks millisecond latency, and logs route events in an audit timeline.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="supporter" className="relative py-20 border-t border-white/5 bg-[#080d17]">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono font-semibold uppercase tracking-wider mb-3">
-                <Crown className="w-3.5 h-3.5" />
-                <span>Tier Comparison</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <section id="supporter" className="relative py-16 border-b border-[#1f2937] bg-[#0b0f17]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
+                Plan Comparison
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
                 Free Forever or Supporter Supercharged
               </h2>
-              <p className="mt-3 text-slate-400 text-sm">
-                Portside is 100% open-source for core localhost workflows. The Supporter tier unlocks cloud edge infrastructure and multi-device hardware features.
+              <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Portside is 100% open-source for core loopback workflows. Supporter tier unlocks edge tunnels and remote mobile pairing.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 items-stretch mb-12">
-              <div className="rounded-2xl border border-white/10 bg-[#060b13] p-8 flex flex-col justify-between">
+            <div className="grid md:grid-cols-2 gap-5 items-stretch mb-12">
+              <div className="rounded-lg border border-[#1f2937] bg-[#111827] p-6 sm:p-7 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
+                    <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
                       Open Source Core
                     </span>
-                    <span className="px-2.5 py-1 rounded-full bg-white/5 text-slate-300 text-xs font-mono">
+                    <span className="px-2.5 py-0.5 rounded bg-[#0b0f17] border border-[#1f2937] text-slate-300 text-xs font-mono">
                       $0 Free
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mt-2">Portside Community</h3>
-                  <p className="text-xs text-slate-400 mt-2">
-                    Everything you need to eliminate port numbers and run clean subdomains on your local PC.
+                  <h3 className="text-xl font-semibold text-white mt-2">Portside Community</h3>
+                  <p className="text-xs text-slate-400 mt-1.5">
+                    Eliminate port numbers and run clean *.localhost subdomains on local machines.
                   </p>
 
-                  <div className="mt-6 space-y-3 text-xs text-slate-300 border-t border-white/5 pt-6">
+                  <div className="mt-6 space-y-2.5 text-xs text-slate-300 border-t border-[#1f2937] pt-5">
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>Unlimited *.localhost subdomains on Port 80</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>RFC 6761 compliant loopback routing</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span>Automated Cross-Platform Desktop Launcher</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>Standalone Cross-Platform Desktop Binaries</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>Real-time background port & latency monitor</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>Projects, service tags, and audit activity feed</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>Mobile & Smart TV Wi-Fi direct redirects with QR camera scan</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-4 h-4 text-slate-600 shrink-0" />
-                      <span>Zero-Config *.local Open-Air Signals & Multi-Service /lan Dashboard</span>
+                      <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                      <span>Zero-Config *.local Open-Air Signals</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-4 h-4 text-slate-600 shrink-0" />
-                      <span>Encrypted Global Portside Tunnels (5G / Remote)</span>
+                      <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                      <span>Encrypted Global Remote Tunnels</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-4 h-4 text-slate-600 shrink-0" />
+                      <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                       <span>Custom Branded Vanity Subdomain (username.portside.lol)</span>
-                    </div>
-                    <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-4 h-4 text-slate-600 shrink-0" />
-                      <span>Developer Public Profile & Project Showcase</span>
-                    </div>
-                    <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-4 h-4 text-slate-600 shrink-0" />
-                      <span>Dev Wi-Fi Hotspot hardware broadcast</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-white/5">
+                <div className="mt-6 pt-5 border-t border-[#1f2937]">
                   <a
                     href="#downloads"
-                    className="w-full rounded-xl bg-white/5 hover:bg-white/10 text-white font-semibold text-xs py-3 px-4 text-center block transition border border-white/10 cursor-pointer"
+                    className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-2.5 px-4 text-center block transition border border-[#27354a] cursor-pointer"
                   >
                     Download Free Launcher
                   </a>
                 </div>
               </div>
 
-              <div className="rounded-2xl border-2 border-amber-500/40 bg-gradient-to-b from-amber-500/10 via-[#060b13] to-[#060b13] p-8 flex flex-col justify-between relative shadow-2xl shadow-amber-500/5">
-                <div className="absolute -top-3.5 right-6 bg-gradient-to-r from-amber-500 to-amber-400 text-[#060b13] text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                  Recommended For Devs
-                </div>
-
+              <div className="rounded-lg border border-[#27354a] bg-[#111827] p-6 sm:p-7 flex flex-col justify-between relative">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
-                      <Crown className="w-4 h-4" />
-                      <span>Supporter Superpowers</span>
+                    <span className="text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold flex items-center gap-1.5">
+                      <Crown className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Supporter Plan</span>
                     </span>
-                    <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-bold">
-                      $4.99 / month
+                    <span className="px-2.5 py-0.5 rounded bg-[#161f30] border border-[#27354a] text-sky-300 text-xs font-mono font-medium">
+                      $5.99 / mo
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mt-2">Portside Supporter</h3>
-                  <p className="text-xs text-slate-300 mt-2">
-                    For developers, agencies, and teams who share live builds globally with clients, want custom branded vanity domains, and isolated dev hotspots.
+                  <h3 className="text-xl font-semibold text-white mt-2">Portside Supporter</h3>
+                  <p className="text-xs text-slate-400 mt-1.5">
+                    For developers and teams who test live builds on mobile carriers, host public showcases, and isolate dev networks.
                   </p>
 
-                  <div className="mt-6 space-y-3 text-xs text-slate-200 border-t border-amber-500/20 pt-6">
+                  <div className="mt-6 space-y-2.5 text-xs text-slate-200 border-t border-[#1f2937] pt-5">
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>All Community Free features included</span>
                     </div>
-                    <div className="flex items-center gap-2.5 font-medium text-white">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <div className="flex items-center gap-2.5 text-white">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                       <span>Zero-Config *.local Open-Air Signals & Multi-Service /lan Dashboard</span>
                     </div>
-                    <div className="flex items-center gap-2.5 font-medium text-white">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Global Remote Access via Our Encrypted Edge Tunnels</span>
+                    <div className="flex items-center gap-2.5 text-white">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>Global Remote Access via Encrypted Edge Tunnels</span>
                     </div>
-                    <div className="flex items-center gap-2.5 font-medium text-white">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Custom Branded Vanity Subdomain (e.g. pact.portside.lol)</span>
+                    <div className="flex items-center gap-2.5 text-white">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>Custom Branded Vanity Subdomain (e.g. username.portside.lol)</span>
                     </div>
-                    <div className="flex items-center gap-2.5 font-medium text-white">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Developer Public Profile & Project Showcase with custom themes</span>
+                    <div className="flex items-center gap-2.5 text-white">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>Developer Public Profile & Project Showcase</span>
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <div className="flex items-center gap-2.5 text-white">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                       <span>Hardware Dev Wi-Fi Hotspot isolation network</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Direct support for open-source development</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-amber-500/20">
+                <div className="mt-6 pt-5 border-t border-[#1f2937]">
                   <a
                     href="https://buymeacoffee.com/pacts"
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-[#060b13] font-bold text-xs py-3 px-4 text-center block transition shadow-lg shadow-amber-500/20 cursor-pointer"
+                    className="w-full rounded-md bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs py-2.5 px-4 text-center block transition border border-sky-500 cursor-pointer"
                   >
-                    Become a Supporter for $4.99/mo on Buy Me a Coffee &rarr;
+                    Unlock Supporter Plan ($5.99/mo) →
                   </a>
                 </div>
               </div>
@@ -857,276 +626,483 @@ export default function Home() {
               </p>
 
               <div className="pt-2 flex items-center justify-center">
-                <div className="inline-flex p-1 rounded-xl bg-slate-900/90 border border-slate-800 shadow-inner max-w-full">
+                <div
+                  role="tablist"
+                  aria-label="Showcase gateway mode"
+                  className="inline-flex p-1.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-xl shadow-2xl max-w-full gap-1 sm:gap-1.5"
+                >
                   <button
                     type="button"
-                    onClick={() => setActiveShowcaseMode("public")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      activeShowcaseMode === "public"
-                        ? "bg-sky-500 text-slate-950 font-semibold shadow-md shadow-sky-500/20"
-                        : "text-slate-400 hover:text-white"
+                    role="tab"
+                    id="tab-public"
+                    aria-selected={activeShowcaseMode === "public" && showcaseViewMode === "preview"}
+                    aria-controls="panel-showcase"
+                    onClick={() => {
+                      setActiveShowcaseMode("public");
+                      setShowcaseViewMode("preview");
+                    }}
+                    className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                      activeShowcaseMode === "public" && showcaseViewMode === "preview"
+                        ? "bg-sky-500 text-slate-950 font-bold shadow-lg shadow-sky-500/25 ring-1 ring-sky-300"
+                        : "text-slate-400 hover:text-white hover:bg-slate-900/60"
                     }`}
                   >
                     <Globe className="w-3.5 h-3.5 shrink-0" />
-                    <span>Public Showcase (/)</span>
+                    <span>Public Showcase</span>
+                    <span className="hidden sm:inline text-[10px] font-mono opacity-80">(/)</span>
                   </button>
+
                   <button
                     type="button"
-                    onClick={() => setActiveShowcaseMode("lan")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      activeShowcaseMode === "lan"
-                        ? "bg-amber-400 text-slate-950 font-semibold shadow-md shadow-amber-400/20"
-                        : "text-slate-400 hover:text-white"
+                    role="tab"
+                    id="tab-lan"
+                    aria-selected={activeShowcaseMode === "lan" && showcaseViewMode === "preview"}
+                    aria-controls="panel-showcase"
+                    onClick={() => {
+                      setActiveShowcaseMode("lan");
+                      setShowcaseViewMode("preview");
+                    }}
+                    className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                      activeShowcaseMode === "lan" && showcaseViewMode === "preview"
+                        ? "bg-amber-400 text-slate-950 font-bold shadow-lg shadow-amber-400/25 ring-1 ring-amber-200"
+                        : "text-slate-400 hover:text-white hover:bg-slate-900/60"
                     }`}
                   >
                     <Lock className="w-3.5 h-3.5 shrink-0" />
-                    <span>Private /lan Gateway</span>
+                    <span>Private Gateway</span>
+                    <span className="hidden sm:inline text-[10px] font-mono opacity-80">(/lan)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="tab"
+                    id="tab-wire"
+                    aria-selected={showcaseViewMode === "wire"}
+                    aria-controls="panel-showcase"
+                    onClick={() => setShowcaseViewMode(showcaseViewMode === "wire" ? "preview" : "wire")}
+                    className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-mono transition-all cursor-pointer ${
+                      showcaseViewMode === "wire"
+                        ? "bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25 ring-1 ring-emerald-300"
+                        : "text-slate-400 hover:text-white hover:bg-slate-900/60"
+                    }`}
+                    title="Inspect raw HTTP stream & wire protocol"
+                  >
+                    <Terminal className="w-3.5 h-3.5 shrink-0" />
+                    <span>Wire Protocol</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-800 bg-[#070d17] shadow-2xl overflow-hidden transition-all duration-300">
-              <div className="px-4 sm:px-6 py-3 bg-slate-900/70 border-b border-slate-800 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 flex-1 min-w-0 max-w-xl">
+            <div
+              id="panel-showcase"
+              role="tabpanel"
+              aria-labelledby={
+                showcaseViewMode === "wire" ? "tab-wire" : activeShowcaseMode === "public" ? "tab-public" : "tab-lan"
+              }
+              className="rounded-2xl border border-slate-800 bg-[#070d17] shadow-2xl overflow-hidden transition-all duration-300 relative group"
+            >
+              <div className="px-4 sm:px-6 py-3 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-[280px] max-w-xl">
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-950/80 border border-slate-800 text-xs font-mono w-full truncate">
-                    <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
-                    <span className="text-slate-200 truncate">
-                      https://pact.portside.lol{activeShowcaseMode === "lan" ? "/lan" : ""}
+
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono w-full focus-within:border-sky-500/60 focus-within:ring-1 focus-within:ring-sky-500/30 transition shadow-inner">
+                    <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="text-slate-500 select-none">https://</span>
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-sky-500/10 border border-sky-500/30 text-sky-300 font-bold focus-within:bg-sky-500/20 transition">
+                      <input
+                        type="text"
+                        value={showcaseSubdomain}
+                        size={Math.max(4, showcaseSubdomain.length)}
+                        onChange={(e) => setShowcaseSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                        placeholder="yourname"
+                        className="bg-transparent text-sky-300 font-bold outline-none text-xs text-center"
+                        title="Type to test custom vanity subdomain"
+                      />
+                    </span>
+                    <span className="text-slate-300 select-none truncate font-medium">
+                      .portside.lol{showcaseViewMode === "wire" ? "/api/v1/health" : activeShowcaseMode === "lan" ? "/lan" : ""}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
-                  {activeShowcaseMode === "public" ? (
-                    <span className="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span>Live Edge CDN</span>
+                  <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-slate-800 text-slate-300 shadow-xs">
+                    <Activity className="w-3 h-3 text-emerald-400 shrink-0" />
+                    <span>1.2ms RTT</span>
+                    <span className="text-slate-600">&middot;</span>
+                    <span className="text-slate-400 font-sans">Daemon v1.4.2</span>
+                  </div>
+
+                  {activeShowcaseMode === "public" && showcaseViewMode !== "wire" ? (
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5 font-medium shadow-xs">
+                      <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                      <span>Live Edge Route</span>
+                    </span>
+                  ) : activeShowcaseMode === "lan" && showcaseViewMode !== "wire" ? (
+                    <span className="px-2.5 py-1 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-300 flex items-center gap-1.5 font-medium shadow-xs">
+                      <KeyRound className="w-3 h-3" />
+                      <span>Session Verified</span>
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 rounded-md bg-amber-400/10 border border-amber-400/20 text-amber-300 flex items-center gap-1.5">
-                      <KeyRound className="w-3 h-3" />
-                      <span>PortSide Session Verified</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-400/10 border border-emerald-400/30 text-emerald-300 flex items-center gap-1.5 font-medium shadow-xs">
+                      <Terminal className="w-3 h-3" />
+                      <span>Direct Stream</span>
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="p-5 sm:p-8">
-                {activeShowcaseMode === "public" ? (
-                  <div className="space-y-6">
-                    <div className="p-5 sm:p-6 rounded-xl bg-slate-900/50 border border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500/20 via-sky-500/10 to-transparent border border-sky-500/30 flex items-center justify-center font-mono font-bold text-xl text-sky-400 shrink-0">
-                          P
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-lg font-bold text-white">pact</span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono text-sky-300 bg-sky-500/15 border border-sky-500/30 font-medium">
-                              Creator of PortSide
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-1">
-                            Full-Stack Developer &middot; Distributed Systems &middot; pact@virtuoushigh.com
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
-                        <a
-                          href="https://github.com/letsmakepact"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-mono text-slate-300 transition"
-                        >
-                          GitHub
-                        </a>
-                        <a
-                          href="https://t.me/pactwithdevil"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-xs font-mono text-sky-300 transition"
-                        >
-                          Telegram
-                        </a>
-                      </div>
+              {showcaseViewMode === "wire" ? (
+                <div className="p-5 sm:p-7 bg-[#05080f] font-mono text-xs text-slate-300 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800/80">
+                    <div className="flex items-center gap-2 text-emerald-400">
+                      <Terminal className="w-4 h-4" />
+                      <span className="font-bold">Raw Wire Protocol Inspection</span>
                     </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-xs px-1">
-                        <span className="font-semibold text-slate-200 flex items-center gap-2">
-                          <Globe className="w-3.5 h-3.5 text-sky-400" />
-                          <span>Live Hosted Projects</span>
-                        </span>
-                        <span className="text-slate-500 font-mono text-[11px]">
-                          Forwarded from local dev environment
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-slate-700 transition flex flex-col justify-between space-y-3">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">web-portfolio</span>
-                              <span className="w-2 h-2 rounded-full bg-emerald-400" title="Online" />
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              Interactive personal portfolio built with Next.js 15 and Tailwind CSS.
-                            </p>
-                          </div>
-                          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
-                            <span>localhost:3000</span>
-                            <span className="text-sky-400 font-medium">/ (Root)</span>
-                          </div>
-                        </div>
-
-                        <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-slate-700 transition flex flex-col justify-between space-y-3">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">client-staging</span>
-                              <span className="w-2 h-2 rounded-full bg-emerald-400" title="Online" />
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              Real-time client design review environment with live hot-reloading.
-                            </p>
-                          </div>
-                          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
-                            <span>localhost:5173</span>
-                            <span className="text-sky-400 font-medium">/demo</span>
-                          </div>
-                        </div>
-
-                        <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-slate-700 transition flex flex-col justify-between space-y-3">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">portside-engine</span>
-                              <span className="w-2 h-2 rounded-full bg-emerald-400" title="Online" />
-                            </div>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              High-throughput reverse proxy API daemon written in Go.
-                            </p>
-                          </div>
-                          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
-                            <span>localhost:8081</span>
-                            <span className="text-sky-400 font-medium">/api</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyCliCmd(`curl -I https://${showcaseSubdomain || "pact"}.portside.lol`)}
+                      className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[11px] text-slate-300 flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      {copiedCliCmd === `curl -I https://${showcaseSubdomain || "pact"}.portside.lol` ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy cURL</span>
+                        </>
+                      )}
+                    </button>
                   </div>
-                ) : (
-                  <div className="space-y-6">
-                    <div className="p-4 sm:p-5 rounded-xl bg-amber-500/[0.05] border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-                          <ShieldCheck className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-bold text-white">Authenticated Developer Gateway</span>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
-                              Active Session
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-0.5">
-                            Authenticated with your Portside credentials. Only you can access these routes.
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center gap-2 font-mono text-xs text-amber-300 bg-amber-950/50 border border-amber-500/30 px-3 py-1.5 rounded-lg shrink-0">
-                        <Smartphone className="w-3.5 h-3.5" />
-                        <span>Reachable on Cellular 5G</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-xs px-1">
-                        <span className="font-semibold text-slate-200 flex items-center gap-2">
-                          <Lock className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Internal Developer Services</span>
-                        </span>
-                        <span className="text-emerald-400 font-mono text-[11px] flex items-center gap-1">
-                          <ShieldCheck className="w-3 h-3" />
-                          Zero Public Ingress
-                        </span>
-                      </div>
-
-                      <div className="divide-y divide-slate-800 rounded-xl border border-slate-800 bg-slate-950/70 overflow-hidden text-xs font-mono">
-                        <div className="p-3.5 sm:px-4 flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <Database className="w-4 h-4 text-amber-400 shrink-0" />
-                            <div className="truncate">
-                              <span className="font-semibold text-white">postgres-pgadmin</span>
-                              <span className="text-slate-500 ml-2 text-[11px]">internal port :5432</span>
-                            </div>
-                          </div>
-                          <span className="px-2 py-0.5 rounded bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[11px] shrink-0">
-                            /lan/db
-                          </span>
-                        </div>
-
-                        <div className="p-3.5 sm:px-4 flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <Cpu className="w-4 h-4 text-amber-400 shrink-0" />
-                            <div className="truncate">
-                              <span className="font-semibold text-white">ollama-ai-engine</span>
-                              <span className="text-slate-500 ml-2 text-[11px]">internal port :11434 &middot; llama3.3</span>
-                            </div>
-                          </div>
-                          <span className="px-2 py-0.5 rounded bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[11px] shrink-0">
-                            /lan/ai
-                          </span>
-                        </div>
-
-                        <div className="p-3.5 sm:px-4 flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <Server className="w-4 h-4 text-amber-400 shrink-0" />
-                            <div className="truncate">
-                              <span className="font-semibold text-white">redis-commander</span>
-                              <span className="text-slate-500 ml-2 text-[11px]">internal port :6379 &middot; cache manager</span>
-                            </div>
-                          </div>
-                          <span className="px-2 py-0.5 rounded bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[11px] shrink-0">
-                            /lan/redis
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800/80 space-y-2 text-slate-300 text-[11px] overflow-x-auto leading-relaxed">
+                    <p className="text-slate-500"># Direct HTTP/2 Edge Handshake stream</p>
+                    <p className="text-sky-400 font-semibold">$ curl -I https://{showcaseSubdomain || "pact"}.portside.lol</p>
+                    <p className="text-emerald-400">HTTP/2 200 OK</p>
+                    <p><span className="text-slate-500">server:</span> portside-edge-ingress/1.4.2</p>
+                    <p><span className="text-slate-500">date:</span> Thu, 10 Sep 2026 22:25:00 GMT</p>
+                    <p><span className="text-slate-500">content-type:</span> text/html; charset=utf-8</p>
+                    <p><span className="text-slate-500">x-portside-daemon-pid:</span> 8492</p>
+                    <p><span className="text-slate-500">x-portside-local-port:</span> 3000</p>
+                    <p><span className="text-slate-500">x-portside-tunnel-latency:</span> 1.2ms (direct-wire)</p>
+                    <p><span className="text-slate-500">x-portside-auth:</span> verified-supporter-token</p>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="p-5 sm:p-8">
+                  {activeShowcaseMode === "public" ? (
+                    <div className="space-y-6">
+                      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-slate-950/80 border border-slate-800/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500/20 via-sky-500/10 to-transparent border border-sky-500/30 flex items-center justify-center font-mono font-bold text-xl text-sky-400 shrink-0 shadow-inner">
+                            {(showcaseSubdomain || "p").charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-lg font-bold text-white tracking-tight">{showcaseSubdomain || "pact"}</span>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono text-sky-300 bg-sky-500/15 border border-sky-500/30 font-medium">
+                                PortSide Verified
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-1">
+                              Full-Stack Developer &middot; Distributed Systems &middot; {showcaseSubdomain || "pact"}@virtuoushigh.com
+                            </p>
+                          </div>
+                        </div>
 
-              <div className="px-5 sm:px-8 py-4 bg-slate-900/50 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p className="text-xs text-slate-400 text-center sm:text-left">
-                  {activeShowcaseMode === "public"
-                    ? "Anyone can explore your public projects and bio directly at pact.portside.lol."
-                    : "Protected routes at /lan are only accessible by logging into your Portside account."}
+                        <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+                          <a
+                            href="https://github.com/letsmakepact"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="px-3.5 py-2 min-h-[44px] rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-mono text-slate-300 transition flex items-center justify-center gap-2 shadow-xs"
+                          >
+                            <span>GitHub</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+                          </a>
+                          <a
+                            href="https://t.me/pactwithdevil"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="px-3.5 py-2 min-h-[44px] rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-xs font-mono text-sky-300 transition flex items-center justify-center gap-2 shadow-xs"
+                          >
+                            <span>Telegram</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs px-1">
+                          <span className="font-semibold text-slate-200 flex items-center gap-2">
+                            <Globe className="w-3.5 h-3.5 text-sky-400" />
+                            <span>Live Hosted Projects</span>
+                          </span>
+                          <span className="text-slate-500 font-mono text-[11px]">
+                            Forwarded from local dev environment
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 snap-x snap-mandatory flex overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
+                          <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-slate-700 transition flex flex-col justify-between space-y-3 min-w-[280px] md:min-w-0 snap-start shadow-md">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-bold text-white">web-portfolio</span>
+                                <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 font-medium">
+                                  200 OK
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-400 leading-relaxed">
+                                Interactive personal portfolio built with Next.js 15 and Tailwind CSS.
+                              </p>
+                            </div>
+                            <div className="space-y-2 pt-2.5 border-t border-slate-800/80">
+                              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                                <span className="text-slate-500">127.0.0.1:3000</span>
+                                <span className="text-sky-400 font-medium">/ (Root)</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyCliCmd(`portside share :3000 --as ${showcaseSubdomain || "pact"}`)}
+                                className="w-full py-1.5 px-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[10px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
+                              >
+                                <span className="truncate">$ portside share :3000</span>
+                                {copiedCliCmd === `portside share :3000 --as ${showcaseSubdomain || "pact"}` ? (
+                                  <Check className="w-3 h-3 text-emerald-400 shrink-0 ml-1" />
+                                ) : (
+                                  <Copy className="w-3 h-3 text-slate-500 shrink-0 ml-1" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-slate-700 transition flex flex-col justify-between space-y-3 min-w-[280px] md:min-w-0 snap-start shadow-md">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-bold text-white">client-staging</span>
+                                <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 font-medium">
+                                  HMR Active
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-400 leading-relaxed">
+                                Real-time client design review environment with live hot-reloading.
+                              </p>
+                            </div>
+                            <div className="space-y-2 pt-2.5 border-t border-slate-800/80">
+                              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                                <span className="text-slate-500">127.0.0.1:5173</span>
+                                <span className="text-sky-400 font-medium">/demo</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyCliCmd(`portside share :5173 --as ${showcaseSubdomain || "pact"}`)}
+                                className="w-full py-1.5 px-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[10px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
+                              >
+                                <span className="truncate">$ portside share :5173</span>
+                                {copiedCliCmd === `portside share :5173 --as ${showcaseSubdomain || "pact"}` ? (
+                                  <Check className="w-3 h-3 text-emerald-400 shrink-0 ml-1" />
+                                ) : (
+                                  <Copy className="w-3 h-3 text-slate-500 shrink-0 ml-1" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-slate-700 transition flex flex-col justify-between space-y-3 min-w-[280px] md:min-w-0 snap-start shadow-md">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-bold text-white">portside-engine</span>
+                                <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 font-medium">
+                                  Go Proxy
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-400 leading-relaxed">
+                                High-throughput reverse proxy API daemon written in Go.
+                              </p>
+                            </div>
+                            <div className="space-y-2 pt-2.5 border-t border-slate-800/80">
+                              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                                <span className="text-slate-500">127.0.0.1:8081</span>
+                                <span className="text-sky-400 font-medium">/api</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyCliCmd(`portside share :8081 --as ${showcaseSubdomain || "pact"}`)}
+                                className="w-full py-1.5 px-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[10px] font-mono text-slate-300 flex items-center justify-between transition cursor-pointer"
+                              >
+                                <span className="truncate">$ portside share :8081</span>
+                                {copiedCliCmd === `portside share :8081 --as ${showcaseSubdomain || "pact"}` ? (
+                                  <Check className="w-3 h-3 text-emerald-400 shrink-0 ml-1" />
+                                ) : (
+                                  <Copy className="w-3 h-3 text-slate-500 shrink-0 ml-1" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/[0.08] via-amber-500/[0.04] to-slate-950/80 border border-amber-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
+                            <ShieldCheck className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-sm font-bold text-white tracking-tight">Zero-Trust Developer Gateway</span>
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-medium">
+                                Active Passkey Session
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-1">
+                              Encrypted wire tunnel directly into your workstation. Isolated from public web traffic.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 font-mono text-xs text-amber-300 bg-amber-950/60 border border-amber-500/30 px-3.5 py-2 rounded-xl shrink-0 shadow-xs">
+                          <Smartphone className="w-4 h-4 text-amber-400" />
+                          <span>Cellular 5G Paired</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs px-1">
+                          <span className="font-semibold text-slate-200 flex items-center gap-2">
+                            <Lock className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Active Backend Daemons</span>
+                          </span>
+                          <span className="text-emerald-400 font-mono text-[11px] flex items-center gap-1.5">
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span>Zero Public Ingress</span>
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                          <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-amber-500/40 transition flex flex-col justify-between space-y-3 shadow-md">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2.5">
+                                <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400">
+                                  <Database className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <h4 className="text-xs font-bold text-white font-mono">postgres-pgadmin</h4>
+                                  <span className="text-[10px] font-mono text-slate-400">127.0.0.1:5432</span>
+                                </div>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[10px] font-mono shrink-0">
+                                /lan/db
+                              </span>
+                            </div>
+                            <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px] font-mono text-slate-400">
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-slate-500">Connection Pool:</span>
+                                <span className="text-emerald-400">8 active</span>
+                              </div>
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-slate-500">Internal Latency:</span>
+                                <span className="text-slate-300">0.2ms</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-amber-500/40 transition flex flex-col justify-between space-y-3 shadow-md">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2.5">
+                                <div className="p-2 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-400">
+                                  <Cpu className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <h4 className="text-xs font-bold text-white font-mono">ollama-ai-engine</h4>
+                                  <span className="text-[10px] font-mono text-slate-400">127.0.0.1:11434</span>
+                                </div>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[10px] font-mono shrink-0">
+                                /lan/ai
+                              </span>
+                            </div>
+                            <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px] font-mono text-slate-400">
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-slate-500">Loaded Model:</span>
+                                <span className="text-violet-300 truncate max-w-[110px]">llama3.3:70b</span>
+                              </div>
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-slate-500">Token Stream:</span>
+                                <span className="text-emerald-400">38 tok/s</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl border border-slate-800/90 bg-slate-950/80 hover:border-amber-500/40 transition flex flex-col justify-between space-y-3 shadow-md">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2.5">
+                                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                  <Server className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <h4 className="text-xs font-bold text-white font-mono">redis-commander</h4>
+                                  <span className="text-[10px] font-mono text-slate-400">127.0.0.1:6379</span>
+                                </div>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/30 text-amber-300 text-[10px] font-mono shrink-0">
+                                /lan/redis
+                              </span>
+                            </div>
+                            <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px] font-mono text-slate-400">
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-slate-500">Allocated RAM:</span>
+                                <span className="text-slate-300">24.6 MB</span>
+                              </div>
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-slate-500">Cache Hit Ratio:</span>
+                                <span className="text-emerald-400">99.4%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="px-5 sm:px-8 py-4 bg-slate-900/80 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-xs text-slate-400 text-center sm:text-left flex items-center gap-2 font-mono">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>
+                    {activeShowcaseMode === "public"
+                      ? `Anyone can explore your live projects and bio directly at ${showcaseSubdomain || "pact"}.portside.lol.`
+                      : "Protected /lan routes are encrypted via local session token. Unreachable without credentials."}
+                  </span>
                 </p>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <a
-                    href="https://pact.portside.lol"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 sm:flex-initial rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 font-bold text-xs transition inline-flex items-center justify-center gap-2 shadow-md shadow-sky-500/20 active:scale-[0.98]"
-                  >
-                    <span>Visit Live Showcase</span>
-                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-                  </a>
-                  <a
                     href="https://buymeacoffee.com/pacts/membership"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 sm:flex-initial rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 font-medium text-xs transition inline-flex items-center justify-center active:scale-[0.98]"
+                    className="flex-1 sm:flex-initial rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 hover:from-sky-400 hover:to-cyan-300 text-slate-950 px-5 py-2.5 font-bold text-xs transition inline-flex items-center justify-center gap-2 shadow-lg shadow-sky-500/25 active:scale-[0.98] min-h-[44px]"
                   >
-                    Claim Subdomain ($5.99/mo)
+                    <span>Claim {showcaseSubdomain || "pact"}.portside.lol ($5.99/mo)</span>
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                  <a
+                    href={`https://${showcaseSubdomain || "pact"}.portside.lol`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 sm:flex-initial rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 px-4 py-2.5 font-medium text-xs transition inline-flex items-center justify-center active:scale-[0.98] min-h-[44px]"
+                  >
+                    Live Demo
                   </a>
                 </div>
               </div>
@@ -1166,47 +1142,48 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="downloads" className="relative py-20 border-t border-white/5 bg-[#080e18]">
+        <section id="downloads" className="relative py-16 border-b border-[#1f2937] bg-[#0b0f17]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-semibold uppercase tracking-wider mb-4">
-              <Download className="w-3.5 h-3.5" />
-              <span>Cross-Platform Standalone Binaries</span>
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
+                Releases
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+                Download PortSide Standalone Binaries
+              </h2>
+              <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Direct binary downloads from GitHub Releases. Zero external package dependencies, standalone loopback proxy.
+              </p>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Get Portside for Your Machine
-            </h2>
-            <p className="mt-3 text-slate-400 text-sm max-w-lg mx-auto">
-              Direct binary downloads pulled straight from GitHub Releases. Zero installer hassle, auto-updates included.
-            </p>
 
-            <div className="mt-10 grid sm:grid-cols-3 gap-5 text-left">
+            <div className="mt-8 grid sm:grid-cols-3 gap-4 text-left">
               <div
-                className={`p-6 rounded-2xl border transition flex flex-col justify-between ${
+                className={`p-5 rounded-lg border transition flex flex-col justify-between ${
                   selectedOs === "windows"
-                    ? "border-sky-500/50 bg-sky-500/10 shadow-xl shadow-sky-500/10"
-                    : "border-white/10 bg-[#060b13] hover:border-white/20"
+                    ? "border-[#27354a] bg-[#161f30]"
+                    : "border-[#1f2937] bg-[#111827] hover:border-slate-700"
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-400">
+                    <span className="text-xs font-mono font-medium uppercase tracking-wider text-sky-400">
                       Windows 10 / 11
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#0b0f17] text-slate-300 border border-[#1f2937]">
                       x64
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mt-2">Windows</h3>
+                  <h3 className="text-lg font-semibold text-white mt-2">Windows</h3>
                   <p className="text-xs font-mono text-slate-400 mt-1">{downloads.windows.name}</p>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Standalone executable that provisions ~/Portside/updates and checks releases automatically.
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Standalone binary that provisions ~/Portside and checks GitHub releases automatically.
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/5">
+                <div className="mt-5 pt-4 border-t border-[#1f2937]">
                   <a
                     href={downloads.windows.url}
-                    className="w-full rounded-xl bg-sky-500 hover:bg-sky-400 text-[#060b13] font-bold text-xs py-2.5 px-4 text-center flex items-center justify-center gap-2 transition cursor-pointer"
+                    className="w-full rounded-md bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs py-2 px-3 text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download (.exe)</span>
@@ -1215,42 +1192,42 @@ export default function Home() {
               </div>
 
               <div
-                className={`p-6 rounded-2xl border transition flex flex-col justify-between ${
+                className={`p-5 rounded-lg border transition flex flex-col justify-between ${
                   selectedOs === "macos"
-                    ? "border-sky-500/50 bg-sky-500/10 shadow-xl shadow-sky-500/10"
-                    : "border-white/10 bg-[#060b13] hover:border-white/20"
+                    ? "border-[#27354a] bg-[#161f30]"
+                    : "border-[#1f2937] bg-[#111827] hover:border-slate-700"
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-400">
+                    <span className="text-xs font-mono font-medium uppercase tracking-wider text-slate-300">
                       macOS 12+
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#0b0f17] text-slate-300 border border-[#1f2937]">
                       Universal
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mt-2">macOS</h3>
+                  <h3 className="text-lg font-semibold text-white mt-2">macOS</h3>
                   <p className="text-xs font-mono text-slate-400 mt-1">Apple Silicon & Intel</p>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Native pre-compiled Go binaries for M1/M2/M3/M4 Apple Silicon and Intel Macs.
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Pre-compiled standalone binaries for Apple Silicon (M1-M4) and Intel machines.
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/5 space-y-2">
+                <div className="mt-5 pt-4 border-t border-[#1f2937] space-y-1.5">
                   {downloads.macosArm64 && (
                     <a
                       href={downloads.macosArm64.url}
-                      className="w-full rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#27354a] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>Apple Silicon (M1/M2/M3/M4)</span>
+                      <span>Apple Silicon (M1-M4)</span>
                     </a>
                   )}
                   {downloads.macosIntel && (
                     <a
                       href={downloads.macosIntel.url}
-                      className="w-full rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-medium text-xs py-2 px-3 text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="w-full rounded-md bg-[#0d131f] hover:bg-[#161f30] text-slate-300 font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#1f2937] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Intel x86_64</span>
@@ -1260,33 +1237,33 @@ export default function Home() {
               </div>
 
               <div
-                className={`p-6 rounded-2xl border transition flex flex-col justify-between ${
+                className={`p-5 rounded-lg border transition flex flex-col justify-between ${
                   selectedOs === "linux"
-                    ? "border-sky-500/50 bg-sky-500/10 shadow-xl shadow-sky-500/10"
-                    : "border-white/10 bg-[#060b13] hover:border-white/20"
+                    ? "border-[#27354a] bg-[#161f30]"
+                    : "border-[#1f2937] bg-[#111827] hover:border-slate-700"
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-400">
+                    <span className="text-xs font-mono font-medium uppercase tracking-wider text-slate-300">
                       Linux
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#0b0f17] text-slate-300 border border-[#1f2937]">
                       x86 & ARM
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mt-2">Linux</h3>
+                  <h3 className="text-lg font-semibold text-white mt-2">Linux</h3>
                   <p className="text-xs font-mono text-slate-400 mt-1">Ubuntu, Debian, Fedora, Arch</p>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Zero external runtime dependencies. Runs standalone or in systemd service configurations.
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Zero external runtime dependencies. Runs standalone or via systemd service units.
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/5 space-y-2">
+                <div className="mt-5 pt-4 border-t border-[#1f2937] space-y-1.5">
                   {downloads.linuxAmd64 && (
                     <a
                       href={downloads.linuxAmd64.url}
-                      className="w-full rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#27354a] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Linux x86_64</span>
@@ -1295,7 +1272,7 @@ export default function Home() {
                   {downloads.linuxArm64 && (
                     <a
                       href={downloads.linuxArm64.url}
-                      className="w-full rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-medium text-xs py-2 px-3 text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="w-full rounded-md bg-[#0d131f] hover:bg-[#161f30] text-slate-300 font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#1f2937] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Linux ARM64</span>
@@ -1305,60 +1282,60 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-10 p-4 rounded-xl border border-white/10 bg-[#060b13] max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
+            <div className="mt-8 p-3.5 rounded-md border border-[#1f2937] bg-[#111827] max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
               <div>
                 <p className="text-xs font-semibold text-white">Latest GitHub Release Tag</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  View changelog, checksums, and source commits on GitHub.
+                <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                  View changelog, checksums, and source commits.
                 </p>
               </div>
               <a
                 href={downloads.releaseUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="shrink-0 text-xs font-mono font-bold text-sky-400 hover:text-sky-300 transition flex items-center gap-1"
+                className="shrink-0 text-xs font-mono text-sky-400 hover:text-sky-300 transition flex items-center gap-1"
               >
-                <span>{downloads.version} Changelog</span>
+                <span>{downloads.version} Release</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
         </section>
 
-        <section className="relative py-20 border-t border-white/5 bg-[#060b13]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
-                Frequently Asked Questions
+        <section className="relative py-16 border-b border-[#1f2937] bg-[#0b0f17]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6">
+            <div className="text-center max-w-xl mx-auto mb-10">
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
+                FAQ
               </span>
-              <h2 className="text-3xl font-extrabold text-white tracking-tight mt-2">
-                Everything You Need to Know
+              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+                Frequently Asked Questions
               </h2>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {FAQS.map((faq, idx) => {
                 const isOpen = expandedFaq === idx;
                 return (
                   <div
                     key={idx}
-                    className="rounded-xl border border-white/10 bg-[#090f1d] overflow-hidden transition"
+                    className="rounded-md border border-[#1f2937] bg-[#111827] overflow-hidden transition"
                   >
                     <button
                       onClick={() => setExpandedFaq(isOpen ? null : idx)}
-                      className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer"
+                      className="w-full p-4 text-left flex items-center justify-between gap-4 cursor-pointer"
                     >
-                      <span className="font-semibold text-sm sm:text-base text-white">
+                      <span className="font-medium text-xs sm:text-sm text-slate-200">
                         {faq.q}
                       </span>
                       <ChevronDown
-                        className={`w-4 h-4 text-sky-400 shrink-0 transition-transform duration-200 ${
+                        className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform duration-200 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       />
                     </button>
                     {isOpen && (
-                      <div className="px-4 sm:px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-white/5">
+                      <div className="px-4 pb-4 pt-1 text-xs text-slate-400 leading-relaxed border-t border-[#1f2937]">
                         {faq.a}
                       </div>
                     )}
@@ -1369,78 +1346,75 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-16 border-t border-white/5 bg-gradient-to-r from-sky-950/30 via-[#091122] to-cyan-950/30">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <section className="relative py-12 border-b border-[#1f2937] bg-[#0d131f]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="space-y-1 text-center md:text-left">
-              <h3 className="text-xl sm:text-2xl font-bold text-white">
-                Looking for architecture deep-dives?
+              <h3 className="text-lg sm:text-xl font-semibold text-white">
+                Looking for architecture documentation?
               </h3>
-              <p className="text-xs sm:text-sm text-slate-400">
+              <p className="text-xs text-slate-400">
                 Explore setup guides, iOS mobile instructions, RFC specifications, and launcher operations.
               </p>
             </div>
             <Link
               href="/docs"
-              className="shrink-0 rounded-xl bg-sky-500 hover:bg-sky-400 text-[#060b13] px-6 py-3 font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-sky-500/25"
+              className="shrink-0 rounded-md bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 font-medium text-xs transition flex items-center gap-2 border border-sky-500"
             >
-              <span>Explore Official Docs</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>View Official Docs</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-white/5 py-12 bg-[#050910] text-xs text-slate-500">
+      <footer className="py-10 bg-[#0b0f17] text-xs text-slate-400 border-t border-[#1f2937]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            <div className="col-span-2 md:col-span-1 space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            <div className="col-span-2 md:col-span-1 space-y-2.5">
               <div className="flex items-center gap-2.5">
-                <AnchorLogo size={28} />
-                <span className="font-bold text-white text-base tracking-tight">Portside</span>
+                <AnchorLogo size={24} />
+                <span className="font-semibold text-white text-sm tracking-tight">Portside</span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Name your localhost. Direct Port 80 routing, encrypted global tunnels, and multi-device LAN access.
+                Clean local development loopback proxy with direct Port 80 routing and remote mobile pairing.
               </p>
             </div>
 
             <div>
-              <p className="font-mono text-xs uppercase text-slate-400 font-bold mb-3">Product</p>
-              <ul className="space-y-2 text-xs">
+              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">Product</p>
+              <ul className="space-y-1.5 text-xs">
                 <li><a href="#features" className="hover:text-white transition">Features</a></li>
-                <li><a href="#simulator" className="hover:text-white transition">Interactive Engine</a></li>
-                <li><a href="#supporter" className="hover:text-white transition">Supporter Tier</a></li>
-                <li><a href="#showcase" className="hover:text-white transition">Vanity Domains</a></li>
+                <li><a href="#simulator" className="hover:text-white transition">Architecture</a></li>
+                <li><a href="#supporter" className="hover:text-white transition">Supporter Plan</a></li>
                 <li><a href="#downloads" className="hover:text-white transition">Downloads</a></li>
               </ul>
             </div>
 
             <div>
-              <p className="font-mono text-xs uppercase text-slate-400 font-bold mb-3">Resources</p>
-              <ul className="space-y-2 text-xs">
-                <li><Link href="/docs" className="text-sky-400 hover:text-sky-300 transition">Official Documentation</Link></li>
-                <li><a href="https://pact.portside.lol" target="_blank" rel="noreferrer" className="hover:text-white transition">Live Showcase (pact.portside.lol)</a></li>
-                <li><a href="https://github.com/letsmakepact/PortSide/releases" target="_blank" rel="noreferrer" className="hover:text-white transition">GitHub Releases</a></li>
+              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">Resources</p>
+              <ul className="space-y-1.5 text-xs">
+                <li><Link href="/docs" className="text-sky-400 hover:text-sky-300 transition">Documentation</Link></li>
+                <li><a href="https://github.com/letsmakepact/PortSide/releases" target="_blank" rel="noreferrer" className="hover:text-white transition">Releases</a></li>
                 <li><a href="https://github.com/letsmakepact/PortSide" target="_blank" rel="noreferrer" className="hover:text-white transition">Source Code</a></li>
               </ul>
             </div>
 
             <div>
-              <p className="font-mono text-xs uppercase text-slate-400 font-bold mb-3">Creator & Support</p>
-              <ul className="space-y-2 text-xs">
+              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">Creator</p>
+              <ul className="space-y-1.5 text-xs">
                 <li>
                   <a
                     href="https://buymeacoffee.com/pacts"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-amber-400 hover:text-amber-300 font-medium transition flex items-center gap-1.5"
+                    className="text-amber-300 hover:text-amber-200 transition flex items-center gap-1"
                   >
-                    <Crown className="w-3.5 h-3.5" />
                     <span>Buy Me a Coffee</span>
                   </a>
                 </li>
                 <li>
                   <a href="https://github.com/letsmakepact" target="_blank" rel="noreferrer" className="hover:text-white transition">
-                    Created by pact
+                    pact (letsmakepact)
                   </a>
                 </li>
                 <li>
@@ -1448,19 +1422,14 @@ export default function Home() {
                     Telegram: @pactwithdevil
                   </a>
                 </li>
-                <li>
-                  <a href="https://portside.lol" className="text-sky-400 hover:text-sky-300 font-mono font-medium transition">
-                    portside.lol
-                  </a>
-                </li>
               </ul>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>© {new Date().getFullYear()} Portside. Open-source local development reverse proxy.</p>
-            <p className="text-[11px] text-slate-600">
-              Designed with zero tracking · No DNS tampering · Zero external telemetry
+          <div className="pt-6 border-t border-[#1f2937] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 font-mono">
+            <p>© {new Date().getFullYear()} PortSide. Open-source local development proxy.</p>
+            <p>
+              Loopback native · Zero telemetry
             </p>
           </div>
         </div>

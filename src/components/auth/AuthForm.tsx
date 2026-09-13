@@ -9,16 +9,12 @@ import { Input, Label } from "@/components/ui/Primitives";
 interface AuthFormProps {
   mode: "login" | "register";
   demo?: { email: string; password: string };
-  isProfileMode?: boolean;
-  vanityHandle?: string;
   redirectTo?: string;
 }
 
 export function AuthForm({
   mode,
   demo,
-  isProfileMode,
-  vanityHandle,
   redirectTo,
 }: AuthFormProps) {
   const router = useRouter();
@@ -49,7 +45,7 @@ export function AuthForm({
         setLoading(false);
         return;
       }
-      const destination = redirectTo || (isProfileMode ? "/dashboard/settings?tab=profile" : "/dashboard");
+      const destination = redirectTo || "/dashboard";
       router.push(destination);
       router.refresh();
     } catch {
@@ -61,16 +57,10 @@ export function AuthForm({
   return (
     <div className="animate-fade-up">
       <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-        {isProfileMode
-          ? `Customize Profile${vanityHandle ? ` (@${vanityHandle})` : ""}`
-          : mode === "login"
-          ? "Welcome back"
-          : "Create your account"}
+        {mode === "login" ? "Welcome back" : "Create your account"}
       </h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        {isProfileMode
-          ? "Sign in with your Portside credentials to customize your public showcase, theme, and services."
-          : mode === "login"
+        {mode === "login"
           ? "Sign in to manage your local hostnames."
           : "Runs entirely on your machine. Confirmed securely on server."}
       </p>
@@ -90,13 +80,13 @@ export function AuthForm({
           </div>
         )}
         <div>
-          <Label htmlFor="email">{isProfileMode ? "Email or Username" : "Email"}</Label>
+          <Label htmlFor="email">Email</Label>
           <Input
             id="email"
-            type={isProfileMode ? "text" : "email"}
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={isProfileMode ? (vanityHandle ? `${vanityHandle} or you@example.com` : "username or you@example.com") : "you@example.com"}
+            placeholder="you@example.com"
             autoComplete="username"
             required
           />
@@ -120,33 +110,18 @@ export function AuthForm({
           </p>
         )}
         <Button type="submit" size="lg" className="w-full" loading={loading}>
-          {isProfileMode ? "Sign in to Customize Profile" : mode === "login" ? "Sign in" : "Create account"}
+          {mode === "login" ? "Sign in" : "Create account"}
         </Button>
       </form>
 
       <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
         {mode === "login" ? (
-          isProfileMode ? (
-            <div>
-              <span className="text-slate-400">Want your own developer showcase?</span>{" "}
-              <a
-                href="https://portside.lol"
-                target="_blank"
-                rel="noreferrer"
-                className="font-medium text-sky-400 hover:text-sky-300 hover:underline inline-flex items-center gap-1"
-              >
-                Get Portside
-                <svg viewBox="0 0 24 24" className="h-3 w-3 inline" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-              </a>
-            </div>
-          ) : (
-            <>
-              New here?{" "}
-              <Link href="/register" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
-                Create an account
-              </Link>
-            </>
-          )
+          <>
+            New here?{" "}
+            <Link href="/register" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
+              Create an account
+            </Link>
+          </>
         ) : (
           <>
             Already have an account?{" "}

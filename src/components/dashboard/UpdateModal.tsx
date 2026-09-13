@@ -68,9 +68,8 @@ export function UpdateModal({ forceOpen, onClose }: { forceOpen?: boolean; onClo
     <Modal open={open} onClose={handleDismiss} title="" size="lg">
       <div className="relative pt-1">
         <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            {update.updateAvailable ? "New Version Ready" : "Up to Date"}
+          <span className="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 text-xs font-mono font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+            {update.updateAvailable ? "NEW VERSION READY" : "UP TO DATE"}
           </span>
           <span className="font-mono text-xs text-slate-400">
             v{update.currentVersion} → v{update.latestVersion}

@@ -3,12 +3,21 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { getCurrentUser, hashPassword, verifyPassword } from "@/lib/auth";
 
+import { isServerSupporter } from "@/lib/server-checks";
+
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return Response.json({ user: null }, { status: 401 });
-  return Response.json({ user });
+  const isSupporter = await isServerSupporter(user);
+  return Response.json({
+    user: {
+      ...user,
+      tier: isSupporter ? "supporter" : "free",
+      isSupporter,
+    },
+  });
 }
 
 export async function PATCH(req: Request) {

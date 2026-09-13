@@ -5,10 +5,10 @@ type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-slate-900 text-white hover:bg-slate-800 border border-slate-900 shadow-xs dark:bg-sky-500 dark:text-slate-950 dark:hover:bg-sky-400 dark:border-sky-400/40 dark:font-semibold focus-visible:ring-slate-900/20 dark:focus-visible:ring-sky-500/20 active:bg-slate-950 dark:active:bg-sky-600",
-  secondary: "bg-white text-slate-700 border border-slate-200/90 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 dark:bg-[#0f172a] dark:text-slate-200 dark:border-slate-800 dark:hover:bg-slate-800/80 dark:hover:text-white dark:hover:border-slate-700 shadow-xs focus-visible:ring-slate-400/20 dark:focus-visible:ring-slate-500/20 active:bg-slate-100 dark:active:bg-slate-900",
-  ghost: "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100 focus-visible:ring-slate-400/20 dark:focus-visible:ring-slate-500/20 active:bg-slate-200/60 dark:active:bg-slate-800",
-  danger: "bg-rose-600 text-white hover:bg-rose-500 border border-rose-600 dark:bg-rose-600/90 dark:border-rose-500/40 shadow-xs focus-visible:ring-rose-500/20 active:bg-rose-700",
+  primary: "bg-sky-600 text-white hover:bg-sky-500 border border-sky-500/80 font-medium focus-visible:ring-1 focus-visible:ring-sky-400 active:bg-sky-700 shadow-none transition-colors",
+  secondary: "bg-[#111827] text-slate-200 border border-[#1f2937] hover:bg-[#161f30] hover:text-white hover:border-slate-700 focus-visible:ring-1 focus-visible:ring-slate-500 active:bg-[#0d131f] shadow-none transition-colors",
+  ghost: "text-slate-400 hover:bg-[#111827] hover:text-slate-200 focus-visible:ring-1 focus-visible:ring-slate-500 active:bg-[#161f30] transition-colors",
+  danger: "bg-rose-950/40 text-rose-300 border border-rose-800/60 hover:bg-rose-900/50 hover:text-rose-200 focus-visible:ring-1 focus-visible:ring-rose-500 active:bg-rose-950/70 transition-colors",
 };
 const sizes: Record<Size, string> = {
   sm: "h-8 px-2.5 text-xs font-medium gap-1.5",

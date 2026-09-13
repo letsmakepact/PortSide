@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PORTSIDE // CORE - Primary Reverse Proxy Cockpit</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#4edea3",
+            "error": "#ffb4ab",
+            "on-surface-variant": "#bec8d2",
+            "surface-container": "#1a2029",
+            "secondary": "#7bd0ff",
+            "inverse-surface": "#dee2ef",
+            "outline": "#88929b",
+            "tertiary-fixed-dim": "#4edea3",
+            "surface-container-high": "#252a33",
+            "on-primary-fixed-variant": "#004c6e",
+            "on-tertiary": "#003824",
+            "on-surface": "#dee2ef",
+            "secondary-container": "#00a6e0",
+            "secondary-fixed": "#c4e7ff",
+            "surface": "#0e141c",
+            "surface-dim": "#0e141c",
+            "surface-container-lowest": "#090e17",
+            "tertiary-container": "#00b17b",
+            "error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#005236",
+            "primary-fixed-dim": "#89ceff",
+            "on-secondary": "#00354a",
+            "surface-bright": "#343943",
+            "on-primary": "#00344d",
+            "background": "#0e141c",
+            "on-secondary-fixed": "#001e2c",
+            "surface-tint": "#89ceff",
+            "primary-fixed": "#c9e6ff",
+            "on-error": "#690005",
+            "surface-container-low": "#161c24",
+            "on-tertiary-container": "#003b26",
+            "secondary-fixed-dim": "#7bd0ff",
+            "on-primary-container": "#003751",
+            "on-tertiary-fixed": "#002113",
+            "on-primary-fixed": "#001e2f",
+            "primary": "#89ceff",
+            "on-error-container": "#ffdad6",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-variant": "#30353e",
+            "surface-container-highest": "#30353e",
+            "on-background": "#dee2ef",
+            "on-secondary-container": "#00374d",
+            "on-secondary-fixed-variant": "#004c69",
+            "primary-container": "#0ea5e9",
+            "outline-variant": "#3e4850",
+            "inverse-on-surface": "#2b313a",
+            "inverse-primary": "#006591"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin-screen": "1.25rem",
+            "unit-xl": "2rem",
+            "unit-sm": "0.5rem",
+            "unit-md": "0.75rem",
+            "unit-base": "1rem",
+            "unit-xs": "0.25rem",
+            "unit-lg": "1.5rem",
+            "gutter-standard": "1rem",
+            "gutter-dense": "0.5rem",
+            "unit-2xl": "3rem",
+            "unit-2xs": "0.125rem"
+          },
+          "fontFamily": {
+            "headline-xl": ["Plus Jakarta Sans"],
+            "body-md": ["JetBrains Mono"],
+            "code-stream": ["JetBrains Mono"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "label-lg": ["JetBrains Mono"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "label-sm": ["JetBrains Mono"],
+            "body-sm": ["JetBrains Mono"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "headline-xl": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "code-stream": ["11px", { "lineHeight": "15px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-lg": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-lg": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-sm": ["9px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+            "body-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-lg": ["14px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "label-md": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    
+    /* Primary Grid Backdrop & Precision Hairline Accents */
+    .primary-matrix {
+      background-color: #060b13;
+      background-image: radial-gradient(rgba(14, 165, 233, 0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    
+    .glow-cyan {
+      box-shadow: 0 0 16px -2px rgba(14, 165, 233, 0.25);
+    }
+    .glow-cyan-sm {
+      box-shadow: 0 0 8px rgba(14, 165, 233, 0.35);
+    }
+    .glow-emerald-sm {
+      box-shadow: 0 0 10px rgba(78, 222, 163, 0.4);
+    }
+    .glow-crimson-sm {
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.5);
+    }
+    
+    /* Tabular figures for numeric precision */
+    .tabular-numbers {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090e17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1a2029;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #0ea5e9;
+    }
+  </style>
+</head>
+<body class="bg-surface primary-matrix text-on-surface font-body-md antialiased min-h-screen overflow-x-hidden selection:bg-primary selection:text-on-primary-container">
+<!-- TOP APP BAR (Shared Component: TopNavBar Anchor) -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant fixed top-0 left-0 right-0 z-50 h-12">
+<div class="w-full max-w-[1920px] mx-auto px-unit-base h-12 flex items-center justify-between">
+<!-- Brand & Left Cluster -->
+<div class="flex items-center gap-unit-md">
+<!-- Portside Anchor Emblem -->
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 bg-surface-container border border-primary/40 rounded flex items-center justify-center glow-cyan-sm text-primary">
+<span class="material-symbols-outlined text-[18px]">anchor</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-semibold tracking-wider text-primary dark:text-primary uppercase">PORTSIDE//CORE</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest uppercase">v4.12.0-primary</span>
+</div>
+</div>
+<!-- Separation line -->
+<div class="h-5 w-[1px] bg-outline-variant hidden sm:block mx-1"></div>
+<!-- Quick Filter localhost Search -->
+<div class="relative hidden md:flex items-center">
+<span class="material-symbols-outlined absolute left-2 text-[15px] text-outline">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant text-on-surface placeholder:text-outline-variant font-code-stream text-code-stream pl-7 pr-8 py-1 rounded w-64 focus:outline-none focus:border-primary transition-colors duration-150" placeholder="[ / ] Quick filter localhost routes..." type="text"/>
+<span class="absolute right-2 px-1 rounded bg-surface-container-high border border-outline-variant font-label-sm text-label-sm text-outline">/</span>
+</div>
+</div>
+<!-- Center Telemetry Links (Matching TopNavBar JSON links) -->
+<nav class="hidden lg:flex items-center gap-unit-lg font-label-md text-label-md">
+<a class="text-primary dark:text-primary border-b-2 border-primary pb-1 flex items-center gap-1 transition-all duration-150" href="#overview">
+<span class="material-symbols-outlined text-[14px]">hub</span> Routing Mesh
+        </a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150" href="#nodes">Edge Nodes</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150" href="#vault">Cert Vault</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150" href="#tunnels">Tunnels</a>
+</nav>
+<!-- Right Actions & Hardware Status Cluster -->
+<div class="flex items-center gap-unit-md">
+<!-- Loopback Engine Status Badge -->
+<div class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-low border border-outline-variant">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span>
+</span>
+<span class="font-code-stream text-code-stream text-tertiary">PROXY ONLINE :80</span>
+<span class="font-label-sm text-label-sm text-outline ml-1 tabular-numbers">0.2ms RFC-6761</span>
+</div>
+<!-- Trailing Secondary: Loopback: OK -->
+<div class="hidden xl:flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container border border-outline-variant font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-[13px] text-tertiary">check_circle</span> Loopback: OK
+        </div>
+<!-- Trailing Primary Action: Deploy Proxy -->
+<button class="bg-primary-container hover:bg-secondary-container text-on-primary-container font-label-md text-label-md px-unit-sm py-1 rounded font-bold transition-all duration-150 flex items-center gap-1 glow-cyan-sm">
+<span class="material-symbols-outlined text-[14px]">add_circle</span> Deploy Proxy
+        </button>
+<!-- Trailing Icon Actions: terminal, notifications, tune -->
+<div class="flex items-center gap-1 text-on-surface-variant">
+<button class="p-1 rounded hover:text-primary hover:bg-surface-container transition-colors" title="Kernel Terminal">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</button>
+<button class="p-1 rounded hover:text-primary hover:bg-surface-container transition-colors relative" title="Alerts">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-error rounded-full"></span>
+</button>
+<button class="p-1 rounded hover:text-primary hover:bg-surface-container transition-colors" title="Kernel Settings">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+<!-- Operator Avatar Identity -->
+<div class="w-6 h-6 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center font-code-stream text-code-stream text-primary font-bold">
+          0x
+        </div>
+</div>
+</div>
+</header>
+<!-- APP SHELL CONTAINER -->
+<div class="pt-12 min-h-screen flex">
+<!-- SIDE NAV BAR (Shared Component: SideNavBar Anchor) -->
+<aside class="fixed top-12 left-0 h-[calc(100vh-3rem)] w-[280px] bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant flex flex-col justify-between p-unit-sm z-40 hidden md:flex">
+<!-- Top Section -->
+<div class="flex flex-col gap-unit-sm">
+<!-- Header Node Indicator -->
+<div class="px-2 py-2 mb-2 bg-surface-container rounded border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-tertiary glow-emerald-sm"></div>
+<div>
+<div class="font-headline-sm text-headline-sm font-semibold tracking-wider text-primary dark:text-primary">PORTSIDE</div>
+<div class="font-label-sm text-label-sm text-outline tracking-wider">V-4.12.0 // PRIMARY</div>
+</div>
+</div>
+<button class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-primary/20 border border-outline-variant text-primary font-label-sm text-label-sm transition-colors duration-150">
+            Sync Matrix
+          </button>
+</div>
+<!-- Navigation Tabs (Exact list from SideNavBar JSON) -->
+<div class="flex flex-col gap-1">
+<!-- Overview (Active Tab according to active state protocol) -->
+<a class="border-l-2 border-primary bg-surface-container text-primary font-bold px-unit-sm py-unit-xs rounded-r flex items-center justify-between duration-100 glow-cyan-sm" href="#">
+<div class="flex items-center gap-2 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span>Overview</span>
+</div>
+<span class="font-code-stream text-code-stream px-1.5 py-0.2 rounded bg-primary/20 text-primary">LIVE</span>
+</a>
+<!-- Proxies -->
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors flex items-center justify-between" href="#">
+<div class="flex items-center gap-2 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">alt_route</span>
+<span>Proxies</span>
+</div>
+<span class="font-code-stream text-code-stream px-1.5 rounded bg-surface-container-highest text-on-surface-variant tabular-numbers">8</span>
+</a>
+<!-- Upstreams -->
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors flex items-center gap-2 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">hub</span>
+<span>Upstreams</span>
+</a>
+<!-- DNS Matrix -->
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors flex items-center gap-2 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">dns</span>
+<span>DNS Matrix</span>
+</a>
+<!-- Access Logs -->
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors flex items-center justify-between" href="#">
+<div class="flex items-center gap-2 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Access Logs</span>
+</div>
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></div>
+</a>
+<!-- Diagnostics -->
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors flex items-center justify-between" href="#">
+<div class="flex items-center gap-2 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">security</span>
+<span>Diagnostics</span>
+</div>
+<span class="font-code-stream text-code-stream px-1 rounded bg-error-container text-error tabular-numbers">1 WARN</span>
+</a>
+</div>
+<!-- WireGuard / Tunnel Extender -->
+<div class="mt-4 pt-3 border-t border-outline-variant/50">
+<div class="font-label-sm text-label-sm text-outline uppercase px-2 mb-1">Tunnel Mesh Engine</div>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors flex items-center justify-between font-label-md text-label-md" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">vpn_key</span>
+<span>WireGuard &amp; Tunnels</span>
+</div>
+<span class="font-code-stream text-code-stream text-tertiary">wg0:UP</span>
+</a>
+</div>
+</div>
+<!-- Bottom System Status Telemetry Module -->
+<div class="flex flex-col gap-2 pt-2 border-t border-outline-variant">
+<!-- Footer Tabs from SideNavBar JSON: LAN Broadcast, Kernel Settings -->
+<a class="text-on-surface-variant hover:text-primary px-unit-sm py-1 rounded flex items-center justify-between font-label-md text-label-md hover:bg-surface-container-lowest transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">sensors</span>
+<span>LAN Broadcast</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline tabular-numbers">192.168.1.145</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary px-unit-sm py-1 rounded flex items-center gap-2 font-label-md text-label-md hover:bg-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">settings</span>
+<span>Kernel Settings</span>
+</a>
+<!-- System Vitals Panel -->
+<div class="p-2 rounded bg-surface-container-lowest border border-outline-variant/60 flex flex-col gap-1.5">
+<div class="flex justify-between items-center font-label-sm text-label-sm">
+<span class="text-outline">RAM POOL</span>
+<span class="text-primary tabular-numbers">42.8 MB / 512 MB</span>
+</div>
+<div class="w-full bg-surface-container-high h-1 rounded overflow-hidden">
+<div class="bg-primary h-full rounded" style="width: 8.3%;"></div>
+</div>
+<div class="flex justify-between items-center font-label-sm text-label-sm pt-1">
+<span class="text-outline truncate">Linux 6.9.3-zen</span>
+<span class="text-on-surface-variant font-code-stream text-code-stream">x86_64</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN DASHBOARD WORKSPACE -->
+<main class="flex-1 md:ml-[280px] p-unit-md md:p-unit-lg flex flex-col gap-unit-md max-w-[calc(100vw-280px)] overflow-x-hidden">
+<!-- Operational Header Strip -->
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-unit-sm">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight flex items-center gap-2">
+<span class="text-primary">DEV_COCKPIT</span>
+<span class="text-outline text-[16px] font-normal">// *.localhost Autonomous Fabric</span>
+</h1>
+</div>
+<div class="flex items-center gap-2">
+<!-- Restart Proxy Engine Button -->
+<button class="bg-surface-container hover:bg-surface-container-high border border-outline-variant hover:border-primary text-primary font-label-md text-label-md px-3 py-1.5 rounded transition-all duration-150 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+            Restart Proxy Engine
+          </button>
+<!-- Add Service Trigger -->
+<button class="bg-primary hover:bg-secondary text-surface-container-lowest font-label-md text-label-md px-3 py-1.5 rounded font-bold transition-all duration-150 flex items-center gap-1.5 glow-cyan-sm">
+<span class="material-symbols-outlined text-[16px]">add</span>
+            + Add Service
+          </button>
+</div>
+</div>
+<!-- 4 CYBER TELEMETRY METRIC PODS (Bento High-Density Grid) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-unit-md">
+<!-- Pod 1: Total Routes -->
+<div class="bg-surface-container-low border border-outline-variant hover:border-primary/50 transition-colors p-unit-md rounded relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">TOTAL ACTIVE DOMAINS</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary text-[18px]">dns</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<div class="font-headline-xl text-headline-xl text-on-surface font-bold tabular-numbers">8</div>
+<span class="font-code-stream text-code-stream text-tertiary">*.localhost configured</span>
+</div>
+<!-- Mini Waveform / Sparkline SVG -->
+<div class="mt-2 h-6 flex items-end">
+<svg class="w-full h-5 text-primary opacity-60 group-hover:opacity-100 transition-opacity" preserveaspectratio="none" viewbox="0 0 100 20">
+<path d="M0,15 Q10,12 20,16 T40,10 T60,14 T80,4 T100,8" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+</svg>
+</div>
+</div>
+<!-- Pod 2: Live Listeners -->
+<div class="bg-surface-container-low border border-outline-variant hover:border-tertiary/50 transition-colors p-unit-md rounded relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">LIVE LISTENERS</span>
+<div class="w-2 h-2 rounded-full bg-tertiary glow-emerald-sm animate-pulse"></div>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<div class="font-headline-xl text-headline-xl text-tertiary font-bold tabular-numbers">7</div>
+<span class="font-code-stream text-code-stream text-tertiary">99.98% Healthy</span>
+</div>
+<div class="mt-2 flex items-center gap-1.5 font-label-sm text-label-sm text-outline">
+<span class="material-symbols-outlined text-tertiary text-[14px]">check</span>
+<span>HTTP/1.1, HTTP/2, WS bound :80</span>
+</div>
+</div>
+<!-- Pod 3: Down / Blocked -->
+<div class="bg-surface-container-low border border-error/30 hover:border-error transition-colors p-unit-md rounded relative overflow-hidden group glow-crimson-sm">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-error uppercase tracking-wider">DOWN / CONFLICT</span>
+<span class="material-symbols-outlined text-error text-[18px]">warning</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<div class="font-headline-xl text-headline-xl text-error font-bold tabular-numbers">1</div>
+<span class="font-code-stream text-code-stream text-error">auth.localhost</span>
+</div>
+<div class="mt-2 font-label-sm text-label-sm text-error truncate">
+            Port conflict on socket :5432
+          </div>
+</div>
+<!-- Pod 4: Kernel Latency -->
+<div class="bg-surface-container-low border border-outline-variant hover:border-primary/50 transition-colors p-unit-md rounded relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">KERNEL LATENCY</span>
+<span class="material-symbols-outlined text-primary text-[18px]">bolt</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<div class="font-headline-xl text-headline-xl text-primary font-bold tabular-numbers">0.18ms</div>
+<span class="font-code-stream text-code-stream text-primary">TCP zero-copy</span>
+</div>
+<div class="mt-2 font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-tertiary">speed</span>
+<span>eBPF bypass active</span>
+</div>
+</div>
+</div>
+<!-- MAIN MULTI-PANE VIEW: BLADE RACK + RIGHT TELEMETRY TERMINAL DRAWER -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-unit-md items-start">
+<!-- LEFT 7 COLS (or 8 on 2k): ACTIVE SERVICES BLADE RACK -->
+<div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-unit-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">view_agenda</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wider font-semibold">Active Service Blade Matrix</h2>
+</div>
+<span class="font-code-stream text-code-stream text-outline">AUTO-ROUTING (*.localhost)</span>
+</div>
+<!-- Service Blade Grid -->
+<div class="flex flex-col gap-unit-sm">
+<!-- SERVICE CARD 1: api.localhost -->
+<div class="bg-surface-container-lowest border border-outline-variant hover:border-primary transition-all duration-150 p-unit-md rounded relative group glow-cyan">
+<div class="flex flex-wrap items-start justify-between gap-2">
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-tertiary glow-emerald-sm mt-1"></div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">api.localhost</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="font-code-stream text-code-stream text-on-surface font-semibold bg-surface-container px-2 py-0.5 rounded border border-outline-variant">127.0.0.1:8000</span>
+<span class="px-1.5 py-0.2 rounded bg-tertiary/20 text-tertiary font-label-sm text-label-sm">TLS mkcert</span>
+</div>
+<div class="font-code-stream text-code-stream text-on-surface-variant mt-1 flex flex-wrap items-center gap-3">
+<span>FastAPI Backend</span>
+<span class="text-outline">|</span>
+<span>Python 3.12</span>
+<span class="text-outline">|</span>
+<span class="text-tertiary">HTTPS / HTTP/2 Auto-Cert</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-right">
+<div>
+<div class="font-label-sm text-label-sm text-outline">LATENCY</div>
+<div class="font-code-stream text-code-stream text-tertiary tabular-numbers">1.2ms</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline">THROUGHPUT</div>
+<div class="font-code-stream text-code-stream text-on-surface tabular-numbers">14.2k/hr</div>
+</div>
+<span class="px-2 py-1 rounded bg-surface-container text-tertiary font-label-sm text-label-sm border border-tertiary/30">ONLINE</span>
+</div>
+</div>
+<!-- Quick Blade Actions Bar -->
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2 font-code-stream text-code-stream text-outline">
+<span class="material-symbols-outlined text-[14px] text-primary">terminal</span>
+<span>PID: 341029</span>
+<span class="text-outline-variant">/</span>
+<span>MEM: 18.2 MB</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">monitor_heart</span> Inspect Socket
+                  </button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">qr_code_2</span> LAN QR
+                  </button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">swap_horiz</span> Port: 8000
+                  </button>
+</div>
+</div>
+</div>
+<!-- SERVICE CARD 2: shop.localhost -->
+<div class="bg-surface-container-lowest border border-outline-variant hover:border-primary transition-all duration-150 p-unit-md rounded relative group">
+<div class="flex flex-wrap items-start justify-between gap-2">
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary glow-cyan-sm mt-1"></div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">shop.localhost</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="font-code-stream text-code-stream text-on-surface font-semibold bg-surface-container px-2 py-0.5 rounded border border-outline-variant">127.0.0.1:3000</span>
+<span class="px-1.5 py-0.2 rounded bg-secondary/20 text-secondary font-label-sm text-label-sm">H2 Active</span>
+</div>
+<div class="font-code-stream text-code-stream text-on-surface-variant mt-1 flex flex-wrap items-center gap-3">
+<span>Next.js Storefront</span>
+<span class="text-outline">|</span>
+<span>Node.js v20.1</span>
+<span class="text-outline">|</span>
+<span class="text-secondary">V8 Turbopack Live</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-right">
+<div>
+<div class="font-label-sm text-label-sm text-outline">LATENCY</div>
+<div class="font-code-stream text-code-stream text-secondary tabular-numbers">0.4ms</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline">THROUGHPUT</div>
+<div class="font-code-stream text-code-stream text-on-surface tabular-numbers">8.9k/hr</div>
+</div>
+<span class="px-2 py-1 rounded bg-surface-container text-secondary font-label-sm text-label-sm border border-secondary/30">ONLINE</span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2 font-code-stream text-code-stream text-outline">
+<span class="material-symbols-outlined text-[14px] text-secondary">terminal</span>
+<span>PID: 88401</span>
+<span class="text-outline-variant">/</span>
+<span>MEM: 64.1 MB</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">monitor_heart</span> Inspect Socket
+                  </button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">qr_code_2</span> LAN QR
+                  </button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">swap_horiz</span> Port: 3000
+                  </button>
+</div>
+</div>
+</div>
+<!-- SERVICE CARD 3: mail.localhost -->
+<div class="bg-surface-container-lowest border border-outline-variant hover:border-primary transition-all duration-150 p-unit-md rounded relative group">
+<div class="flex flex-wrap items-start justify-between gap-2">
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-tertiary glow-emerald-sm mt-1"></div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">mail.localhost</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="font-code-stream text-code-stream text-on-surface font-semibold bg-surface-container px-2 py-0.5 rounded border border-outline-variant">127.0.0.1:8080</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-high text-outline font-label-sm text-label-sm">IMAP/SMTP</span>
+</div>
+<div class="font-code-stream text-code-stream text-on-surface-variant mt-1 flex flex-wrap items-center gap-3">
+<span>Encrypted Inbucket Daemon</span>
+<span class="text-outline">|</span>
+<span>Go 1.22</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface">Webhook Relay</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-right">
+<div>
+<div class="font-label-sm text-label-sm text-outline">LATENCY</div>
+<div class="font-code-stream text-code-stream text-tertiary tabular-numbers">0.8ms</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline">THROUGHPUT</div>
+<div class="font-code-stream text-code-stream text-on-surface tabular-numbers">1.1k/hr</div>
+</div>
+<span class="px-2 py-1 rounded bg-surface-container text-tertiary font-label-sm text-label-sm border border-tertiary/30">ONLINE</span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2 font-code-stream text-code-stream text-outline">
+<span class="material-symbols-outlined text-[14px] text-primary">terminal</span>
+<span>PID: 19441</span>
+<span class="text-outline-variant">/</span>
+<span>MEM: 9.4 MB</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">monitor_heart</span> Inspect Socket
+                  </button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">qr_code_2</span> LAN QR
+                  </button>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px]">swap_horiz</span> Port: 8080
+                  </button>
+</div>
+</div>
+</div>
+<!-- SERVICE CARD 4: auth.localhost (CRITICAL CONFLICT STATE) -->
+<div class="bg-surface-container-lowest border border-error/50 hover:border-error transition-all duration-150 p-unit-md rounded relative group glow-crimson-sm">
+<div class="flex flex-wrap items-start justify-between gap-2">
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-error glow-crimson-sm mt-1 animate-ping"></div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-error font-bold">auth.localhost</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="font-code-stream text-code-stream text-error font-semibold bg-error-container/30 px-2 py-0.5 rounded border border-error/40">127.0.0.1:5432</span>
+<span class="px-1.5 py-0.2 rounded bg-error-container text-error font-label-sm text-label-sm">EADDRINUSE</span>
+</div>
+<div class="font-code-stream text-code-stream text-on-surface-variant mt-1 flex flex-wrap items-center gap-3">
+<span>OIDC Auth Hydra</span>
+<span class="text-outline">|</span>
+<span>Rust Core</span>
+<span class="text-outline">|</span>
+<span class="text-error font-semibold">Postgres Target Blocked</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-right">
+<div>
+<div class="font-label-sm text-label-sm text-outline">LATENCY</div>
+<div class="font-code-stream text-code-stream text-error tabular-numbers font-bold">REFUSED</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline">ERRORS</div>
+<div class="font-code-stream text-code-stream text-error tabular-numbers">142 drops</div>
+</div>
+<span class="px-2 py-1 rounded bg-error-container text-error font-label-sm text-label-sm border border-error/50 font-bold">OFFLINE</span>
+</div>
+</div>
+<!-- Explicit Warning Callout Box -->
+<div class="mt-2.5 px-3 py-1.5 rounded bg-error-container/20 border border-error/40 flex items-center justify-between">
+<div class="flex items-center gap-2 text-error font-code-stream text-code-stream">
+<span class="material-symbols-outlined text-[16px]">error</span>
+<span>Socket bind timeout: port 5432 occupied by system postgres instance (PID: 1104)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">SIGTERM RECOMMENDED</span>
+</div>
+<!-- Actions Strip for Error Resolution -->
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2 font-code-stream text-code-stream text-error">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+<span>AUTO-RECOVERY RETRIES: 5/5</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface hover:text-primary font-label-sm text-label-sm border border-outline-variant flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[14px]">search</span> Inspect Socket
+                  </button>
+<button class="px-2.5 py-1 rounded bg-error-container hover:bg-error/30 text-error font-label-sm text-label-sm border border-error font-bold flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[14px]">cancel</span> Force Kill &amp; Reroute
+                  </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT 5 COLS (or 4 on 2k): TELEMETRY ACCESS LOG TERMINAL + LAN HUD -->
+<div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-unit-md">
+<!-- TELEMETRY TERMINAL CONSOLE -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded flex flex-col overflow-hidden shadow-2xl">
+<!-- Terminal Header -->
+<div class="bg-surface-container-low px-unit-md py-2 border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary glow-emerald-sm animate-pulse"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface text-[13px] font-bold tracking-wide uppercase">LIVE KERNEL &amp; ACCESS LOG</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 hover:text-primary text-outline rounded transition-colors" title="Pause Stream">
+<span class="material-symbols-outlined text-[15px]">pause</span>
+</button>
+<button class="p-1 hover:text-primary text-outline rounded transition-colors" title="Clear Buffer">
+<span class="material-symbols-outlined text-[15px]">clear_all</span>
+</button>
+<span class="font-label-sm text-label-sm text-outline bg-surface-container px-1.5 py-0.5 rounded ml-1">TAIL -F</span>
+</div>
+</div>
+<!-- Terminal Output Feed -->
+<div class="p-unit-sm font-code-stream text-code-stream flex flex-col gap-1.5 max-h-[360px] overflow-y-auto bg-surface-container-lowest">
+<!-- Log Line 1 -->
+<div class="hover:bg-surface-container/50 p-1 rounded transition-colors flex items-start justify-between gap-1">
+<div class="truncate">
+<span class="text-outline">[14:02:11.082]</span>
+<span class="text-tertiary font-bold ml-1">200</span>
+<span class="text-primary ml-1">GET</span>
+<span class="text-on-surface ml-1">api.localhost/v1/health</span>
+<span class="text-outline text-[10px] block truncate">↳ 127.0.0.1:8000</span>
+</div>
+<span class="text-tertiary tabular-numbers font-semibold">0.32ms</span>
+</div>
+<!-- Log Line 2 -->
+<div class="hover:bg-surface-container/50 p-1 rounded transition-colors flex items-start justify-between gap-1">
+<div class="truncate">
+<span class="text-outline">[14:02:11.204]</span>
+<span class="text-tertiary font-bold ml-1">200</span>
+<span class="text-primary ml-1">GET</span>
+<span class="text-on-surface ml-1">shop.localhost/_next/static</span>
+<span class="text-outline text-[10px] block truncate">↳ 127.0.0.1:3000</span>
+</div>
+<span class="text-secondary tabular-numbers font-semibold">0.18ms</span>
+</div>
+<!-- Log Line 3 (Websocket) -->
+<div class="hover:bg-surface-container/50 p-1 rounded transition-colors flex items-start justify-between gap-1">
+<div class="truncate">
+<span class="text-outline">[14:02:12.441]</span>
+<span class="text-primary font-bold ml-1">101</span>
+<span class="text-secondary ml-1">WS</span>
+<span class="text-on-surface ml-1">api.localhost/v1/telemetry</span>
+<span class="text-outline text-[10px] block truncate">↳ 127.0.0.1:8000</span>
+</div>
+<span class="text-primary font-semibold text-[10px]">UPGRADED</span>
+</div>
+<!-- Log Line 4 (502 Timeout Bad) -->
+<div class="bg-error-container/20 border-l-2 border-error p-1 rounded transition-colors flex items-start justify-between gap-1">
+<div class="truncate">
+<span class="text-outline">[14:02:13.002]</span>
+<span class="text-error font-bold ml-1">502</span>
+<span class="text-error ml-1">BAD</span>
+<span class="text-on-surface ml-1">auth.localhost/oauth/token</span>
+<span class="text-error text-[10px] block truncate">↳ 127.0.0.1:5432</span>
+</div>
+<span class="text-error tabular-numbers font-bold">TIMEOUT</span>
+</div>
+<!-- Log Line 5 -->
+<div class="hover:bg-surface-container/50 p-1 rounded transition-colors flex items-start justify-between gap-1">
+<div class="truncate">
+<span class="text-outline">[14:02:14.119]</span>
+<span class="text-secondary font-bold ml-1">304</span>
+<span class="text-primary ml-1">GET</span>
+<span class="text-on-surface ml-1">mail.localhost/inbox</span>
+<span class="text-outline text-[10px] block truncate">↳ 127.0.0.1:8080</span>
+</div>
+<span class="text-tertiary tabular-numbers font-semibold">0.45ms</span>
+</div>
+<!-- Log Line 6 (Simulated Heartbeat) -->
+<div class="hover:bg-surface-container/50 p-1 rounded transition-colors flex items-start justify-between gap-1 opacity-70">
+<div class="truncate">
+<span class="text-outline">[14:02:15.001]</span>
+<span class="text-tertiary font-bold ml-1">200</span>
+<span class="text-outline ml-1">PING</span>
+<span class="text-on-surface-variant ml-1">kernel::loopback_mesh</span>
+</div>
+<span class="text-outline tabular-numbers">0.05ms</span>
+</div>
+</div>
+<!-- Socket Inspector Sub-strip -->
+<div class="bg-surface-container-low px-unit-sm py-1.5 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> eBPF socket map: 1,489 entries
+              </span>
+<span class="text-primary font-code-stream text-code-stream">127.0.0.1 bound OK</span>
+</div>
+</div>
+<!-- BOTTOM LAN & REMOTE HUD PANEL -->
+<div class="bg-surface-container-lowest border border-outline-variant hover:border-primary/40 transition-colors rounded p-unit-md flex flex-col gap-unit-sm">
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">sensors</span>
+<span class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wider font-semibold text-[13px]">LAN &amp; Remote Mesh HUD</span>
+</div>
+<span class="px-1.5 py-0.2 rounded bg-tertiary/20 text-tertiary font-label-sm text-label-sm font-bold">AIRPLAY / MDNS</span>
+</div>
+<!-- Broadcast IP Indicator -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center font-label-sm text-label-sm">
+<span class="text-outline uppercase">Broadcast Node Endpoint</span>
+<span class="text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Active Wi-Fi
+                </span>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant flex items-center justify-between">
+<div class="font-code-stream text-code-stream text-primary font-bold">
+                  http://192.168.1.145:80
+                </div>
+<button class="p-1 hover:text-primary text-outline rounded transition-colors" title="Copy Endpoint">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Configuration Toggles -->
+<div class="flex flex-col gap-2 pt-1 font-label-md text-label-md">
+<!-- Toggle 1: mDNS Auto-Discovery -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-on-surface">mDNS Zero-Config (*.local)</span>
+<span class="text-outline font-label-sm text-label-sm">Broadcast domain routes to iOS/Android testers</span>
+</div>
+<div class="w-8 h-4 bg-primary rounded-full relative cursor-pointer flex items-center p-0.5">
+<div class="w-3 h-3 bg-surface-container-lowest rounded-full ml-auto"></div>
+</div>
+</div>
+<!-- Toggle 2: TLS Zero-Config CA -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-on-surface">mkcert Root CA Exporter</span>
+<span class="text-outline font-label-sm text-label-sm">Mobile devices trust *.localhost automatically</span>
+</div>
+<div class="w-8 h-4 bg-primary rounded-full relative cursor-pointer flex items-center p-0.5">
+<div class="w-3 h-3 bg-surface-container-lowest rounded-full ml-auto"></div>
+</div>
+</div>
+</div>
+<!-- Quick Copy LAN curl command -->
+<div class="mt-1 pt-2 border-t border-outline-variant/60 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-outline uppercase">One-Liner Device Test Command</span>
+<div class="bg-surface-container p-2 rounded border border-outline-variant font-code-stream text-code-stream text-on-surface-variant flex items-center justify-between overflow-hidden">
+<span class="truncate text-secondary">curl -H "Host: api.localhost" http://192.168.1.145</span>
+<button class="text-primary hover:text-secondary pl-2 flex-shrink-0" title="Copy curl">
+<span class="material-symbols-outlined text-[14px]">file_copy</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Micro-interaction Script for Developer Delight -->
+<script>
+    // Lightweight atmospheric keyboard shortcut binding: '/' to focus quick-search
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }
+    });
+  </script>
+</body></html>

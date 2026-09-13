@@ -98,7 +98,7 @@ export const PACT_DEFAULT_PROFILE: PublicProfile = {
   visibleServices: [],
   projectOverrides: {},
   showCta: true,
-  ctaTitle: "Sovereign Local Hosting via PortSide",
+  ctaTitle: "Core Local Hosting via PortSide",
   ctaDescription: "Every project listed here is connected directly through PortSide. Zero third-party cloud hosting required.",
   ctaButtonText: "Get PortSide",
   ctaButtonUrl: "https://buymeacoffee.com/pacts",
@@ -189,7 +189,8 @@ export async function getProfile(userParam?: SafeUser | null): Promise<PublicPro
   }
 
   let vanityDomain = "";
-  if (user?.tier === "supporter") {
+  const isSupporter = await isServerSupporter(user).catch(() => false);
+  if (isSupporter) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 350);
@@ -205,8 +206,6 @@ export async function getProfile(userParam?: SafeUser | null): Promise<PublicPro
       }
     } catch {}
   }
-
-  const isSupporter = (await isServerSupporter(user).catch(() => false)) || user?.tier === "supporter";
   const handle = vanityDomain ? vanityDomain.split(".")[0] : (saved.handle || defaultProfile.handle);
   const website = vanityDomain ? `https://${vanityDomain}` : (saved.website || (handle ? `https://${handle}.portside.lol` : ""));
   const verifiedBadgeText = isSupporter ? "Verified Supporter" : "Developer";
@@ -246,7 +245,7 @@ export async function saveProfile(data: Partial<PublicProfile>, userParam?: Safe
   }
 
   const current = await getProfile(user);
-  const isSupporter = (await isServerSupporter(user).catch(() => false)) || user?.tier === "supporter";
+  const isSupporter = await isServerSupporter(user).catch(() => false);
   const isPact = user?.email === "pact@virtuoushigh.com";
 
   let newHandle = current.handle;

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PORTSIDE // Proxy Engine &amp; Daemon Configuration</title>
+<!-- Fonts: Plus Jakarta Sans & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline": "#88929b",
+            "inverse-on-surface": "#2b313a",
+            "outline-variant": "#3e4850",
+            "tertiary-container": "#00b17b",
+            "on-tertiary": "#003824",
+            "primary-container": "#0ea5e9",
+            "on-surface-variant": "#bec8d2",
+            "on-secondary": "#00354a",
+            "tertiary-fixed": "#6ffbbe",
+            "on-primary-fixed-variant": "#004c6e",
+            "on-surface": "#dee2ef",
+            "on-primary-container": "#003751",
+            "on-primary": "#00344d",
+            "tertiary": "#4edea3",
+            "surface-container-highest": "#30353e",
+            "background": "#0e141c",
+            "primary-fixed": "#c9e6ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "on-tertiary-container": "#003b26",
+            "tertiary-fixed-dim": "#4edea3",
+            "primary-fixed-dim": "#89ceff",
+            "on-secondary-fixed-variant": "#004c69",
+            "on-error": "#690005",
+            "on-background": "#dee2ef",
+            "secondary": "#7bd0ff",
+            "on-primary-fixed": "#001e2f",
+            "surface-container-lowest": "#090e17",
+            "surface-tint": "#89ceff",
+            "error": "#ffb4ab",
+            "on-error-container": "#ffdad6",
+            "secondary-fixed": "#c4e7ff",
+            "error-container": "#93000a",
+            "surface-container-high": "#252a33",
+            "secondary-container": "#00a6e0",
+            "surface-container-low": "#161c24",
+            "inverse-primary": "#006591",
+            "surface-bright": "#343943",
+            "primary": "#89ceff",
+            "surface": "#0e141c",
+            "on-secondary-fixed": "#001e2c",
+            "surface-container": "#1a2029",
+            "secondary-fixed-dim": "#7bd0ff",
+            "on-secondary-container": "#00374d",
+            "inverse-surface": "#dee2ef",
+            "surface-variant": "#30353e",
+            "surface-dim": "#0e141c",
+            "on-tertiary-fixed": "#002113"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "unit-xl": "2rem",
+            "gutter-standard": "1rem",
+            "margin-screen": "1.25rem",
+            "unit-base": "1rem",
+            "gutter-dense": "0.5rem",
+            "unit-md": "0.75rem",
+            "unit-2xl": "3rem",
+            "unit-lg": "1.5rem",
+            "unit-xs": "0.25rem",
+            "unit-sm": "0.5rem",
+            "unit-2xs": "0.125rem"
+          },
+          "fontFamily": {
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "body-md": ["JetBrains Mono"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "code-stream": ["JetBrains Mono"],
+            "body-lg": ["JetBrains Mono"],
+            "label-sm": ["JetBrains Mono"],
+            "label-lg": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-xl": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "code-stream": ["11px", { "lineHeight": "15px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "body-lg": ["14px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "label-sm": ["9px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+            "label-lg": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-md": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-lg": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090e17;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1a2029;
+      border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #3e4850;
+    }
+    .grid-matrix-bg {
+      background-size: 24px 24px;
+      background-image: radial-gradient(circle, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-[#060b13] text-on-surface font-body-md text-body-md antialiased min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- TOP COCKPIT APP BAR (Shared Components TopNavBar Spec compliant) -->
+<header class="fixed top-0 left-0 right-0 z-40 bg-surface-container-lowest border-b border-outline-variant h-12 flex items-center justify-between px-unit-base backdrop-blur-md">
+<div class="flex items-center space-x-4">
+<!-- Logo & Breadcrumb -->
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="anchor">anchor</span>
+<span class="font-headline-sm text-headline-sm tracking-wider text-primary font-bold">PORTSIDE//SETTINGS</span>
+<span class="text-outline text-xs">/</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant font-mono">/dashboard/settings</span>
+</div>
+<!-- Telemetry Chips Cluster -->
+<div class="hidden xl:flex items-center space-x-2 border-l border-outline-variant pl-4">
+<div class="flex items-center space-x-1.5 px-2 py-0.5 bg-surface-container-low border border-outline-variant rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-code-stream text-code-stream text-on-surface-variant font-mono">LOOPBACK: 127.0.0.1</span>
+</div>
+<div class="flex items-center space-x-1.5 px-2 py-0.5 bg-surface-container-low border border-outline-variant rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-code-stream text-code-stream text-primary font-mono">PROXY: ONLINE :80</span>
+</div>
+<div class="flex items-center space-x-1.5 px-2 py-0.5 bg-surface-container-low border border-outline-variant rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-code-stream text-code-stream text-on-surface-variant font-mono">EBPF ENGINE: READY</span>
+</div>
+<div class="flex items-center space-x-1.5 px-2 py-0.5 bg-surface-container-low border border-outline-variant rounded">
+<span class="font-code-stream text-code-stream text-outline font-mono">DAEMON PID: 1042</span>
+</div>
+</div>
+</div>
+<!-- Search & Actions -->
+<div class="flex items-center space-x-3">
+<!-- Search Input -->
+<div class="relative hidden sm:block w-48 lg:w-64">
+<span class="material-symbols-outlined absolute left-2.5 top-1.5 text-outline text-base" data-icon="search">search</span>
+<input class="w-full bg-[#060b13] border border-outline-variant pl-8 pr-2 py-1 rounded font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:border-primary focus:ring-0 focus:outline-none transition-colors" placeholder="Filter config keys..." type="text"/>
+</div>
+<!-- Quick Action: Export Caddy/Nginx -->
+<button class="hidden md:flex items-center space-x-1.5 px-2.5 py-1 bg-surface-container-low hover:bg-surface-container border border-outline-variant hover:border-primary text-secondary font-label-md text-label-md rounded transition-colors duration-150">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+<span>Export Caddy/Nginx config</span>
+</button>
+<!-- Primary Action: Save & Reload Engine -->
+<button class="flex items-center space-x-1.5 px-3 py-1 bg-primary-container hover:bg-[#38bdf8] text-[#060b13] font-label-md text-label-md font-bold rounded shadow-[0_0_12px_rgba(14,165,233,0.35)] transition-all duration-150">
+<span class="material-symbols-outlined text-sm" data-icon="cached">cached</span>
+<span>Save &amp; Reload Engine</span>
+</button>
+<!-- Shell Actions -->
+<div class="flex items-center space-x-1 border-l border-outline-variant pl-2">
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="terminal">terminal</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="tune">tune</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex pt-12 min-h-screen">
+<!-- LEFT OBSIDIAN NAVIGATION SIDEBAR (Shared Components SideNavBar Spec compliant) -->
+<aside class="fixed top-12 left-0 h-[calc(100vh-3rem)] w-[280px] bg-surface-container-low border-r border-outline-variant flex flex-col justify-between p-unit-sm z-30 select-none">
+<!-- Sidebar Top Section -->
+<div>
+<!-- Node Matrix Avatar / Title -->
+<div class="flex items-center space-x-3 px-unit-xs py-unit-sm mb-2 border-b border-outline-variant pb-3">
+<div class="w-8 h-8 rounded bg-surface-container-lowest border border-outline-variant flex items-center justify-center relative">
+<span class="material-symbols-outlined text-primary text-base" data-icon="hub">hub</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-surface-container-low"></span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-semibold tracking-wider text-primary">PORTSIDE</div>
+<div class="font-code-stream text-code-stream text-outline">V-4.12.0 // PRIMARY</div>
+</div>
+</div>
+<!-- Navigation Tabs Group -->
+<nav class="space-y-0.5 mt-2">
+<!-- Overview -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</div>
+<span class="font-code-stream text-code-stream text-outline">01</span>
+</a>
+<!-- Proxies -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="alt_route">alt_route</span>
+<span class="font-label-md text-label-md">Proxies</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.2 bg-surface-container border border-outline-variant text-primary rounded">8 ACT</span>
+</a>
+<!-- Upstreams -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="hub">hub</span>
+<span class="font-label-md text-label-md">Upstreams</span>
+</div>
+<span class="font-code-stream text-code-stream text-outline">14</span>
+</a>
+<!-- DNS Matrix -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="dns">dns</span>
+<span class="font-label-md text-label-md">DNS Matrix</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</a>
+<!-- Access Logs -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="terminal">terminal</span>
+<span class="font-label-md text-label-md">Access Logs</span>
+</div>
+<span class="font-code-stream text-code-stream text-outline font-mono">1.2k/s</span>
+</a>
+<!-- Diagnostics -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="security">security</span>
+<span class="font-label-md text-label-md">Diagnostics</span>
+</div>
+<span class="font-code-stream text-code-stream text-outline">OK</span>
+</a>
+<!-- Divider -->
+<div class="pt-3 pb-1">
+<div class="border-t border-outline-variant/60"></div>
+</div>
+<!-- Secondary/Footer Tabs from JSON -->
+<!-- LAN Broadcast -->
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs rounded transition-colors group" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-base" data-icon="sensors">sensors</span>
+<span class="font-label-md text-label-md">LAN Broadcast</span>
+</div>
+<span class="font-code-stream text-code-stream text-outline">mDNS</span>
+</a>
+<!-- Kernel Settings / Settings: ACTIVATED PER PROTOCOL SPEC -->
+<a class="flex items-center justify-between border-l-2 border-primary bg-surface-container text-primary font-bold px-unit-sm py-unit-xs rounded-r transition-all duration-100 shadow-[inset_0_0_12px_rgba(14,165,233,0.12)]" href="#">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-primary text-base" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Kernel Settings</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 bg-primary/20 text-primary border border-primary/40 rounded">ACTIVE</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Bottom System Info & Telemetry -->
+<div class="space-y-3 pt-3 border-t border-outline-variant">
+<!-- Action CTA Button -->
+<button class="w-full flex items-center justify-center space-x-1.5 py-1.5 px-3 bg-surface-container border border-outline-variant hover:border-primary text-secondary hover:text-primary font-label-md text-label-md rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+<span>Sync Matrix</span>
+</button>
+<!-- Kernel & Resource Readout -->
+<div class="bg-[#060b13] p-2.5 rounded border border-outline-variant/80 font-mono">
+<div class="flex justify-between items-center text-outline text-[10px] mb-1">
+<span>RES POOL</span>
+<span class="text-primary font-semibold">42.8 MB / 512 MB</span>
+</div>
+<!-- Progress bar -->
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mb-2">
+<div class="bg-primary h-full rounded-full" style="width: 8.3%"></div>
+</div>
+<div class="flex justify-between items-center text-outline text-[10px]">
+<span>KERNEL</span>
+<span class="text-on-surface-variant font-mono truncate max-w-[140px]" title="Linux 6.9.3-zen x86_64">6.9.3-zen x86_64</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN WORKSPACE / DASHBOARD CONTENT -->
+<main class="ml-[280px] flex-1 p-6 grid-matrix-bg min-w-0 max-w-[1640px]">
+<!-- Settings Header Banner -->
+<div class="flex flex-col md:flex-row md:items-center justify-between pb-5 mb-6 border-b border-outline-variant gap-4">
+<div>
+<div class="flex items-center space-x-2">
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">PROXY ENGINE &amp; DAEMON CONFIGURATION</h1>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant font-label-sm text-label-sm text-secondary rounded">v4.12-rc</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            // Core socket bindings, TLS authority, network interfaces &amp; Docker gateway
+          </p>
+</div>
+<div class="flex items-center space-x-3">
+<!-- Status Pill -->
+<div class="flex items-center space-x-2 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-label-md text-label-md text-on-surface">Unsaved Changes (0)</span>
+</div>
+<!-- Reset Defaults -->
+<button class="px-3 py-1.5 bg-surface-container-low hover:bg-surface-container border border-outline-variant hover:border-outline text-outline hover:text-on-surface font-label-md text-label-md rounded transition-colors duration-150 flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="restart_alt">restart_alt</span>
+<span>Reset to Defaults</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid / Cards Matrix -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+<!-- 1. PROXY ENGINE CORE (xl:col-span-7) -->
+<section class="xl:col-span-7 bg-[#090f1d] border border-outline-variant rounded-lg p-5 flex flex-col justify-between shadow-[0_0_16px_-2px_rgba(14,165,233,0.05)] hover:border-primary/40 transition-colors">
+<div>
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/60">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="memory">memory</span>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Proxy Engine Core</h2>
+</div>
+<span class="font-code-stream text-code-stream text-outline bg-[#060b13] px-2 py-0.5 border border-outline-variant rounded">PORT: 80 -&gt; 8080</span>
+</div>
+<!-- Settings Fields Stack -->
+<div class="space-y-4">
+<!-- Listen Port + CAP_NET_BIND_SERVICE -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div>
+<label class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">Listen Port</label>
+<div class="flex items-center space-x-2">
+<input class="w-24 bg-[#060b13] border border-outline-variant text-primary font-mono text-sm px-2.5 py-1 rounded focus:border-primary focus:ring-0" type="text" value=":80"/>
+<span class="font-label-sm text-label-sm text-outline">RFC 6761 localhost loopback</span>
+</div>
+</div>
+<!-- Switch -->
+<div class="flex items-center justify-between md:justify-end space-x-3 pt-2 md:pt-0">
+<div class="text-right">
+<span class="block font-label-md text-label-md text-on-surface">Privileged Port Binding</span>
+<span class="font-code-stream text-code-stream text-outline font-mono">CAP_NET_BIND_SERVICE</span>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container shadow-[0_0_8px_rgba(14,165,233,0.4)]"></div>
+</div>
+</div>
+</div>
+<!-- Fallback Port & Hostname Suffix -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<label class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">Fallback Proxy Port</label>
+<div class="flex items-center space-x-2">
+<input class="w-24 bg-[#060b13] border border-outline-variant text-on-surface font-mono text-sm px-2.5 py-1 rounded focus:border-primary focus:ring-0" type="text" value=":8080"/>
+<span class="px-2 py-0.5 bg-surface-container-high border border-outline-variant text-secondary font-code-stream text-code-stream rounded">UNPRIVILEGED</span>
+</div>
+</div>
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<label class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">Hostname Suffix</label>
+<div class="flex items-center space-x-2">
+<input class="w-28 bg-[#060b13] border border-outline-variant text-primary font-mono text-sm px-2.5 py-1 rounded focus:border-primary focus:ring-0" type="text" value=".localhost"/>
+<span class="px-1.5 py-0.5 bg-primary/10 border border-primary/30 text-primary font-code-stream text-code-stream rounded truncate" title="RFC 6761 Zero-Config Standard">RFC 6761 Zero-Config</span>
+</div>
+</div>
+</div>
+<!-- Upstream Timeout Slider -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div class="flex justify-between items-center mb-1.5">
+<label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Upstream Connection Timeout</label>
+<span class="font-mono text-xs text-primary font-bold">3000ms</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="15000" min="500" step="250" type="range" value="3000"/>
+<div class="flex justify-between font-code-stream text-code-stream text-outline mt-1 font-mono">
+<span>500ms (Low Latency)</span>
+<span>Default: 3000ms</span>
+<span>15000ms (Deep RPC)</span>
+</div>
+</div>
+<!-- Zero-Copy Buffer Size Radio Group -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Zero-Copy Buffer Size</label>
+<span class="font-code-stream text-code-stream text-secondary font-mono">eBPF splice() accelerated</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<label class="flex items-center justify-center p-2 rounded border border-outline-variant/60 bg-[#060b13] hover:border-outline cursor-pointer transition-colors">
+<input class="sr-only" name="buffer" type="radio" value="16"/>
+<span class="font-mono text-xs text-outline">16 KB</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded border border-outline-variant/60 bg-[#060b13] hover:border-outline cursor-pointer transition-colors">
+<input class="sr-only" name="buffer" type="radio" value="32"/>
+<span class="font-mono text-xs text-outline">32 KB</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded border border-primary bg-primary/10 text-primary cursor-pointer shadow-[0_0_8px_rgba(14,165,233,0.2)]">
+<input checked="" class="sr-only" name="buffer" type="radio" value="64"/>
+<span class="font-mono text-xs font-bold">64 KB</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded border border-outline-variant/60 bg-[#060b13] hover:border-outline cursor-pointer transition-colors">
+<input class="sr-only" name="buffer" type="radio" value="128"/>
+<span class="font-mono text-xs text-outline">128 KB</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex items-center justify-between text-outline font-code-stream text-code-stream font-mono">
+<span>SOCKET_ENGINE: SO_REUSEPORT enabled</span>
+<span>WORKER_THREADS: 8 (Pinned)</span>
+</div>
+</section>
+<!-- 2. LAN & MOBILE BROADCAST (xl:col-span-5) -->
+<section class="xl:col-span-5 bg-[#090f1d] border border-outline-variant rounded-lg p-5 flex flex-col justify-between shadow-[0_0_16px_-2px_rgba(14,165,233,0.05)] hover:border-primary/40 transition-colors">
+<div>
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/60">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="sensors">sensors</span>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">LAN &amp; Mobile Broadcast</h2>
+</div>
+<span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+</div>
+<div class="space-y-4">
+<!-- Primary Network Interface -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<label class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">Primary Network Interface</label>
+<div class="relative">
+<select class="w-full bg-[#060b13] border border-outline-variant text-on-surface font-mono text-xs px-2.5 py-1.5 rounded focus:border-primary focus:ring-0 pr-8 appearance-none">
+<option selected="">eth0 (192.168.1.145) - Active</option>
+<option>wlan0 (192.168.1.189) - Standby</option>
+<option>tailscale0 (100.84.12.9) - Mesh</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-outline pointer-events-none text-base" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex justify-between items-center mt-2 text-outline font-code-stream text-code-stream font-mono">
+<span>MAC: 52:54:00:12:34:56</span>
+<span class="text-primary font-semibold">1000 Mbps Full Duplex</span>
+</div>
+</div>
+<!-- mDNS Bonjour/Avahi Broadcast -->
+<div class="flex items-center justify-between bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-label-md text-label-md text-on-surface">mDNS Bonjour / Avahi</span>
+<span class="px-1.5 py-0.2 bg-primary/10 border border-primary/30 text-primary font-code-stream text-code-stream rounded">*.local domain</span>
+</div>
+<p class="font-code-stream text-code-stream text-outline mt-0.5">iOS &amp; Android auto-discovery in local subnet</p>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container shadow-[0_0_8px_rgba(14,165,233,0.4)]"></div>
+</div>
+</div>
+<!-- Remote Hotspot AP Integration -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Remote Hotspot AP Integration</span>
+<span class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] rounded flex items-center space-x-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>Portside-AP-Dev</span>
+</span>
+</div>
+<div class="grid grid-cols-2 gap-2 text-xs font-mono">
+<div class="bg-[#090f1d] p-2 rounded border border-outline-variant/30">
+<span class="text-outline text-[10px] block">GATEWAY IP</span>
+<span class="text-primary font-semibold">10.42.0.1</span>
+</div>
+<div class="bg-[#090f1d] p-2 rounded border border-outline-variant/30">
+<span class="text-outline text-[10px] block">SIGNAL STRENGTH</span>
+<span class="text-emerald-400 font-semibold">-48 dBm (98%)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex items-center justify-between text-outline font-code-stream text-code-stream font-mono">
+<span>MULTICAST_ADDR: 224.0.0.251:5353</span>
+<span class="text-emerald-400">ANNOUNCING 4 ROADS</span>
+</div>
+</section>
+<!-- 3. TLS / SSL CERTIFICATE AUTHORITY (xl:col-span-6) -->
+<section class="xl:col-span-6 bg-[#090f1d] border border-outline-variant rounded-lg p-5 flex flex-col justify-between shadow-[0_0_16px_-2px_rgba(14,165,233,0.05)] hover:border-primary/40 transition-colors">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/60">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="verified_user">verified_user</span>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">TLS / SSL Certificate Authority</h2>
+</div>
+<span class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-label-sm text-label-sm rounded flex items-center space-x-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>mkcert Installed &amp; Trusted</span>
+</span>
+</div>
+<div class="space-y-3.5">
+<!-- CA Fingerprint & Status Card -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40 font-mono text-xs">
+<div class="flex justify-between items-center mb-1">
+<span class="text-outline text-[10px] uppercase">Root CA SHA-256 Fingerprint</span>
+<span class="text-emerald-400 text-[10px]">Expires in 3,240 days</span>
+</div>
+<div class="p-2 bg-[#090e17] rounded border border-outline-variant/30 text-primary font-code-stream text-code-stream break-all select-all">
+                  SHA256:7f:a3:09:88:bc:e1:84:11:4d:22:90:ea:41:df:09:aa:8f:51:7c:42:01:99:38:b2
+                </div>
+</div>
+<!-- Wildcard Certs Toggle -->
+<div class="flex items-center justify-between bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div>
+<span class="block font-label-md text-label-md text-on-surface">Auto-Generate Wildcard Certs</span>
+<span class="font-code-stream text-code-stream text-outline font-mono">*.localhost &amp; *.portside.internal</span>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="grid grid-cols-2 gap-2 pt-1">
+<button class="flex items-center justify-center space-x-1.5 py-2 px-3 bg-surface-container-low hover:bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md rounded transition-colors">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="sync">sync</span>
+<span>Regenerate Root Certificates</span>
+</button>
+<button class="flex items-center justify-center space-x-1.5 py-2 px-3 bg-surface-container-low hover:bg-surface-container border border-outline-variant hover:border-emerald-400 text-emerald-400 font-label-md text-label-md rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+<span>Export Root CA (.crt)</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex items-center justify-between text-outline font-code-stream text-code-stream font-mono">
+<span>ALPN: h2, http/1.1</span>
+<span>CIPHERS: TLS_AES_128_GCM_SHA256</span>
+</div>
+</section>
+<!-- 4. DOCKER HOST GATEWAY BRIDGE (xl:col-span-6) -->
+<section class="xl:col-span-6 bg-[#090f1d] border border-outline-variant rounded-lg p-5 flex flex-col justify-between shadow-[0_0_16px_-2px_rgba(14,165,233,0.05)] hover:border-primary/40 transition-colors">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/60">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="deployed_code">deployed_code</span>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Docker Host Gateway Bridge</h2>
+</div>
+<span class="font-code-stream text-code-stream text-emerald-400 bg-emerald-500/10 px-2 py-0.5 border border-emerald-500/30 rounded font-mono">BRIDGE: docker0</span>
+</div>
+<div class="space-y-3.5">
+<!-- host.docker.internal routing -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40 flex items-center justify-between">
+<div>
+<span class="block font-label-md text-label-md text-on-surface">host.docker.internal routing</span>
+<span class="font-code-stream text-code-stream text-outline font-mono">Gateway IP: 172.17.0.1</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-mono text-xs text-secondary font-bold">Active</span>
+</div>
+</div>
+<!-- Auto-detect Container Labels -->
+<div class="flex items-center justify-between bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-label-md text-label-md text-on-surface">Auto-detect Container Labels</span>
+<span class="px-1.5 py-0.2 bg-surface-container border border-outline-variant text-primary font-code-stream text-code-stream rounded font-mono">4 mapped</span>
+</div>
+<span class="font-code-stream text-code-stream text-outline font-mono">com.portside.route=my-service</span>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container shadow-[0_0_8px_rgba(14,165,233,0.4)]"></div>
+</div>
+</div>
+<!-- Socket Path Input -->
+<div class="bg-[#060b13]/60 p-3 rounded border border-outline-variant/40">
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Unix Socket Path</label>
+<span class="font-code-stream text-code-stream text-emerald-400 font-mono">rw-rw---- root:docker</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-outline text-base" data-icon="settings_ethernet">settings_ethernet</span>
+<input class="w-full bg-[#060b13] border border-outline-variant text-primary font-mono text-xs px-2.5 py-1 rounded focus:border-primary focus:ring-0" type="text" value="/var/run/docker.sock"/>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex items-center justify-between text-outline font-code-stream text-code-stream font-mono">
+<span>CONTAINER_EVENTS: Listening (API v1.45)</span>
+<span class="text-primary">HEALTH: SYNCED</span>
+</div>
+</section>
+<!-- 5. SYSTEM DANGER ZONE (xl:col-span-12) -->
+<section class="xl:col-span-12 bg-[#090f1d] border border-rose-900/60 rounded-lg p-5 shadow-[0_0_24px_-4px_rgba(244,63,94,0.15)] relative overflow-hidden">
+<!-- Ambient Red Gradient Glow Header -->
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-rose-900/40 gap-2">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-rose-500 text-lg" data-icon="warning">warning</span>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-rose-400">System Danger Zone</h2>
+</div>
+<div class="flex items-center space-x-2 text-rose-300 bg-rose-950/40 px-3 py-1 border border-rose-800/50 rounded font-code-stream text-code-stream">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+<span>Caution: Actions below impact active daemon routing and drop open socket connections.</span>
+</div>
+</div>
+<!-- Danger Actions Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Action 1: Flush DNS -->
+<div class="bg-[#060b13]/80 p-4 rounded border border-rose-950 hover:border-rose-800/80 transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="material-symbols-outlined text-outline text-base" data-icon="cleaning_services">cleaning_services</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Flush Loopback DNS Cache</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mb-4">
+                  Evicts all cached resolutions from local systemd-resolved and Portside internal buffer pool.
+                </p>
+</div>
+<button class="w-full py-2 px-3 bg-surface-container-low hover:bg-rose-950/40 border border-outline-variant hover:border-rose-500/60 text-on-surface hover:text-rose-300 font-label-md text-label-md rounded transition-colors flex items-center justify-center space-x-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="cached">cached</span>
+<span>Flush Cache</span>
+</button>
+</div>
+<!-- Action 2: Restart Daemon -->
+<div class="bg-[#060b13]/80 p-4 rounded border border-rose-950 hover:border-rose-800/80 transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="material-symbols-outlined text-amber-500 text-base" data-icon="restart_alt">restart_alt</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Restart Background Proxy</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mb-4">
+                  Triggers clean socket handover via SO_REUSEPORT or graceful SIGTERM &amp; instant respawn.
+                </p>
+</div>
+<button class="w-full py-2 px-3 bg-surface-container-low hover:bg-amber-950/40 border border-outline-variant hover:border-amber-500/60 text-amber-400 font-label-md text-label-md rounded transition-colors flex items-center justify-center space-x-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="power_settings_new">power_settings_new</span>
+<span>SIGTERM &amp; Respawn</span>
+</button>
+</div>
+<!-- Action 3: Wipe Route DB -->
+<div class="bg-[#060b13]/80 p-4 rounded border border-rose-950 hover:border-rose-700 transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="material-symbols-outlined text-rose-500 text-base" data-icon="delete_forever">delete_forever</span>
+<span class="font-label-lg text-label-lg font-bold text-rose-400">Wipe Route Database</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mb-4">
+                  Irreversibly deletes all registered virtual hosts, proxy paths, and manual cert overrides.
+                </p>
+</div>
+<button class="w-full py-2 px-3 bg-rose-950/30 hover:bg-rose-900/60 border border-rose-800 hover:border-rose-500 text-rose-400 font-label-md text-label-md font-bold rounded shadow-[0_0_12px_rgba(244,63,94,0.2)] transition-all flex items-center justify-center space-x-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+<span>Purge DB &amp; Reset</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Terminal Telemetry Bar -->
+<footer class="mt-8 pt-4 pb-8 border-t border-outline-variant/60 flex flex-col md:flex-row items-center justify-between text-outline font-code-stream text-code-stream gap-2">
+<div class="flex items-center space-x-3">
+<span class="text-primary font-mono font-semibold">PRIMARY ROUTING FRAMEWORK</span>
+<span>//</span>
+<span>CONFIG FILE: /etc/portside/daemon.toml</span>
+<span>//</span>
+<span>PERMISSIONS: 0644</span>
+</div>
+<div class="flex items-center space-x-4">
+<span class="flex items-center space-x-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>SYSTEM ENGINES SYNCHRONIZED</span>
+</span>
+<span class="text-on-surface-variant font-mono">PORTSIDE V-4.12.0</span>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

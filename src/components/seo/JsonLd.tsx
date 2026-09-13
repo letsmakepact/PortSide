@@ -49,7 +49,7 @@ export function JsonLd({ appUrl = "https://portside.lol" }: JsonLdProps) {
       price: "0",
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
-      category: "Free Open Source / PNC-1.0",
+      category: "Free Open Source (AGPL-3.0) / PolyForm Noncommercial",
     },
     softwareRequirements: "Node.js >= 18 or Standalone Portside Launcher",
     featureList: [

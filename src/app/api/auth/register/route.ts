@@ -60,6 +60,8 @@ export async function POST(req: Request) {
   }
 
   try {
+    const { getLanIp } = await import("@/lib/lan");
+    const wifiIp = getLanIp();
     const webPortalUrl = "https://portside.lol";
     const serverRes = await fetch(`${webPortalUrl}/api/account/confirm`, {
       method: "POST",
@@ -68,6 +70,7 @@ export async function POST(req: Request) {
         email,
         name,
         machineId: getHardwareMachineId(),
+        wifiIp,
         action: "register",
       }),
     });

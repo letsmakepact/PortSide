@@ -183,6 +183,47 @@ No `/etc/hosts` modifications, port suffixes, or reverse proxy certificates requ
 
 ---
 
+## AI Assistant & MCP Server (Model Context Protocol)
+
+Portside includes a built-in MCP server that allows AI coding assistants (Claude Desktop, Cursor, Antigravity, Windsurf, Roo Code) to automatically map ports to clean `*.localhost` URLs whenever they start a dev server.
+
+### Why use it?
+- **Zero API Keys Required**: Operates directly over standard stdio locally.
+- **Port & Name Collision Guard**: Automatically checks both ports and custom names to ensure no duplicate conflicts.
+- **User-Friendly Prompts**: Directs the AI to give you the custom URL (`http://<subdomain>.localhost`) and reminds you that you can change or customize the route anytime in your Portside dashboard at `http://localhost`.
+
+### Capabilities & Tools
+- `register_port_route`: Registers local dev ports to `*.localhost` domains with automatic port and name collision deduplication.
+- `list_active_routes`: Lists all running services, latency metrics, and their `.localhost` URLs.
+- `check_route_availability`: Proactively verifies if a port or custom name is available before starting services.
+- `probe_service_health`: Live latency and HTTP probing to check if a service is online.
+- `get_lan_preview_links`: Generates mobile direct `/s/<name>` and wildcard `.nip.io` URLs for cross-device testing on phones, tablets, or Smart TVs.
+- `toggle_service_pause`: Enables or pauses routing for any service (with polite 503 explanation pages).
+- `remove_port_route`: Frees up domains and ports when tasks finish.
+- **Resources**: Exposes `portside://routes` and `portside://lan` for live context reading by AI models.
+
+### Adding Portside to your AI Tools:
+
+Add to your Cursor (`.cursor/mcp.json`) or Claude Desktop (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "portside": {
+      "command": "npx",
+      "args": ["tsx", "scripts/mcp-server.ts"]
+    }
+  }
+}
+```
+
+Or run directly:
+```bash
+npm run mcp
+```
+
+---
+
 ## Documentation & AI Engine Reference
 - **Docs:** [portside.lol/docs](https://portside.lol/docs)
 - **Comparisons & Benchmarks:** [portside.lol/comparisons](https://portside.lol/comparisons)
@@ -191,12 +232,11 @@ No `/etc/hosts` modifications, port suffixes, or reverse proxy certificates requ
 
 ## License & Terms of Use
 
-PortSide is licensed under the **Portside Non-Commercial Public License (PNC-1.0)**:
+PortSide is dual-licensed under the **PolyForm Noncommercial License 1.0.0** and the **GNU Affero General Public License v3.0 (AGPL-3.0)**:
 
-- **100% Free Forever for Single Users:** PortSide is completely free for individual developers, hobbyists, and personal development workflows. It will **never** be paid or monetized for single users.
-- **No Reselling or Profiting:** Anyone is free to use and modify PortSide, but you may **NOT** sell, rent, sublicense, or distribute PortSide or its derivatives for a fee.
-- **No Rebranding:** You may **NOT** rebrand, white-label, or remove creator attribution (`pact`) to generate profit.
-- **Commercial & Company Inquiries:** Companies seeking commercial integration or custom licensing must contact the creator:
+- **100% Free Forever for Individuals:** Under the PolyForm Noncommercial License, PortSide is completely free for individual developers, hobbyists, students, and personal non-commercial workflows without AGPL copyleft source-sharing obligations.
+- **100% Open Source (AGPLv3):** Under the GNU AGPL-3.0, PortSide is certified Open Source. Anyone who modifies PortSide or provides it as a network service must make their modifications open source under AGPL-3.0.
+- **Commercial & Enterprise Inquiries:** Businesses and enterprises wishing to use PortSide commercially, integrate it into proprietary software, host closed-source deployments, or obtain custom enterprise licenses must contact the creator:
   - Telegram: [@pactwithdevil](https://t.me/pactwithdevil)
   - GitHub: [@letsmakepact](https://github.com/letsmakepact)
 

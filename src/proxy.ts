@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCustomHotspotHost } from "@/lib/hotspot";
 
 interface CachedHostVerification {
   known: boolean;
@@ -157,6 +158,11 @@ export async function proxy(request: NextRequest) {
   }
 
   const origin = request.headers.get("origin");
+  const customHost = getCustomHotspotHost().toLowerCase();
+  const isCustomHost =
+    Boolean(customHost) &&
+    (hostname === customHost || hostname.endsWith(`.${customHost}`));
+
   if (origin && !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
     try {
       const originHost = new URL(origin).hostname.toLowerCase();
@@ -166,6 +172,10 @@ export async function proxy(request: NextRequest) {
         originHost === "::1" ||
         originHost.endsWith(".localhost") ||
         originHost.endsWith(".local") ||
+        originHost.endsWith(".portside") ||
+        originHost.endsWith(".test") ||
+        originHost.endsWith(".lan") ||
+        (Boolean(customHost) && (originHost === customHost || originHost.endsWith(`.${customHost}`))) ||
         originHost === hostname ||
         originHost === "portside.lol" ||
         originHost === "www.portside.lol" ||
@@ -217,6 +227,10 @@ export async function proxy(request: NextRequest) {
     hostname.endsWith(".host.docker.internal") ||
     hostname.endsWith(".localhost") ||
     hostname.endsWith(".local") ||
+    hostname.endsWith(".portside") ||
+    hostname.endsWith(".test") ||
+    hostname.endsWith(".lan") ||
+    isCustomHost ||
     /\.(?:nip\.io|sslip\.io)$/.test(hostname) ||
     hostname.startsWith("192.168.") ||
     hostname.startsWith("10.") ||
@@ -302,6 +316,22 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (!label && isCustomHost) {
+    const escaped = customHost.replace(/\./g, "\\.");
+    const customRegex = new RegExp(`^([a-z0-9-]+)\\.${escaped}$`, "i");
+    const customMatch = hostname.match(customRegex);
+    if (customMatch) {
+      label = customMatch[1];
+    }
+  }
+
+  if (!label) {
+    const devTldMatch = hostname.match(/^([a-z0-9-]+)\.(?:portside|test|lan)$/i);
+    if (devTldMatch) {
+      label = devTldMatch[1];
+    }
+  }
+
   if (!label) {
     const isSystemPath = PORTSIDE_SYSTEM_ROUTES.some(
       (r) => pathname === r || pathname.startsWith(`${r}/`)
@@ -350,6 +380,7 @@ export async function proxy(request: NextRequest) {
 
   if (!label && (pathname === "/about" || pathname === "/@me")) {
     const profileUrl = request.nextUrl.clone();
+    profileUrl.protocol = "http:";
     profileUrl.pathname = "/profile";
     return withSecurityHeaders(NextResponse.rewrite(profileUrl));
   }
@@ -360,10 +391,11 @@ export async function proxy(request: NextRequest) {
   if (!label && pathname === "/") {
     if (isPortsideVanitySubdomain) {
       const profileUrl = request.nextUrl.clone();
+      profileUrl.protocol = "http:";
       profileUrl.pathname = "/profile";
       return withSecurityHeaders(NextResponse.rewrite(profileUrl));
     }
-    if (isRawIp || isTryCloudflare) {
+    if (isRawIp || isTryCloudflare || (customHost && hostname === customHost) || hostname === "portside" || hostname === "portside.test" || hostname === "portside.lan") {
       const lanUrl = request.nextUrl.clone();
       lanUrl.pathname = "/lan";
       return withSecurityHeaders(NextResponse.redirect(lanUrl));
@@ -380,6 +412,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const url = request.nextUrl.clone();
+  url.protocol = "http:";
   url.pathname = `/portside-proxy/${label}${targetPath === "/" ? "" : targetPath}`;
   if (isPathProxy) {
     url.searchParams.set("__ps_path", "1");
@@ -388,6 +421,9 @@ export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-portside-original-path", targetPath);
   requestHeaders.set("x-portside-client-host", host);
+  if (isPortsideVanitySubdomain) {
+    requestHeaders.set("x-portside-public-tunnel", "true");
+  }
   if (isPathProxy) {
     requestHeaders.set("x-portside-path-proxy", "true");
   }

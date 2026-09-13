@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
 
@@ -62,7 +62,7 @@ export default function NgrokAlternativePage() {
         name: "Does Portside cost money or have a paid tier like Ngrok?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Portside is 100% free and open-source for personal development, hobbyists, and local workflows under the PNC-1.0 license. There are no artificial limits on routes or tunnels.",
+          text: "Portside is 100% free and open-source for personal development, hobbyists, and local workflows under the AGPL-3.0 and PolyForm Noncommercial 1.0.0 dual licenses. There are no artificial limits on routes or tunnels.",
         },
       },
     ],

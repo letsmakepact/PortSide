@@ -70,19 +70,19 @@ export function ServicesView({ initialProject = "all" }: { initialProject?: stri
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, hostname, port or tag…" className="pl-9" />
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex flex-1 sm:flex-none overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800 bg-brand-bg dark:bg-[#0f172a]/60 p-0.5 shadow-xs scrollbar-none">
+          <div className="flex flex-1 sm:flex-none overflow-x-auto rounded-md border border-[#1f2937] bg-[#0b0f17] p-1 scrollbar-none">
             {(["all", "online", "offline", "paused"] as StatusFilter[]).map((f) => (
               <button
                 key={f}
                 onClick={() => setStatus(f)}
                 className={cn(
-                  "flex-1 sm:flex-none whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors touch-action-manipulation",
+                  "flex-1 sm:flex-none whitespace-nowrap rounded px-3 py-1 text-xs font-medium capitalize transition-colors",
                   status === f
-                    ? "bg-brand-surface dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700/60 shadow-xs"
-                    : "text-slate-500 dark:text-slate-400 hover:bg-brand-bg dark:hover:bg-slate-800/40 hover:text-slate-700 dark:hover:text-slate-200",
+                    ? "bg-[#161f30] text-white border border-[#27354a]"
+                    : "text-slate-400 hover:text-slate-200 border border-transparent",
                 )}
               >
-                {f} <span className={cn("ml-1 font-mono text-[11px] tabular-nums", status === f ? "text-slate-500 dark:text-slate-300" : "text-slate-400 dark:text-slate-500")}>{counts[f]}</span>
+                {f} <span className={cn("ml-1 font-mono text-[11px]", status === f ? "text-slate-300" : "text-slate-500")}>{counts[f]}</span>
               </button>
             ))}
           </div>

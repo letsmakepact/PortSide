@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PORTSIDE // Active Services &amp; Blade Manager</title>
+<!-- Fonts: Plus Jakarta Sans & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "secondary-fixed-dim": "#7bd0ff",
+          "on-tertiary": "#003824",
+          "on-primary-fixed": "#001e2f",
+          "surface-container-lowest": "#090e17",
+          "on-secondary-container": "#00374d",
+          "inverse-primary": "#006591",
+          "surface-container-highest": "#30353e",
+          "outline-variant": "#3e4850",
+          "secondary": "#7bd0ff",
+          "surface-dim": "#0e141c",
+          "on-primary": "#00344d",
+          "inverse-surface": "#dee2ef",
+          "tertiary-container": "#00b17b",
+          "on-surface": "#dee2ef",
+          "on-primary-fixed-variant": "#004c6e",
+          "primary-container": "#0ea5e9",
+          "error-container": "#93000a",
+          "surface-tint": "#89ceff",
+          "on-tertiary-fixed-variant": "#005236",
+          "on-secondary-fixed": "#001e2c",
+          "on-error": "#690005",
+          "inverse-on-surface": "#2b313a",
+          "on-error-container": "#ffdad6",
+          "on-tertiary-fixed": "#002113",
+          "on-surface-variant": "#bec8d2",
+          "primary": "#89ceff",
+          "on-tertiary-container": "#003b26",
+          "tertiary-fixed": "#6ffbbe",
+          "surface-container-low": "#161c24",
+          "primary-fixed": "#c9e6ff",
+          "tertiary": "#4edea3",
+          "secondary-container": "#00a6e0",
+          "primary-fixed-dim": "#89ceff",
+          "surface-container-high": "#252a33",
+          "error": "#ffb4ab",
+          "surface-variant": "#30353e",
+          "on-secondary-fixed-variant": "#004c69",
+          "surface": "#0e141c",
+          "on-secondary": "#00354a",
+          "tertiary-fixed-dim": "#4edea3",
+          "surface-bright": "#343943",
+          "outline": "#88929b",
+          "surface-container": "#1a2029",
+          "secondary-fixed": "#c4e7ff",
+          "on-background": "#dee2ef",
+          "on-primary-container": "#003751",
+          "background": "#0e141c"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "unit-xs": "0.25rem",
+          "unit-lg": "1.5rem",
+          "unit-base": "1rem",
+          "unit-2xs": "0.125rem",
+          "margin-screen": "1.25rem",
+          "gutter-dense": "0.5rem",
+          "unit-xl": "2rem",
+          "unit-md": "0.75rem",
+          "gutter-standard": "1rem",
+          "unit-sm": "0.5rem",
+          "unit-2xl": "3rem"
+        },
+        "fontFamily": {
+          "headline-lg": ["Plus Jakarta Sans"],
+          "headline-sm": ["Plus Jakarta Sans"],
+          "body-lg": ["JetBrains Mono"],
+          "display-lg": ["Plus Jakarta Sans"],
+          "body-sm": ["JetBrains Mono"],
+          "label-sm": ["JetBrains Mono"],
+          "headline-xl": ["Plus Jakarta Sans"],
+          "code-stream": ["JetBrains Mono"],
+          "label-lg": ["JetBrains Mono"],
+          "display-lg-mobile": ["Plus Jakarta Sans"],
+          "body-md": ["JetBrains Mono"],
+          "label-md": ["JetBrains Mono"]
+        },
+        "fontSize": {
+          "headline-lg": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600"}],
+          "body-lg": ["14px", {"lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+          "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+          "body-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "label-sm": ["9px", {"lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "500"}],
+          "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "code-stream": ["11px", {"lineHeight": "15px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+          "label-lg": ["12px", {"lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600"}],
+          "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-md": ["12px", {"lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "label-md": ["10px", {"lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500"}]
+        }
+      }
+    }
+  }
+  </script>
+<style>
+    /* Custom scanlines & tactical background grid */
+    .tactical-grid {
+      background-size: 24px 24px;
+      background-image: radial-gradient(circle, rgba(137, 206, 255, 0.07) 1px, transparent 1px);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090e17;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #3e4850;
+      border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #0ea5e9;
+    }
+    .laser-glow-cyan {
+      box-shadow: 0 0 16px -2px rgba(14, 165, 233, 0.25);
+    }
+    .laser-glow-crimson {
+      box-shadow: 0 0 16px -1px rgba(244, 63, 94, 0.35);
+    }
+    .laser-glow-emerald {
+      box-shadow: 0 0 10px rgba(78, 222, 163, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen selection:bg-primary selection:text-on-primary tactical-grid">
+<!-- ================================================================= -->
+<!-- TOP APP BAR (Shared Component: TopNavBar Anchor)                 -->
+<!-- ================================================================= -->
+<header class="w-full max-w-[1920px] mx-auto px-unit-base h-12 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-50 backdrop-blur-md">
+<!-- Left Zone: Brand & Global Route Filter Search -->
+<div class="flex items-center gap-unit-base">
+<div class="flex items-center gap-unit-xs">
+<span class="w-2 h-2 bg-primary animate-pulse"></span>
+<span class="font-headline-sm text-headline-sm tracking-wider text-primary uppercase select-none">PORTSIDE//CORE</span>
+<span class="px-unit-xs py-0.5 bg-surface-container border border-outline-variant text-on-surface-variant font-label-sm text-label-sm ml-unit-xs hidden sm:inline-block">V-4.12.0 // PRIMARY</span>
+</div>
+<!-- Quick Route Filter -->
+<div class="relative hidden md:flex items-center ml-unit-sm">
+<span class="material-symbols-outlined absolute left-2 text-outline text-[16px]">filter_alt</span>
+<input class="bg-surface-container-lowest border border-outline-variant focus:border-primary text-primary font-code-stream text-code-stream pl-7 pr-8 py-1 h-7 w-64 rounded-DEFAULT outline-none transition-all placeholder:text-outline/70" placeholder="[ / ] Filter route or port..." type="text"/>
+<span class="absolute right-2 text-outline text-[10px] font-label-sm border border-outline-variant/60 px-1 py-0.2 rounded-DEFAULT bg-surface-container">/</span>
+</div>
+</div>
+<!-- Center Nav Links from JSON -->
+<nav class="hidden lg:flex items-center gap-unit-lg h-full">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 flex items-center gap-1.5 h-full pt-1" href="#">
+<span class="material-symbols-outlined text-[14px]">alt_route</span>
+<span>Routing Mesh</span>
+</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-150 flex items-center gap-1.5 h-full pt-1" href="#">
+<span class="material-symbols-outlined text-[14px]">device_hub</span>
+<span>Edge Nodes</span>
+</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-150 flex items-center gap-1.5 h-full pt-1" href="#">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+<span>Cert Vault</span>
+</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-150 flex items-center gap-1.5 h-full pt-1" href="#">
+<span class="material-symbols-outlined text-[14px]">vpn_lock</span>
+<span>Tunnels</span>
+</a>
+</nav>
+<!-- Trailing Action Zone -->
+<div class="flex items-center gap-unit-sm">
+<!-- Trailing Secondary Status Readout -->
+<div class="hidden sm:flex items-center gap-1.5 px-unit-xs py-1 border border-outline-variant bg-surface-container-low font-code-stream text-code-stream">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary laser-glow-emerald"></span>
+<span class="text-tertiary">PROXY: 80/443</span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface-variant">Loopback: OK</span>
+</div>
+<!-- Icon Actions -->
+<div class="flex items-center border border-outline-variant bg-surface-container-lowest">
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Kernel Console">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container border-l border-outline-variant relative transition-colors" title="Incident Queue">
+<span class="material-symbols-outlined text-[16px]">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-error rounded-full"></span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container border-l border-outline-variant transition-colors" title="Mesh Tuning">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+</div>
+<!-- Primary Action CTA -->
+<button class="bg-primary-container hover:bg-secondary text-on-primary-container font-label-lg text-label-lg px-unit-md py-1.5 rounded-DEFAULT laser-glow-cyan flex items-center gap-1.5 font-bold transition-all duration-150 active:scale-95">
+<span class="material-symbols-outlined text-[16px]">add_circle</span>
+<span>Deploy Proxy</span>
+</button>
+<!-- Identity Avatar Indicator -->
+<div class="w-7 h-7 bg-surface-container border border-primary/40 flex items-center justify-center relative cursor-pointer group" title="Operator Cryptographic Key Identity Avatar">
+<span class="material-symbols-outlined text-[16px] text-primary group-hover:scale-110 transition-transform">fingerprint</span>
+<span class="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-tertiary"></span>
+</div>
+</div>
+</header>
+<!-- ================================================================= -->
+<!-- MAIN SYSTEM COCKPIT WRAPPER                                       -->
+<!-- ================================================================= -->
+<div class="w-full max-w-[1920px] mx-auto flex min-h-[calc(100vh-3rem)]">
+<!-- =============================================================== -->
+<!-- LEFT SIDEBAR: Persistent Primary Route Rail (SideNavBar)      -->
+<!-- =============================================================== -->
+<aside class="w-[280px] flex-shrink-0 bg-surface-container-low border-r border-outline-variant hidden md:flex flex-col justify-between p-unit-sm">
+<!-- Upper Section: System Info & Route Clusters -->
+<div class="space-y-unit-md">
+<!-- SideNav Brand Unit -->
+<div class="p-unit-xs border-b border-outline-variant/60 pb-unit-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm font-semibold tracking-wider text-primary">PORTSIDE</span>
+<span class="text-[9px] px-1.5 py-0.5 bg-tertiary/10 border border-tertiary/30 text-tertiary font-code-stream">SYS-READY</span>
+</div>
+<div class="font-code-stream text-[10px] text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="text-primary font-bold">NODE:</span>
+<span>node-01.primary.local</span>
+</div>
+</div>
+<!-- System Node Indicator Matrix -->
+<div class="bg-surface-container-lowest border border-outline-variant p-unit-xs">
+<div class="flex items-center justify-between text-[10px] font-label-sm text-outline mb-1">
+<span>SOCKET ALLOCATION</span>
+<span class="text-primary">8 / 64 USED</span>
+</div>
+<div class="grid grid-cols-8 gap-1">
+<div class="h-1.5 bg-tertiary" title="Socket 1 Active"></div>
+<div class="h-1.5 bg-tertiary" title="Socket 2 Active"></div>
+<div class="h-1.5 bg-tertiary" title="Socket 3 Active"></div>
+<div class="h-1.5 bg-error laser-glow-crimson" title="Socket 4 Conflict (Port 5432)"></div>
+<div class="h-1.5 bg-outline-variant" title="Socket 5 Paused"></div>
+<div class="h-1.5 bg-tertiary" title="Socket 6 Active"></div>
+<div class="h-1.5 bg-tertiary" title="Socket 7 Active"></div>
+<div class="h-1.5 bg-tertiary" title="Socket 8 Active"></div>
+</div>
+</div>
+<!-- Navigation Tabs from JSON (SideNavBar tabs) -->
+<nav class="space-y-1">
+<div class="px-unit-xs pb-1 text-[9px] font-label-sm uppercase tracking-widest text-outline">Cluster Telemetry</div>
+<!-- 1. Overview -->
+<a class="w-full flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs transition-colors group" href="#">
+<div class="flex items-center gap-unit-xs">
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-primary">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</div>
+<span class="text-[9px] font-code-stream text-outline">METRICS</span>
+</a>
+<!-- 2. Proxies (ACTIVE: Active Services Screen) -->
+<a class="w-full flex items-center justify-between border-l-2 border-primary bg-surface-container text-primary font-bold px-unit-sm py-unit-xs transition-colors group" href="#">
+<div class="flex items-center gap-unit-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">alt_route</span>
+<span class="font-label-md text-label-md">Proxies</span>
+</div>
+<span class="text-[10px] font-code-stream bg-primary/20 text-primary px-1.5 py-0.2 border border-primary/40">8 ACT</span>
+</a>
+<!-- 3. Upstreams -->
+<a class="w-full flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs transition-colors group" href="#">
+<div class="flex items-center gap-unit-xs">
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-primary">hub</span>
+<span class="font-label-md text-label-md">Upstreams</span>
+</div>
+<span class="text-[9px] font-code-stream text-outline">POOLS (4)</span>
+</a>
+<!-- 4. DNS Matrix -->
+<a class="w-full flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs transition-colors group" href="#">
+<div class="flex items-center gap-unit-xs">
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-primary">dns</span>
+<span class="font-label-md text-label-md">DNS Matrix</span>
+</div>
+<span class="text-[9px] font-code-stream text-tertiary">SYNCED</span>
+</a>
+<!-- 5. Access Logs -->
+<a class="w-full flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs transition-colors group" href="#">
+<div class="flex items-center gap-unit-xs">
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-primary">terminal</span>
+<span class="font-label-md text-label-md">Access Logs</span>
+</div>
+<span class="text-[9px] font-code-stream text-outline">STDOUT</span>
+</a>
+<!-- 6. Diagnostics (with 1 WARN badge) -->
+<a class="w-full flex items-center justify-between text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest px-unit-sm py-unit-xs transition-colors group" href="#">
+<div class="flex items-center gap-unit-xs">
+<span class="material-symbols-outlined text-[16px] text-error group-hover:text-error">security</span>
+<span class="font-label-md text-label-md">Diagnostics</span>
+</div>
+<span class="text-[10px] font-code-stream bg-error-container/40 text-error px-1.5 py-0.2 border border-error/50">1 WARN</span>
+</a>
+</nav>
+<!-- CTA action from JSON SideNavBar -->
+<div class="pt-unit-xs">
+<button class="w-full py-1.5 bg-surface-container border border-outline-variant hover:border-primary text-primary font-label-md text-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[14px]">sync</span>
+<span>Sync Matrix</span>
+</button>
+</div>
+<!-- WireGuard & Mesh Tunnel Hardware Status -->
+<div class="bg-surface-container-lowest/80 border border-outline-variant p-unit-xs space-y-1">
+<div class="flex items-center justify-between text-[10px] font-label-sm text-outline">
+<span>TUNNEL ENGINE</span>
+<span class="text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> wg0:UP
+            </span>
+</div>
+<div class="font-code-stream text-[10px] text-on-surface-variant flex justify-between">
+<span>Peer: 10.88.0.1/32</span>
+<span class="text-secondary">0.3ms</span>
+</div>
+</div>
+</div>
+<!-- Lower Section: Hardware Telemetry & Footer Tabs -->
+<div class="space-y-unit-sm pt-unit-base border-t border-outline-variant">
+<!-- Memory & Resource Gauge -->
+<div class="bg-surface-container-lowest p-unit-xs border border-outline-variant space-y-1">
+<div class="flex justify-between text-[10px] font-code-stream">
+<span class="text-outline">RAM POOL</span>
+<span class="text-secondary">42.8 MB / 512 MB</span>
+</div>
+<div class="w-full bg-surface-container h-1 overflow-hidden">
+<div class="bg-primary h-full w-[8.3%]"></div>
+</div>
+<div class="flex justify-between text-[9px] font-code-stream text-outline pt-0.5">
+<span>KERNEL: 6.9.3-zen</span>
+<span>x86_64</span>
+</div>
+</div>
+<!-- Footer Tabs from JSON -->
+<div class="space-y-1">
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface px-unit-xs py-1 transition-colors text-[11px] font-code-stream" href="#">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-outline">sensors</span>
+<span>LAN Broadcast</span>
+</div>
+<span class="text-secondary font-code-stream">192.168.1.145</span>
+</a>
+<a class="flex items-center justify-between text-on-surface-variant hover:text-on-surface px-unit-xs py-1 transition-colors text-[11px] font-code-stream" href="#">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-outline">settings</span>
+<span>Kernel Settings</span>
+</div>
+<span class="text-outline text-[10px]">CONFIG</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- =============================================================== -->
+<!-- WORKSPACE AREA: Blade Manager Table + Sidecar Inspector         -->
+<!-- =============================================================== -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface">
+<!-- Subheader Control Toolbar -->
+<section class="border-b border-outline-variant bg-surface-container-lowest/90 px-unit-base py-unit-sm flex flex-wrap items-center justify-between gap-unit-sm">
+<!-- Left Filter & Scope Pills -->
+<div class="flex items-center flex-wrap gap-unit-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider mr-1">Scope:</span>
+<button class="px-2.5 py-1 text-xs font-code-stream bg-primary/10 border border-primary text-primary flex items-center gap-1">
+<span>All Services</span>
+<span class="px-1 text-[10px] bg-primary text-on-primary font-bold">8</span>
+</button>
+<button class="px-2.5 py-1 text-xs font-code-stream bg-surface-container border border-outline-variant hover:border-outline text-on-surface-variant hover:text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>Running</span>
+<span class="text-outline text-[10px]">(6)</span>
+</button>
+<button class="px-2.5 py-1 text-xs font-code-stream bg-error-container/20 border border-error/50 text-error flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error laser-glow-crimson"></span>
+<span>Conflict</span>
+<span class="text-error font-bold text-[10px]">(1)</span>
+</button>
+<button class="px-2.5 py-1 text-xs font-code-stream bg-surface-container border border-outline-variant hover:border-outline text-on-surface-variant hover:text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+<span>Paused</span>
+<span class="text-outline text-[10px]">(1)</span>
+</button>
+<!-- Group by Project Dropdown -->
+<div class="relative ml-unit-sm">
+<select class="bg-surface-container-lowest border border-outline-variant text-on-surface font-code-stream text-[11px] py-1 pl-2 pr-6 rounded-DEFAULT outline-none focus:border-primary cursor-pointer">
+<option>Project: Default Mesh</option>
+<option>Project: Internal Core</option>
+<option>Project: Dev Stacks</option>
+</select>
+</div>
+</div>
+<!-- Right Bulk Controls -->
+<div class="flex items-center gap-unit-xs">
+<button class="px-2 py-1 bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-on-surface font-code-stream text-body-sm flex items-center gap-1 transition-colors" title="Resume All">
+<span class="material-symbols-outlined text-[14px] text-tertiary">play_arrow</span>
+<span class="hidden sm:inline">Start All</span>
+</button>
+<button class="px-2 py-1 bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-on-surface font-code-stream text-body-sm flex items-center gap-1 transition-colors" title="Suspend All">
+<span class="material-symbols-outlined text-[14px] text-outline">pause</span>
+<span class="hidden sm:inline">Pause All</span>
+</button>
+<button class="px-2 py-1 bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-on-surface font-code-stream text-body-sm flex items-center gap-1 transition-colors" title="Export Configuration">
+<span class="material-symbols-outlined text-[14px] text-secondary">ios_share</span>
+<span class="hidden md:inline">Export Caddy/Nginx</span>
+</button>
+<button class="px-2 py-1 bg-surface-container-high hover:border-primary border border-outline-variant text-primary font-code-stream text-body-sm flex items-center gap-1 transition-colors" title="Refresh Socket Bindings">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+</button>
+</div>
+</section>
+<!-- Center Split Workspace (Blade Table + Right Sidecar Inspector) -->
+<div class="flex-1 flex flex-col xl:flex-row overflow-hidden">
+<!-- ============================================================= -->
+<!-- BLADE MANAGER MAIN GRID / TABLE LIST                          -->
+<!-- ============================================================= -->
+<section class="flex-1 overflow-y-auto custom-scrollbar p-unit-base space-y-unit-sm">
+<!-- Blade Header Banner / Live Telemetry Summary -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-unit-sm mb-unit-base">
+<div class="p-unit-sm bg-surface-container-low border border-outline-variant">
+<div class="font-label-sm text-outline uppercase">Active Routes</div>
+<div class="text-headline-lg font-headline-lg text-primary flex items-baseline gap-2">
+<span>08</span>
+<span class="font-code-stream text-xs text-tertiary">+2 fresh</span>
+</div>
+</div>
+<div class="p-unit-sm bg-surface-container-low border border-outline-variant">
+<div class="font-label-sm text-outline uppercase">Median Latency</div>
+<div class="text-headline-lg font-headline-lg text-tertiary flex items-baseline gap-2">
+<span>0.82ms</span>
+<span class="font-code-stream text-xs text-outline">direct loop</span>
+</div>
+</div>
+<div class="p-unit-sm bg-surface-container-low border border-outline-variant">
+<div class="font-label-sm text-outline uppercase">Total Ingress Rate</div>
+<div class="text-headline-lg font-headline-lg text-on-surface flex items-baseline gap-2">
+<span>34.8k</span>
+<span class="font-code-stream text-xs text-secondary">req/hr</span>
+</div>
+</div>
+<div class="p-unit-sm bg-surface-container-low border border-outline-variant">
+<div class="font-label-sm text-outline uppercase">Active Socket Collisions</div>
+<div class="text-headline-lg font-headline-lg text-error flex items-baseline gap-2">
+<span>01</span>
+<span class="font-code-stream text-xs text-error animate-pulse">PORT 5432</span>
+</div>
+</div>
+</div>
+<!-- Section Label -->
+<div class="flex items-center justify-between pb-1 border-b border-outline-variant/60">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Mounted Service Blades [8 Instances]</span>
+<span class="font-code-stream text-[10px] text-outline">AUTO-REBIND: <span class="text-tertiary">ENABLED</span></span>
+</div>
+<!-- ================= BLADE CARDS ================= -->
+<!-- 1. api.localhost (SELECTED / ACTIVE FOCUS) -->
+<div class="group p-unit-sm bg-surface-container-low border-2 border-primary laser-glow-cyan transition-all relative">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<!-- Status Jewel -->
+<div class="w-3 h-3 rounded-none bg-tertiary laser-glow-emerald flex-shrink-0 mt-1 md:mt-0" title="Status: OK"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">api.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-secondary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:8000</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-tertiary/10 border border-tertiary/40 text-tertiary">200 OK</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-surface-container-high border border-outline-variant text-outline">PID: 341029</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-on-surface">FastAPI Backend</span>
+<span class="text-outline">|</span>
+<span>Python 3.12</span>
+<span class="text-outline">|</span>
+<span class="text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">verified_user</span> TLS mkcert
+                    </span>
+</div>
+</div>
+</div>
+<!-- Metrics & Telemetry Pill -->
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-tertiary font-bold">1.2 ms</div>
+<div class="text-[10px] text-outline">14.2k req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-primary text-on-primary font-label-md text-[10px] font-bold">INSPECT</button>
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-container" title="Pair Mobile LAN QR">
+<span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+</button>
+<a class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-container" href="http://127.0.0.1:8000" target="_blank" title="Open :8000">
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. web.localhost -->
+<div class="group p-unit-sm bg-surface-container-lowest border border-outline-variant hover:border-primary/50 transition-all">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<div class="w-3 h-3 rounded-none bg-tertiary laser-glow-emerald flex-shrink-0 mt-1 md:mt-0"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">web.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-secondary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:3000</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-tertiary/10 border border-tertiary/40 text-tertiary">200 OK</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-surface-container-high border border-outline-variant text-outline">PID: 88401</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-on-surface">Next.js 15 Storefront</span>
+<span class="text-outline">|</span>
+<span>Node.js v20.1</span>
+<span class="text-outline">|</span>
+<span class="text-secondary">V8 Turbopack Live</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-tertiary font-bold">0.4 ms</div>
+<div class="text-[10px] text-outline">8.9k req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-[10px]">INSPECT</button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">qr_code_2</span></button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">open_in_new</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. mail.localhost -->
+<div class="group p-unit-sm bg-surface-container-lowest border border-outline-variant hover:border-primary/50 transition-all">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<div class="w-3 h-3 rounded-none bg-tertiary laser-glow-emerald flex-shrink-0 mt-1 md:mt-0"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">mail.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-secondary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:8080</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-tertiary/10 border border-tertiary/40 text-tertiary">200 OK</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-surface-container-high border border-outline-variant text-outline">PID: 19441</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-on-surface">Roundcube Webmail / Inbucket</span>
+<span class="text-outline">|</span>
+<span>Go 1.22</span>
+<span class="text-outline">|</span>
+<span class="text-outline">Webhook Relay</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-tertiary font-bold">0.8 ms</div>
+<div class="text-[10px] text-outline">1.1k req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-[10px]">INSPECT</button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">qr_code_2</span></button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">open_in_new</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. auth.localhost (ALERT / COLLISION ITEM) -->
+<div class="p-unit-sm bg-error-container/10 border-2 border-error laser-glow-crimson transition-all relative">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<!-- Laser Red Bead -->
+<div class="w-3 h-3 rounded-none bg-error animate-ping flex-shrink-0 mt-1 md:mt-0" title="COLLISION DETECTED"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-error font-bold">auth.localhost</span>
+<span class="text-error font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-error bg-error-container/30 px-1.5 py-0.5 border border-error/50 font-bold">127.0.0.1:5432</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-error text-on-error font-bold">502 BAD GATEWAY</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-error-container/50 border border-error text-error">EADDRINUSE</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-error font-semibold">Postgres Hydra</span>
+<span class="text-outline">|</span>
+<span>Rust Core</span>
+<span class="text-outline">|</span>
+<span class="text-error">Socket bind timeout: port 5432 occupied by system postgres instance (PID: 1104)</span>
+</div>
+</div>
+</div>
+<!-- Action Controls for Conflict -->
+<div class="flex items-center gap-unit-sm font-code-stream text-xs">
+<div class="text-right">
+<div class="text-error font-bold">REFUSED</div>
+<div class="text-[10px] text-error/80">0 req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-error/40 pl-unit-sm">
+<button class="px-2 py-1 bg-error hover:bg-error/90 text-on-error font-label-md text-[10px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">dangerous</span>
+<span>Force Kill &amp; Reroute</span>
+</button>
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-[10px]">
+                    Inspect Socket
+                  </button>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. redis.localhost (PAUSED) -->
+<div class="p-unit-sm bg-surface-container-lowest/70 border border-outline-variant/60 opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<div class="w-3 h-3 rounded-none bg-outline flex-shrink-0 mt-1 md:mt-0"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-medium">redis.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-outline bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:6379</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-surface-container-high border border-outline-variant text-outline">PAUSED</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-outline mt-1">
+<span>Redis Commander</span>
+<span>|</span>
+<span>In-Memory K/V GUI</span>
+<span>|</span>
+<span>Memory: 3.2 MB</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-outline">-- ms</div>
+<div class="text-[10px] text-outline">STANDBY</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-md text-[10px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">play_arrow</span>
+<span>Resume Proxy</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 6. docs.localhost -->
+<div class="group p-unit-sm bg-surface-container-lowest border border-outline-variant hover:border-primary/50 transition-all">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<div class="w-3 h-3 rounded-none bg-tertiary laser-glow-emerald flex-shrink-0 mt-1 md:mt-0"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">docs.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-secondary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:8081</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-tertiary/10 border border-tertiary/40 text-tertiary">200 OK</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-on-surface">Docusaurus Docs Engine</span>
+<span class="text-outline">|</span>
+<span>React 18</span>
+<span class="text-outline">|</span>
+<span class="text-primary font-code-stream">Auto-Reload ON</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-tertiary font-bold">0.6 ms</div>
+<div class="text-[10px] text-outline">3.4k req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-[10px]">INSPECT</button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">qr_code_2</span></button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">open_in_new</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- 7. worker.localhost -->
+<div class="group p-unit-sm bg-surface-container-lowest border border-outline-variant hover:border-primary/50 transition-all">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<div class="w-3 h-3 rounded-none bg-tertiary laser-glow-emerald flex-shrink-0 mt-1 md:mt-0"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">worker.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-secondary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:9000</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-tertiary/10 border border-tertiary/40 text-tertiary">200 OK</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-on-surface">Celery Task Queue</span>
+<span class="text-outline">|</span>
+<span>Python</span>
+<span class="text-outline">|</span>
+<span class="text-secondary">Async Pipeline</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-tertiary font-bold">2.1 ms</div>
+<div class="text-[10px] text-outline">6.2k req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-[10px]">INSPECT</button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">qr_code_2</span></button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">open_in_new</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- 8. minio.localhost -->
+<div class="group p-unit-sm bg-surface-container-lowest border border-outline-variant hover:border-primary/50 transition-all">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-unit-xs">
+<div class="flex items-start md:items-center gap-unit-sm">
+<div class="w-3 h-3 rounded-none bg-tertiary laser-glow-emerald flex-shrink-0 mt-1 md:mt-0"></div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">minio.localhost</span>
+<span class="text-outline font-code-stream text-xs">→</span>
+<span class="font-code-stream text-xs text-secondary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant">127.0.0.1:9001</span>
+<span class="px-1.5 py-0.2 text-[10px] font-code-stream bg-tertiary/10 border border-tertiary/40 text-tertiary">200 OK</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] font-code-stream text-on-surface-variant mt-1">
+<span class="text-on-surface">S3 Local Object Storage</span>
+<span class="text-outline">|</span>
+<span>Bucket Sync</span>
+<span class="text-outline">|</span>
+<span class="text-outline">Storage Engine</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md font-code-stream text-xs">
+<div class="text-right">
+<div class="text-tertiary font-bold">1.5 ms</div>
+<div class="text-[10px] text-outline">4.1k req/hr</div>
+</div>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-unit-sm">
+<button class="px-2 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-[10px]">INSPECT</button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">qr_code_2</span></button>
+<button class="p-1 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">open_in_new</span></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================================= -->
+<!-- RIGHT SIDECAR: HUD INSPECTOR PANEL (api.localhost)            -->
+<!-- ============================================================= -->
+<aside class="w-full xl:w-[380px] flex-shrink-0 bg-surface-container-low border-t xl:border-t-0 xl:border-l border-outline-variant p-unit-base space-y-unit-base overflow-y-auto custom-scrollbar">
+<!-- Panel Header -->
+<div class="flex items-start justify-between border-b border-outline-variant pb-unit-sm">
+<div>
+<div class="font-label-sm text-outline uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-primary"></span>
+<span>Route Telemetry HUD</span>
+</div>
+<div class="text-headline-sm font-headline-sm text-primary font-bold mt-0.5">api.localhost:8000</div>
+</div>
+<span class="px-1.5 py-0.5 bg-tertiary/10 border border-tertiary/40 text-tertiary font-code-stream text-[10px]">NODE LOCKED</span>
+</div>
+<!-- Live Latency Chart (SVG Tactical Waveform) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-unit-sm space-y-unit-xs">
+<div class="flex justify-between items-center text-xs font-code-stream">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">speed</span>
+<span>LATENCY SPECTRUM</span>
+</span>
+<span class="text-tertiary font-bold">1.20 ms <span class="text-outline text-[10px]">(avg)</span></span>
+</div>
+<!-- SVG Sparkline Waveform -->
+<div class="h-20 w-full relative pt-2">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 300 70">
+<defs>
+<lineargradient id="cyanGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#3e4850" stroke-dasharray="2 4" stroke-width="0.5" x1="0" x2="300" y1="15" y2="15"></line>
+<line stroke="#3e4850" stroke-dasharray="2 4" stroke-width="0.5" x1="0" x2="300" y1="35" y2="35"></line>
+<line stroke="#3e4850" stroke-dasharray="2 4" stroke-width="0.5" x1="0" x2="300" y1="55" y2="55"></line>
+<!-- Area Fill -->
+<polygon fill="url(#cyanGrad)" points="0,50 25,48 50,52 75,42 100,45 125,30 150,32 175,22 200,28 225,18 250,22 275,12 300,16 300,70 0,70"></polygon>
+<!-- Polyline Stroke -->
+<polyline fill="none" points="0,50 25,48 50,52 75,42 100,45 125,30 150,32 175,22 200,28 225,18 250,22 275,12 300,16" stroke="#89ceff" stroke-width="1.75"></polyline>
+</svg>
+</div>
+<div class="flex justify-between text-[9px] font-code-stream text-outline pt-1 border-t border-outline-variant/40">
+<span>Kernel bypass: 0.18ms</span>
+<span>Jitter: ±0.04ms</span>
+</div>
+</div>
+<!-- HUD Metrics 2x2 Grid -->
+<div class="grid grid-cols-2 gap-unit-xs">
+<div class="p-unit-xs bg-surface-container-lowest border border-outline-variant">
+<div class="text-[10px] font-label-sm text-outline">REQUEST RATE</div>
+<div class="text-headline-sm font-headline-sm text-secondary font-bold font-code-stream">238 <span class="text-xs font-normal">req/s</span></div>
+</div>
+<div class="p-unit-xs bg-surface-container-lowest border border-outline-variant">
+<div class="text-[10px] font-label-sm text-outline">ACTIVE SOCKETS</div>
+<div class="text-headline-sm font-headline-sm text-tertiary font-bold font-code-stream">14 <span class="text-xs font-normal">fd</span></div>
+</div>
+<div class="p-unit-xs bg-surface-container-lowest border border-outline-variant">
+<div class="text-[10px] font-label-sm text-outline">TOTAL BANDWIDTH</div>
+<div class="text-headline-sm font-headline-sm text-on-surface font-bold font-code-stream">184 <span class="text-xs font-normal">MB</span></div>
+</div>
+<div class="p-unit-xs bg-surface-container-lowest border border-outline-variant">
+<div class="text-[10px] font-label-sm text-outline">ROUTE UPTIME</div>
+<div class="text-headline-sm font-headline-sm text-on-surface font-bold font-code-stream">4d 18h</div>
+</div>
+</div>
+<!-- TLS / SSL Certificate Card -->
+<div class="bg-surface-container-lowest border border-outline-variant p-unit-sm space-y-unit-xs">
+<div class="flex items-center justify-between text-xs font-code-stream">
+<span class="text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+<span>TLS VAULT SPEC</span>
+</span>
+<span class="text-tertiary font-code-stream text-[10px]">ECDSA P-256</span>
+</div>
+<div class="font-code-stream text-[11px] space-y-1 pt-1">
+<div class="flex justify-between">
+<span class="text-outline">Authority:</span>
+<span class="text-on-surface">mkcert Local Root CA</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">SAN Identity:</span>
+<span class="text-secondary">api.localhost, *.api.localhost</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Validity:</span>
+<span class="text-tertiary font-bold">364 days remaining</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">ALPN Protocols:</span>
+<span class="text-on-surface-variant">h2, http/1.1</span>
+</div>
+</div>
+</div>
+<!-- LAN Mobile Pairing & Debug Matrix -->
+<div class="bg-surface-container-lowest border border-outline-variant p-unit-sm space-y-unit-sm">
+<div class="flex items-center justify-between">
+<span class="text-xs font-label-sm text-outline uppercase tracking-wider">LAN Mobile Pairing</span>
+<span class="text-[9px] font-code-stream text-primary bg-primary/10 border border-primary/30 px-1">WIFI 6</span>
+</div>
+<div class="flex items-center gap-unit-sm">
+<!-- QR Code Pattern Box -->
+<div class="w-20 h-20 bg-surface-container border border-primary/40 p-1 flex items-center justify-center flex-shrink-0">
+<!-- High-density Tactical Matrix Representation -->
+<div class="grid grid-cols-6 gap-0.5 w-full h-full p-0.5">
+<div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-primary"></div>
+<div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div>
+<div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-transparent"></div>
+<div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div>
+<div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-primary"></div>
+<div class="bg-primary"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div><div class="bg-transparent"></div><div class="bg-primary"></div>
+</div>
+</div>
+<div class="text-[11px] font-code-stream space-y-1">
+<div class="text-on-surface font-semibold">192.168.1.145:8000</div>
+<div class="text-outline text-[10px]">Direct bridge over local loop. Device will trust primary certificate root.</div>
+<button class="text-primary hover:underline text-[10px] flex items-center gap-0.5">
+<span>Regenerate Token</span>
+<span class="material-symbols-outlined text-[12px]">cached</span>
+</button>
+</div>
+</div>
+<!-- Quick Copy Curl Snippet -->
+<div class="pt-1">
+<div class="text-[10px] font-label-sm text-outline mb-1">PROBE TERMINAL SNIPPET</div>
+<div class="bg-surface-dim border border-outline-variant p-1.5 flex items-center justify-between font-code-stream text-[10px]">
+<code class="text-secondary truncate">curl -k https://api.localhost/healthz</code>
+<button class="text-outline hover:text-primary transition-colors ml-1" title="Copy to clipboard">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Cockpit Toggles -->
+<div class="space-y-2 pt-unit-xs border-t border-outline-variant/50">
+<div class="flex items-center justify-between">
+<span class="text-xs font-code-stream text-on-surface-variant">Auto mDNS Broadcast (*.local)</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high border border-outline-variant peer-checked:bg-primary-container peer-checked:border-primary transition-all"></div>
+<div class="absolute left-0.5 top-0.5 bg-on-surface w-3 h-3 peer-checked:translate-x-3 peer-checked:bg-on-primary-container transition-transform"></div>
+</label>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs font-code-stream text-on-surface-variant">Auto HTTP/2 Push</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high border border-outline-variant peer-checked:bg-primary-container peer-checked:border-primary transition-all"></div>
+<div class="absolute left-0.5 top-0.5 bg-on-surface w-3 h-3 peer-checked:translate-x-3 peer-checked:bg-on-primary-container transition-transform"></div>
+</label>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+</div>
+</body></html>

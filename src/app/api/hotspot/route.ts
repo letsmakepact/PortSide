@@ -1,6 +1,12 @@
 import { requireUser } from "@/lib/auth";
 import { isServerSupporter, requireServerSupporter, supporterForbidden } from "@/lib/server-checks";
 import { getOrFetchSupporterSession } from "@/lib/supporter-session";
+import {
+  getHotspotStatus,
+  setHotspotActive,
+  configureHotspot,
+  getCustomHotspotHost,
+} from "@/lib/hotspot";
 
 let hotspotActive = false;
 let hotspotSsid = "PortSide-DevNet";
@@ -28,7 +34,7 @@ async function queryLauncherState() {
   return null;
 }
 
-async function syncWithLauncher(enable?: boolean, ssid?: string, key?: string, userEmail?: string) {
+async function syncWithLauncher(enable?: boolean, ssid?: string, key?: string, userEmail?: string, customHost?: string) {
   try {
     let sessionTicket: string | null = null;
     if (userEmail) {
@@ -43,7 +49,7 @@ async function syncWithLauncher(enable?: boolean, ssid?: string, key?: string, u
     const res = await fetch("http://127.0.0.1:4242/api/pro/hotspot", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ enable, ssid, key, sessionTicket }),
+      body: JSON.stringify({ enable, ssid, key, customHost, sessionTicket }),
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -71,16 +77,23 @@ export async function GET() {
       }
     }
 
+    const currentStatus = await getHotspotStatus();
+    const customHost = getCustomHotspotHost();
+
     return Response.json({
-      active: isSupporter ? hotspotActive : false,
-      ssid: isSupporter ? hotspotSsid : "PortSide-DevNet (Locked)",
-      key: isSupporter ? hotspotKey : "********",
-      ip: isSupporter ? "192.168.x.x" : null,
-      connectedDevices: isSupporter && hotspotActive ? 1 : 0,
+      active: isSupporter ? currentStatus.active : false,
+      ssid: isSupporter ? currentStatus.ssid : "PortSide-DevNet (Locked)",
+      key: isSupporter ? currentStatus.key : "********",
+      ip: isSupporter ? currentStatus.ip : null,
+      customHost: isSupporter ? customHost : "portside.test",
+      connectedDevices: isSupporter && currentStatus.active ? currentStatus.connectedDevices : 0,
       isSupporter,
       serverConfirmed: true,
       mdnsActive: isSupporter,
       publicTunnelUrl,
+      qrDataUrl: isSupporter ? currentStatus.qrDataUrl : null,
+      directLaunchUrl: isSupporter ? currentStatus.directLaunchUrl : null,
+      telemetry: isSupporter ? currentStatus.telemetry : null,
     });
   } catch (e: any) {
     if (e?.message === "Unauthorized") {
@@ -103,24 +116,34 @@ export async function POST(req: Request) {
       active?: boolean;
       ssid?: string;
       key?: string;
+      customHost?: string;
     };
 
-    if (body.ssid) hotspotSsid = body.ssid.trim().slice(0, 32);
-    if (body.key && body.key.length >= 8) hotspotKey = body.key;
+    let updatedStatus;
     if (typeof body.active === "boolean") {
-      hotspotActive = body.active;
+      updatedStatus = await setHotspotActive(body.active, body.ssid, body.key, body.customHost);
+    } else {
+      await configureHotspot(body.ssid, body.key, body.customHost);
+      updatedStatus = await getHotspotStatus();
     }
 
-    await syncWithLauncher(body.active, body.ssid, body.key, user.email);
+    hotspotActive = updatedStatus.active;
+    hotspotSsid = updatedStatus.ssid;
+    hotspotKey = updatedStatus.key;
+
+    await syncWithLauncher(body.active, body.ssid, body.key, user.email, body.customHost);
 
     return Response.json({
       ok: true,
-      active: hotspotActive,
-      ssid: hotspotSsid,
-      key: hotspotKey,
-      ip: "192.168.x.x",
-      connectedDevices: hotspotActive ? 1 : 0,
+      active: updatedStatus.active,
+      ssid: updatedStatus.ssid,
+      key: updatedStatus.key,
+      customHost: updatedStatus.customHost,
+      ip: updatedStatus.ip,
+      connectedDevices: updatedStatus.connectedDevices,
       serverConfirmed: true,
+      qrDataUrl: updatedStatus.qrDataUrl,
+      telemetry: updatedStatus.telemetry,
     });
   } catch (e: any) {
     if (e?.message === "Unauthorized") {

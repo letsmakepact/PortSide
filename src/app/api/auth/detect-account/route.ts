@@ -5,6 +5,7 @@ import { ne, desc } from "drizzle-orm";
 import { DEMO_EMAIL } from "@/lib/seed";
 import { getHardwareMachineId } from "@/lib/supporter-session";
 import { verifySessionTicket } from "@/lib/license";
+import { isServerSupporter } from "@/lib/server-checks";
 
 export const dynamic = "force-dynamic";
 
@@ -58,14 +59,15 @@ export async function GET() {
 
     if (list.length > 0) {
       const user = list[0];
+      const isSupporter = await isServerSupporter(user.id);
       return NextResponse.json({
         detected: true,
         isLinked: false,
         user: {
           email: user.email,
           name: user.name,
-          tier: user.tier,
-          isPremium: user.tier === "supporter",
+          tier: isSupporter ? "supporter" : "free",
+          isPremium: isSupporter,
           isLinked: false,
         },
       });

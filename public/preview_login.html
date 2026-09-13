@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PORTSIDE//GATEWAY - Primary Operator Auth</title>
+<!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config verbatim per Design System -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#dee2ef",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-container-high": "#252a33",
+            "secondary-fixed": "#c4e7ff",
+            "error": "#ffb4ab",
+            "surface-container-low": "#161c24",
+            "on-tertiary-container": "#003b26",
+            "error-container": "#93000a",
+            "on-surface": "#dee2ef",
+            "on-primary-fixed-variant": "#004c6e",
+            "secondary-fixed-dim": "#7bd0ff",
+            "surface-container": "#1a2029",
+            "primary-fixed-dim": "#89ceff",
+            "on-error": "#690005",
+            "outline-variant": "#3e4850",
+            "background": "#0e141c",
+            "on-tertiary": "#003824",
+            "on-primary-fixed": "#001e2f",
+            "tertiary-container": "#00b17b",
+            "surface": "#0e141c",
+            "surface-bright": "#343943",
+            "on-surface-variant": "#bec8d2",
+            "on-primary-container": "#003751",
+            "surface-variant": "#30353e",
+            "outline": "#88929b",
+            "inverse-on-surface": "#2b313a",
+            "on-primary": "#00344d",
+            "tertiary": "#4edea3",
+            "on-secondary-fixed": "#001e2c",
+            "primary": "#89ceff",
+            "on-tertiary-fixed": "#002113",
+            "primary-container": "#0ea5e9",
+            "on-secondary": "#00354a",
+            "inverse-primary": "#006591",
+            "on-tertiary-fixed-variant": "#005236",
+            "on-secondary-container": "#00374d",
+            "surface-container-lowest": "#090e17",
+            "surface-dim": "#0e141c",
+            "surface-container-highest": "#30353e",
+            "surface-tint": "#89ceff",
+            "secondary-container": "#00a6e0",
+            "inverse-surface": "#dee2ef",
+            "on-secondary-fixed-variant": "#004c69",
+            "tertiary-fixed-dim": "#4edea3",
+            "secondary": "#7bd0ff",
+            "primary-fixed": "#c9e6ff",
+            "on-error-container": "#ffdad6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "unit-xs": "0.25rem",
+            "unit-sm": "0.5rem",
+            "gutter-dense": "0.5rem",
+            "unit-2xs": "0.125rem",
+            "gutter-standard": "1rem",
+            "unit-xl": "2rem",
+            "unit-lg": "1.5rem",
+            "unit-2xl": "3rem",
+            "unit-base": "1rem",
+            "unit-md": "0.75rem",
+            "margin-screen": "1.25rem"
+          },
+          "fontFamily": {
+            "label-sm": ["JetBrains Mono"],
+            "body-sm": ["JetBrains Mono"],
+            "body-md": ["JetBrains Mono"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["JetBrains Mono"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "code-stream": ["JetBrains Mono"],
+            "label-lg": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"],
+            "headline-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-sm": ["9px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+            "body-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-xl": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "body-lg": ["14px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "code-stream": ["11px", { "lineHeight": "15px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "label-lg": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-md": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500" }],
+            "headline-lg": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Material Symbols base styling */
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Cyber matrix background and radar styling */
+    .cyber-grid {
+      background-size: 24px 24px;
+      background-image: 
+        radial-gradient(circle, rgba(14, 165, 233, 0.08) 1px, transparent 1px);
+    }
+    
+    .radar-ring {
+      border: 1px solid rgba(14, 165, 233, 0.07);
+      border-radius: 9999px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* Subtle photon glow simulation */
+    .cyan-photon-glow {
+      box-shadow: 0 0 45px -5px rgba(14, 165, 233, 0.16), 0 0 1px 1px rgba(14, 165, 233, 0.28);
+    }
+    .btn-cyan-glow:hover {
+      box-shadow: 0 0 24px 0 rgba(14, 165, 233, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface min-h-screen flex flex-col justify-between overflow-x-hidden relative selection:bg-primary-container selection:text-surface-container-lowest">
+<!-- ================= BACKGROUND RADAR & TELEMETRY ATMOSPHERE ================= -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+<!-- Cybernetic dot matrix grid -->
+<div class="absolute inset-0 cyber-grid opacity-60"></div>
+<!-- Radial ambient cyan core glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] bg-primary-container/10 blur-[130px] rounded-full"></div>
+<!-- Concentric radar mesh rings -->
+<div class="radar-ring w-[380px] h-[380px]"></div>
+<div class="radar-ring w-[640px] h-[640px]"></div>
+<div class="radar-ring w-[920px] h-[920px]"></div>
+<div class="radar-ring w-[1240px] h-[1240px] border-dashed border-outline-variant/30"></div>
+<!-- Crosshair reticles -->
+<div class="absolute top-1/2 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/10 to-transparent"></div>
+<div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-primary/10 to-transparent"></div>
+</div>
+<!-- ================= TOP TELEMETRY EDGE BAR ================= -->
+<!-- Linear/Transactional page logic strictly suppresses SideNav & full TopNavBar shell while maintaining tactical edge telemetries -->
+<header class="relative z-10 w-full border-b border-outline-variant/40 bg-surface-container-lowest/80 backdrop-blur-md px-unit-base py-unit-xs">
+<div class="max-w-[1920px] mx-auto flex items-center justify-between font-label-md text-label-md">
+<!-- Left Edge Node Telemetry -->
+<div class="flex items-center space-x-unit-base">
+<div class="flex items-center space-x-unit-xs">
+<span class="inline-block w-2 h-2 rounded-none bg-tertiary shadow-[0_0_8px_rgba(78,222,163,0.7)] animate-pulse"></span>
+<span class="text-tertiary tracking-wider font-semibold">NODE: 127.0.0.1</span>
+<span class="text-on-surface-variant font-code-stream text-code-stream">(STANDBY)</span>
+</div>
+<span class="hidden sm:inline text-outline-variant">|</span>
+<div class="hidden sm:flex items-center space-x-unit-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[14px]" data-icon="lock">lock</span>
+<span class="tracking-wider">TLS 1.3 MKCERT ENCRYPTED</span>
+</div>
+</div>
+<!-- Center Subtle Primary Route Identity -->
+<div class="hidden lg:flex items-center space-x-unit-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="terminal">terminal</span>
+<span class="font-code-stream text-code-stream">RFC-6761::LOOPBACK-DAEMON</span>
+</div>
+<!-- Right Kernel Telemetry Status -->
+<div class="flex items-center space-x-unit-md">
+<div class="flex items-center space-x-unit-xs text-on-surface-variant font-code-stream text-code-stream">
+<span class="text-outline">KERNEL:</span>
+<span class="text-primary font-medium">6.9.3-zen</span>
+</div>
+<div class="h-3 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center space-x-unit-2xs text-tertiary">
+<span class="material-symbols-outlined text-[14px]" data-icon="shield">shield</span>
+<span class="tracking-wider font-bold">AIR-GAPPED</span>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= MAIN GATEWAY TERMINAL CANVAS ================= -->
+<main class="relative z-10 flex-1 flex items-center justify-center p-unit-base sm:p-unit-lg my-auto">
+<!-- Central Glassmorphic Card (Level 2 Elevation) -->
+<div class="w-full max-w-[490px] bg-surface-container-low/85 backdrop-blur-2xl border border-primary/25 rounded-DEFAULT cyan-photon-glow relative overflow-hidden transition-all duration-300">
+<!-- Top Decorative Luminous Hairline Indicator -->
+<div class="h-[2px] w-full bg-gradient-to-r from-transparent via-primary-container to-transparent"></div>
+<!-- Terminal Inner Container -->
+<div class="p-unit-lg sm:p-unit-xl">
+<!-- Gateway Card Header -->
+<div class="flex flex-col items-center text-center">
+<!-- Anchor Node Emblem with Photon Halo -->
+<div class="relative mb-unit-md group">
+<div class="w-14 h-14 bg-surface-container-highest border border-primary/40 rounded-DEFAULT flex items-center justify-center relative z-10 transition-transform group-hover:scale-105 duration-200">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="hub" data-weight="fill" style="font-variation-settings: 'FILL' 1;">hub</span>
+</div>
+<div class="absolute -inset-1 bg-primary-container/20 rounded-DEFAULT blur-md -z-0"></div>
+</div>
+<!-- Title -->
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-widest uppercase">
+            PORTSIDE//GATEWAY
+          </h1>
+<!-- Subtitle and Primary Release Badge -->
+<div class="flex flex-wrap items-center justify-center gap-unit-xs mt-unit-2xs">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Primary Reverse Proxy &amp; Localhost Mesh
+            </p>
+<span class="inline-flex items-center px-unit-xs py-unit-2xs rounded-DEFAULT bg-surface-container-high border border-outline-variant/60 text-secondary font-label-sm text-label-sm">
+              v4.12.0 // PRIMARY
+            </span>
+</div>
+<!-- Telemetry Status Ribbon: Interactive loopback binding badge -->
+<div class="w-full mt-unit-md py-unit-xs px-unit-sm bg-surface-container-lowest/90 border border-outline-variant/40 rounded-DEFAULT flex items-center justify-between">
+<div class="flex items-center space-x-unit-xs">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span>
+</span>
+<span class="font-label-sm text-label-sm text-tertiary tracking-wider font-semibold">
+                Binding to RFC 6761 Loopback :80
+              </span>
+</div>
+<span class="font-code-stream text-code-stream text-outline">READY</span>
+</div>
+</div>
+<!-- ================= OPERATOR AUTHENTICATION FORM ================= -->
+<form class="mt-unit-lg space-y-unit-md" onsubmit="event.preventDefault();">
+<!-- Operator Identifier Field -->
+<div class="space-y-unit-2xs">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant tracking-wider flex items-center gap-unit-xs" for="operator-id">
+<span class="text-primary font-bold">&gt;_</span> OPERATOR IDENTITY
+              </label>
+<span class="font-code-stream text-code-stream text-outline">PUBLIC_KEY / UID</span>
+</div>
+<div class="relative flex items-center">
+<div class="absolute left-unit-sm flex items-center pointer-events-none text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="terminal">terminal</span>
+</div>
+<input autocomplete="username" class="w-full pl-9 pr-unit-sm py-unit-sm bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" id="operator-id" placeholder="e.g. root@primary.local or operator_01" required="" type="text" value="operator_01@primary.local"/>
+</div>
+</div>
+<!-- Master Access Key / Passphrase Field -->
+<div class="space-y-unit-2xs">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant tracking-wider flex items-center gap-unit-xs" for="master-key">
+<span class="material-symbols-outlined text-primary text-[14px]" data-icon="key">key</span>
+                MASTER ENCRYPTION KEY
+              </label>
+<span class="font-code-stream text-code-stream text-outline">AES-256-GCM</span>
+</div>
+<div class="relative flex items-center">
+<div class="absolute left-unit-sm flex items-center pointer-events-none text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="encrypted">encrypted</span>
+</div>
+<input autocomplete="current-password" class="w-full pl-9 pr-16 py-unit-sm bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface placeholder:text-outline tracking-wider focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" id="master-key" placeholder="••••••••••••••••••••••••••••" required="" type="password" value="primary-proxy-seed-node-99x"/>
+<button class="absolute right-unit-xs px-unit-xs py-unit-2xs text-primary hover:text-secondary-fixed font-label-sm text-label-sm border border-outline-variant/60 hover:border-primary rounded-DEFAULT bg-surface-container-high transition-colors" id="toggle-pwd-btn" onclick="
+                  const pwd = document.getElementById('master-key');
+                  const lbl = document.getElementById('toggle-pwd-label');
+                  if (pwd.type === 'password') {
+                    pwd.type = 'text';
+                    lbl.textContent = 'HIDE';
+                  } else {
+                    pwd.type = 'password';
+                    lbl.textContent = 'SHOW';
+                  }
+                " type="button">
+<span id="toggle-pwd-label">SHOW</span>
+</button>
+</div>
+</div>
+<!-- Session Options -->
+<div class="flex items-center justify-between pt-unit-2xs">
+<label class="flex items-center space-x-unit-xs cursor-pointer group select-none">
+<input checked="" class="w-3.5 h-3.5 rounded-DEFAULT bg-surface-container-lowest border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 transition-colors cursor-pointer" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface transition-colors">
+                Persist Mesh Session
+              </span>
+</label>
+<a class="font-label-md text-label-md text-primary hover:text-secondary-fixed transition-colors underline-offset-2 hover:underline" href="#">
+              Forgot Master Key?
+            </a>
+</div>
+<!-- Primary Execution Action Button -->
+<div class="pt-unit-xs">
+<button class="w-full py-unit-sm px-unit-md bg-gradient-to-r from-primary-container to-secondary-container text-surface-container-lowest font-body-lg text-body-lg font-bold tracking-wider rounded-DEFAULT flex items-center justify-center space-x-unit-xs btn-cyan-glow hover:opacity-95 active:scale-[0.99] transition-all" type="submit">
+<span>INITIALIZE COCKPIT</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="rocket_launch">rocket_launch</span>
+</button>
+</div>
+<!-- Separator with Tactical Label -->
+<div class="relative py-unit-2xs flex items-center justify-center">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/40"></div>
+</div>
+<div class="relative bg-surface-container-low px-unit-sm text-outline font-label-sm text-label-sm tracking-widest uppercase">
+              OR HARDWARE ENCLAVE
+            </div>
+</div>
+<!-- Secondary Action: Provision Hardware Token (WebAuthn / FIDO2) -->
+<button class="w-full py-unit-sm px-unit-md bg-surface-container border border-primary/20 hover:border-primary/60 text-primary font-label-lg text-label-lg rounded-DEFAULT flex items-center justify-center space-x-unit-xs hover:bg-surface-container-high transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="passkey">passkey</span>
+<span>Provision Hardware Token (WebAuthn / FIDO2)</span>
+</button>
+</form>
+<!-- Node Verification Hash Matrix -->
+<div class="mt-unit-md pt-unit-sm border-t border-outline-variant/30 flex items-center justify-between text-outline font-code-stream text-code-stream">
+<div class="flex items-center space-x-unit-2xs">
+<span class="material-symbols-outlined text-[12px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>NODE IDENTITY VERIFIED</span>
+</div>
+<span class="text-outline-variant">SHA256::e3b0c44...b855</span>
+</div>
+</div>
+</div>
+</main>
+<!-- ================= BOTTOM SECURITY & PROTOCOL FOOTER ================= -->
+<footer class="relative z-10 w-full border-t border-outline-variant/40 bg-surface-container-lowest/90 backdrop-blur-md px-unit-base py-unit-xs">
+<div class="max-w-[1920px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-unit-2xs text-center sm:text-left">
+<!-- Telemetry Protocol Stream -->
+<div class="flex items-center space-x-unit-xs font-label-md text-label-md text-on-surface-variant">
+<span class="inline-block w-1.5 h-1.5 rounded-none bg-tertiary"></span>
+<span class="tracking-wide">TLS 1.3 // RFC 6761 Loopback Zero-Config // Portside Core v4.12</span>
+<span class="hidden md:inline text-tertiary font-bold tracking-wider ml-unit-xs">
+          [SYSTEM ENGINES SYNCHRONIZED]
+        </span>
+</div>
+<!-- Security Micro-copy -->
+<div class="font-code-stream text-code-stream text-outline">
+        Authorized primary operator access only. All packet routes logged to eBPF ring buffer.
+      </div>
+</div>
+</footer>
+</body></html>
