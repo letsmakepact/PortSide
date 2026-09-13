@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { I18nProvider } from "@/lib/i18n";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -57,6 +58,12 @@ export const metadata: Metadata = {
     languages: {
       en: appUrl,
       "en-US": appUrl,
+      "en-GB": `${appUrl}?lang=en-GB`,
+      sv: `${appUrl}?lang=sv`,
+      "zh-CN": `${appUrl}?lang=zh-CN`,
+      nl: `${appUrl}?lang=nl`,
+      hi: `${appUrl}?lang=hi`,
+      "en-IN": `${appUrl}?lang=en-IN`,
       "x-default": appUrl,
     },
   },
@@ -136,7 +143,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body className="min-h-screen font-sans bg-slate-50/70 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 antialiased selection:bg-slate-900 selection:text-white dark:selection:bg-sky-500">
-        <ToastProvider>{children}</ToastProvider>
+        <I18nProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </I18nProvider>
       </body>
     </html>
   );

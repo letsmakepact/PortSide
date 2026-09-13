@@ -648,135 +648,157 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="supporter" className="relative py-16 border-b border-[#1f2937] bg-[#0b0f17]">
+        <section id="supporter" className="relative py-20 sm:py-28 border-b border-[#1f2937] bg-[#070b14]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                {t.supporter.badge}
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-500/20 bg-sky-950/40 text-sky-400 text-xs font-mono mb-3">
+                <Crown className="w-3.5 h-3.5 text-amber-400" />
+                <span>Simple Transparent Plans</span>
               </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                {t.supporter.title}
+              <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+                Free Forever. Supercharged for Supporters.
               </h2>
-              <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
-                {t.supporter.subtitle}
+              <p className="mt-3 text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Core loopback routing on Port 80 is 100% open source and free forever. Upgrade to Supporter to unlock encrypted remote tunnels, dev Wi-Fi hotspots, and interactive LAN cockpits.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-5 items-stretch mb-12">
-              <div className="rounded-lg border border-[#1f2937] bg-[#111827] p-6 sm:p-7 flex flex-col justify-between">
+            <div className="grid md:grid-cols-2 gap-6 items-stretch mb-8">
+              {/* Card 1: Community Free */}
+              <div className="rounded-2xl border border-[#1f2937] bg-gradient-to-b from-[#111827] to-[#0c1220] p-6 sm:p-8 flex flex-col justify-between hover:border-slate-700 transition-all duration-300">
                 <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
-                      {t.supporter.freeTierHeading}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">
+                      Open Source Core
                     </span>
-                    <span className="px-2.5 py-0.5 rounded bg-[#0b0f17] border border-[#1f2937] text-slate-300 text-xs font-mono">
-                      $0
+                    <span className="px-2.5 py-1 rounded-full bg-black/40 border border-white/[0.08] text-slate-300 text-xs font-mono">
+                      Forever Free
                     </span>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mt-2">Portside Community</h3>
-                  <p className="text-xs text-slate-400 mt-1.5">
-                    {t.supporter.freeTierDesc}
+
+                  <div className="flex items-baseline gap-1.5 my-2">
+                    <span className="text-4xl font-extrabold text-white tracking-tight">$0</span>
+                    <span className="text-xs font-mono text-slate-500">/ month</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mt-1">Portside Community</h3>
+                  <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                    Eliminate port numbers and run clean *.localhost subdomains locally on your computer.
                   </p>
 
-                  <div className="mt-6 space-y-2.5 text-xs text-slate-300 border-t border-[#1f2937] pt-5">
+                  <div className="mt-6 space-y-3 text-xs text-slate-300 border-t border-white/[0.06] pt-5">
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{t.simulator.titleLocalhost}</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{t.simulator.protocolLocalhost}</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Unlimited *.localhost subdomains on Port 80</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{t.downloads.subtitle}</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>RFC 6761 compliant loopback resolution (no /etc/hosts)</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{t.features.feature2Title}</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Direct Wi-Fi testing via machine IP (<code className="text-sky-300 font-mono text-[11px]">/s/&lt;project&gt;</code>)</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{t.features.feature3Title}</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Multi-project grouping &amp; workspace orchestration</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span>{t.supporter.perk1}</span>
+                    <div className="flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Real-time background port health &amp; latency monitoring</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span>{t.supporter.perk2}</span>
-                    </div>
-                    <div className="flex items-center gap-2.5 text-slate-500">
-                      <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span>{t.supporter.perk3}</span>
+                    <div className="flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>100% private native binary &mdash; zero telemetry or tracking</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-5 border-t border-[#1f2937]">
+                <div className="mt-8 pt-5 border-t border-white/[0.06]">
                   <a
                     href="#downloads"
-                    className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-2.5 px-4 text-center block transition border border-[#27354a] cursor-pointer"
+                    className="w-full rounded-xl bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-3 px-4 text-center flex items-center justify-center gap-2 transition border border-[#27354a] cursor-pointer"
                   >
-                    {t.downloads.downloadBtn}
+                    <Download className="w-4 h-4 text-sky-400" />
+                    <span>Download Free Launcher</span>
                   </a>
                 </div>
               </div>
 
-              <div className="rounded-lg border border-[#27354a] bg-[#111827] p-6 sm:p-7 flex flex-col justify-between relative">
+              {/* Card 2: Supporter Plan (Highlighted Glow Hero) */}
+              <div className="rounded-2xl border border-sky-500/40 bg-gradient-to-b from-[#131d32] via-[#0d1627] to-[#090f1d] p-6 sm:p-8 flex flex-col justify-between relative shadow-2xl shadow-sky-500/10 ring-1 ring-sky-500/20">
                 <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold flex items-center gap-1.5">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-mono uppercase tracking-wider text-sky-400 font-bold flex items-center gap-1.5">
                       <Crown className="w-3.5 h-3.5 text-amber-400" />
-                      <span>{t.supporter.badge}</span>
+                      <span>Supporter Supercharged</span>
                     </span>
-                    <span className="px-2.5 py-0.5 rounded bg-[#161f30] border border-[#27354a] text-sky-300 text-xs font-mono font-medium">
-                      {t.supporter.price} / {t.supporter.period}
+                    <span className="px-2.5 py-1 rounded-full bg-sky-500/20 border border-sky-500/40 text-sky-300 text-xs font-mono font-bold">
+                      Most Popular
                     </span>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mt-2">Portside Supporter</h3>
-                  <p className="text-xs text-slate-400 mt-1.5">
-                    {t.supporter.description}
+
+                  <div className="flex items-baseline gap-1.5 my-2">
+                    <span className="text-4xl font-extrabold text-white tracking-tight">$5.99</span>
+                    <span className="text-xs font-mono text-slate-400">/ month &middot; cancel anytime</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mt-1">Portside Supporter</h3>
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                    For power developers and teams needing remote edge tunnels, physical mobile cockpits, and off-grid hotspots.
                   </p>
 
-                  <div className="mt-6 space-y-2.5 text-xs text-slate-200 border-t border-[#1f2937] pt-5">
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{t.supporter.freeTierHeading}</span>
+                  <div className="mt-6 space-y-3 text-xs text-slate-200 border-t border-sky-500/20 pt-5">
+                    <div className="flex items-center gap-2.5 font-semibold text-white">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>All Community Free features included</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-white">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{t.supporter.perk1}</span>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Dedicated <code className="text-sky-300 font-mono text-[11px]">*.portside.lol</code> permanent vanity handle</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-white">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{t.supporter.perk2}</span>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Encrypted Remote Edge Tunnels for 5G &amp; webhook testing</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-white">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{t.supporter.perk3}</span>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Direct project routing (<code className="text-sky-300 font-mono text-[11px]">https://&lt;handle&gt;.portside.lol/s/&lt;project&gt;</code>)</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-white">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{t.supporter.perk4}</span>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Interactive LAN Cockpit (<code className="text-sky-300 font-mono text-[11px]">/lan</code>) with Smart TV remote UI</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-white">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{t.supporter.perk5}</span>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Hardware Dev Wi-Fi Hotspot with private DNS (<code className="text-sky-300 font-mono text-[11px]">192.168.137.1</code>)</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Custom local root domains (<code className="text-sky-300 font-mono text-[11px]">*.test</code>, <code className="text-sky-300 font-mono text-[11px]">*.lan</code>, <code className="text-sky-300 font-mono text-[11px]">*.portside</code>)</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-slate-100">
+                      <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                      <span>Public Developer Portfolio &amp; Project Showcase with 6 theme styles</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-5 border-t border-[#1f2937]">
+                <div className="mt-8 pt-5 border-t border-sky-500/20 space-y-2.5">
                   <a
                     href="https://buymeacoffee.com/pacts"
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full rounded-md bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs py-2.5 px-4 text-center block transition border border-sky-500 cursor-pointer"
+                    className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold text-xs py-3 px-4 text-center flex items-center justify-center gap-2 shadow-lg shadow-sky-500/25 transition cursor-pointer"
                   >
-                    {t.supporter.ctaButton} ({t.supporter.price}) →
+                    <span>Unlock Supporter Plan ($5.99/mo)</span>
+                    <ArrowRight className="w-4 h-4" />
                   </a>
+
+                  <p className="text-center text-[11px] text-slate-400">
+                    Have a promo or giveaway key?{" "}
+                    <Link href="/redeem" className="text-sky-400 underline hover:text-sky-300 font-medium">
+                      Redeem here
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>

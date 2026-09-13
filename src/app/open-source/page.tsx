@@ -1,6 +1,7 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://portside.lol";
 
@@ -22,6 +23,12 @@ export const metadata: Metadata = {
     languages: {
       en: `${appUrl}/open-source`,
       "en-US": `${appUrl}/open-source`,
+      "en-GB": `${appUrl}/open-source?lang=en-GB`,
+      sv: `${appUrl}/open-source?lang=sv`,
+      "zh-CN": `${appUrl}/open-source?lang=zh-CN`,
+      nl: `${appUrl}/open-source?lang=nl`,
+      hi: `${appUrl}/open-source?lang=hi`,
+      "en-IN": `${appUrl}/open-source?lang=en-IN`,
       "x-default": `${appUrl}/open-source`,
     },
   },
@@ -96,6 +103,7 @@ export default function OpenSourcePage() {
             >
               GitHub Repo
             </a>
+            <LanguageSelector variant="header" />
           </nav>
         </div>
       </header>

@@ -26,6 +26,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 interface DocItem {
   id: string;
@@ -287,6 +288,7 @@ export default function DocsPage() {
                 data-coffee-color="#FFDD00"
               />
             </div>
+            <LanguageSelector variant="header" />
             <a
               href="https://github.com/letsmakepact/PortSide"
               target="_blank"

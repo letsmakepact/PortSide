@@ -111,24 +111,32 @@ async function verifySupporterStatus(): Promise<boolean> {
     return cachedSupporterStatus.isSupporter;
   }
 
+  // 1. Direct memory check for live cryptographically verified session payload
+  if (
+    typeof global !== "undefined" &&
+    (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__ &&
+    (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__.expiresAt > Date.now() &&
+    (global as any).__PORTSIDE_LIVE_SESSION_PAYLOAD__.tier === "supporter"
+  ) {
+    cachedSupporterStatus = { isSupporter: true, expiresAt: Date.now() + 60 * 1000 };
+    return true;
+  }
+
+  // 2. Query native core launcher daemon on port 4242
   try {
-    const res = await fetch("http://127.0.0.1/api/lan?mode=lan", {
-      signal: AbortSignal.timeout(1500),
-      headers: {
-        "user-agent": "PortSide-Internal-Proxy",
-      },
+    const launcherRes = await fetch("http://127.0.0.1:4242/api/pro/status", {
+      signal: AbortSignal.timeout(400),
     });
-    if (res.ok) {
-      const data = await res.json();
-      const confirmed = Boolean(data.isSupporter);
-      cachedSupporterStatus = {
-        isSupporter: confirmed,
-        expiresAt: Date.now() + 60 * 1000,
-      };
-      return confirmed;
+    if (launcherRes.ok) {
+      const data = await launcherRes.json();
+      if (data.tier === "supporter" || data.isSupporter) {
+        cachedSupporterStatus = { isSupporter: true, expiresAt: Date.now() + 60 * 1000 };
+        return true;
+      }
     }
   } catch {}
 
+  cachedSupporterStatus = { isSupporter: false, expiresAt: Date.now() + 15 * 1000 };
   return false;
 }
 
@@ -162,6 +170,10 @@ export async function proxy(request: NextRequest) {
   const isCustomHost =
     Boolean(customHost) &&
     (hostname === customHost || hostname.endsWith(`.${customHost}`));
+  const isDevTld =
+    hostname.endsWith(".portside") ||
+    hostname.endsWith(".test") ||
+    hostname.endsWith(".lan");
 
   if (origin && !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
     try {
@@ -246,12 +258,28 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (hostname.endsWith(".local")) {
+  const isSystemPath = PORTSIDE_SYSTEM_ROUTES.some(
+    (r) => pathname === r || pathname.startsWith(`${r}/`)
+  );
+
+  if (hostname.endsWith(".local") && !isSystemPath && pathname !== "/") {
     const isSupporter = await verifySupporterStatus();
     if (!isSupporter) {
       return withSecurityHeaders(
         new NextResponse(
           "Forbidden: *.local mDNS routing is reserved for verified PortSide Supporters.",
+          { status: 403 }
+        )
+      );
+    }
+  }
+
+  if ((isCustomHost || isDevTld) && !isSystemPath && pathname !== "/") {
+    const isSupporter = await verifySupporterStatus();
+    if (!isSupporter) {
+      return withSecurityHeaders(
+        new NextResponse(
+          "Forbidden: Custom host and local dev TLD routing (*.portside, *.test, *.lan) is reserved for verified PortSide Supporters.",
           { status: 403 }
         )
       );
@@ -333,9 +361,6 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!label) {
-    const isSystemPath = PORTSIDE_SYSTEM_ROUTES.some(
-      (r) => pathname === r || pathname.startsWith(`${r}/`)
-    );
     if (!isSystemPath) {
       const referer = request.headers.get("referer");
       if (referer) {
@@ -407,7 +432,12 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (!label || label === "www" || label === "app") {
+  if (!label || label === "www" || label === "app" || label === "router" || label === "portside") {
+    if (label === "router" || label === "portside") {
+      const destUrl = request.nextUrl.clone();
+      destUrl.pathname = (hostname.endsWith(".localhost") || hostname === "localhost") ? "/dashboard" : "/lan";
+      return withSecurityHeaders(NextResponse.rewrite(destUrl));
+    }
     return withSecurityHeaders(NextResponse.next());
   }
 

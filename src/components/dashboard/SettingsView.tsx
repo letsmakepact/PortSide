@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import QRCode from "qrcode";
 import {
   Sliders,
@@ -127,6 +127,12 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
   const [profileSubTab, setProfileSubTab] = useState<"identity" | "links" | "projects" | "theme">("identity");
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "pending" | "saving" | "saved" | "error">("idle");
+  const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
+  const initialProfileLoadedRef = useRef(false);
+  const lastSavedPayloadRef = useRef<string>("");
+  const autosaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isSavingRef = useRef(false);
   const [originalProfileHandle, setOriginalProfileHandle] = useState("");
   const [vanityChangesRemaining, setVanityChangesRemaining] = useState(1);
   const [vanityChangesUsed, setVanityChangesUsed] = useState(0);
@@ -262,9 +268,43 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
     }).then(setPortalQrDataUrl).catch(() => {});
   }, [activeTab, hotspotSsid, hotspotKey]);
 
+  // Hotspot Auto-Kill Leash: Heartbeat ping & window teardown beacon
+  useEffect(() => {
+    if (!hotspotActive) return;
+
+    // Send heartbeat every 12s while app is open
+    const interval = setInterval(() => {
+      fetch("/api/hotspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "heartbeat" }),
+      }).catch(() => {});
+    }, 12000);
+
+    // Auto-kill Wi-Fi connection if user closes window/app, unless background service is active
+    const handleUnload = () => {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(
+          "/api/hotspot",
+          new Blob([JSON.stringify({ action: "teardown" })], { type: "application/json" })
+        );
+      }
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    window.addEventListener("pagehide", handleUnload);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("beforeunload", handleUnload);
+      window.removeEventListener("pagehide", handleUnload);
+    };
+  }, [hotspotActive]);
+
   useEffect(() => {
     if (activeTab !== "profile") return;
     setLoadingProfile(true);
+    initialProfileLoadedRef.current = false;
     fetch("/api/profile")
       .then((r) => r.json())
       .then((d) => {
@@ -298,90 +338,238 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
           setProfileTelegram(p.telegram || "");
           setProfileLinkedin(p.linkedin || "");
           setProfileEmail(p.email || "");
-          setProfileSkills(Array.isArray(p.skills) ? p.skills.join(", ") : "");
+          const initialSkills = Array.isArray(p.skills) ? p.skills.join(", ") : "";
+          setProfileSkills(initialSkills);
           setProfileVisibleServices(p.visibleServices || []);
           setProfileProjectOverrides(p.projectOverrides || {});
           setProfileCustomLinks(p.customLinks || []);
           setProfileShowProjects(p.showProjects !== false);
           setProfileProjectsTitle(p.projectsTitle || "Live Hosted Projects");
           setProfileProjectsSubtitle(p.projectsSubtitle || "Active projects hosted directly through PortSide. Open and test in real-time.");
+
+          const initialObj = {
+            handle: p.handle || "",
+            name: p.name || "",
+            title: p.title || "",
+            bio: p.bio || "",
+            avatarUrl: p.avatarUrl || "",
+            bannerUrl: p.bannerUrl || "",
+            bannerPreset: p.bannerPreset || "cyber-mesh",
+            accentColor: p.accentColor || "sky",
+            location: p.location || "",
+            pronouns: p.pronouns || "",
+            organization: p.organization || "",
+            statusText: p.statusText || "Node Online & Active",
+            statusIndicator: p.statusIndicator || "online",
+            verifiedBadgeText: p.verifiedBadgeText || "PortSide Verified Supporter",
+            github: p.github || "",
+            twitter: p.twitter || "",
+            buymeacoffee: p.buymeacoffee || "",
+            website: p.website || "",
+            discord: p.discord || "",
+            telegram: p.telegram || "",
+            linkedin: p.linkedin || "",
+            email: p.email || "",
+            skills: Array.isArray(p.skills) ? p.skills : [],
+            visibleServices: p.visibleServices || [],
+            projectOverrides: p.projectOverrides || {},
+            customLinks: p.customLinks || [],
+            showProjects: p.showProjects !== false,
+            projectsTitle: p.projectsTitle || "Live Hosted Projects",
+            projectsSubtitle: p.projectsSubtitle || "Active projects hosted directly through PortSide. Open and test in real-time.",
+          };
+          lastSavedPayloadRef.current = JSON.stringify(initialObj);
+          setAutosaveStatus("saved");
         }
       })
       .catch(() => {})
-      .finally(() => setLoadingProfile(false));
+      .finally(() => {
+        setLoadingProfile(false);
+        setTimeout(() => {
+          initialProfileLoadedRef.current = true;
+        }, 150);
+      });
   }, [activeTab]);
 
-  async function savePublicProfile(e?: FormEvent) {
-    if (e) e.preventDefault();
-    setSavingProfile(true);
-    try {
-      const skillsArray = profileSkills
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
+  const buildProfilePayload = useCallback(() => {
+    const skillsArray = profileSkills
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
 
-      const payload = {
-        handle: profileHandle,
-        name: profileName,
-        title: profileTitle,
-        bio: profileBio,
-        avatarUrl: profileAvatarUrl,
-        bannerUrl: profileBannerUrl,
-        bannerPreset: profileBannerPreset,
-        accentColor: profileAccentColor,
-        location: profileLocation,
-        pronouns: profilePronouns,
-        organization: profileOrganization,
-        statusText: profileStatusText,
-        statusIndicator: profileStatusIndicator,
-        verifiedBadgeText: profileVerifiedBadgeText,
-        github: profileGithub,
-        twitter: profileTwitter,
-        buymeacoffee: profileBmc,
-        website: profileWebsite,
-        discord: profileDiscord,
-        telegram: profileTelegram,
-        linkedin: profileLinkedin,
-        email: profileEmail,
-        skills: skillsArray,
-        visibleServices: profileVisibleServices,
-        projectOverrides: profileProjectOverrides,
-        customLinks: profileCustomLinks,
-        showProjects: profileShowProjects,
-        projectsTitle: profileProjectsTitle,
-        projectsSubtitle: profileProjectsSubtitle,
-      };
+    return {
+      handle: profileHandle,
+      name: profileName,
+      title: profileTitle,
+      bio: profileBio,
+      avatarUrl: profileAvatarUrl,
+      bannerUrl: profileBannerUrl,
+      bannerPreset: profileBannerPreset,
+      accentColor: profileAccentColor,
+      location: profileLocation,
+      pronouns: profilePronouns,
+      organization: profileOrganization,
+      statusText: profileStatusText,
+      statusIndicator: profileStatusIndicator,
+      verifiedBadgeText: profileVerifiedBadgeText,
+      github: profileGithub,
+      twitter: profileTwitter,
+      buymeacoffee: profileBmc,
+      website: profileWebsite,
+      discord: profileDiscord,
+      telegram: profileTelegram,
+      linkedin: profileLinkedin,
+      email: profileEmail,
+      skills: skillsArray,
+      visibleServices: profileVisibleServices,
+      projectOverrides: profileProjectOverrides,
+      customLinks: profileCustomLinks,
+      showProjects: profileShowProjects,
+      projectsTitle: profileProjectsTitle,
+      projectsSubtitle: profileProjectsSubtitle,
+    };
+  }, [
+    profileHandle,
+    profileName,
+    profileTitle,
+    profileBio,
+    profileAvatarUrl,
+    profileBannerUrl,
+    profileBannerPreset,
+    profileAccentColor,
+    profileLocation,
+    profilePronouns,
+    profileOrganization,
+    profileStatusText,
+    profileStatusIndicator,
+    profileVerifiedBadgeText,
+    profileGithub,
+    profileTwitter,
+    profileBmc,
+    profileWebsite,
+    profileDiscord,
+    profileTelegram,
+    profileLinkedin,
+    profileEmail,
+    profileSkills,
+    profileVisibleServices,
+    profileProjectOverrides,
+    profileCustomLinks,
+    profileShowProjects,
+    profileProjectsTitle,
+    profileProjectsSubtitle,
+  ]);
 
-      const res = await fetch("/api/profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (res.ok && data.ok) {
-        if (data.profile?.handle) {
-          setProfileHandle(data.profile.handle);
-          setOriginalProfileHandle(data.profile.handle);
+  const savePublicProfile = useCallback(
+    async (e?: FormEvent, isAutosave = false) => {
+      if (e) e.preventDefault();
+      if (isSavingRef.current) return;
+      isSavingRef.current = true;
+      if (!isAutosave) setSavingProfile(true);
+      setAutosaveStatus("saving");
+
+      try {
+        const payload = buildProfilePayload();
+        const res = await fetch("/api/profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (res.ok && data.ok) {
+          lastSavedPayloadRef.current = JSON.stringify(payload);
+          setAutosaveStatus("saved");
+          setLastSavedTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+
+          if (data.profile?.handle) {
+            setProfileHandle(data.profile.handle);
+            setOriginalProfileHandle(data.profile.handle);
+          }
+          if (typeof data.vanityChangesRemaining === "number") {
+            setVanityChangesRemaining(data.vanityChangesRemaining);
+          }
+          if (typeof data.vanityChangesUsed === "number") {
+            setVanityChangesUsed(data.vanityChangesUsed);
+          }
+          if (typeof data.nextVanityCost === "number") {
+            setNextVanityCost(data.nextVanityCost);
+          }
+          if (!isAutosave) {
+            toast({
+              tone: "success",
+              title: "Public Profile Saved",
+              description: "Your custom showcase changes are live immediately.",
+            });
+          }
+        } else {
+          setAutosaveStatus("error");
+          if (!isAutosave) {
+            toast({
+              tone: "error",
+              title: "Save Failed",
+              description: data.error || "Failed to save profile changes.",
+            });
+          }
         }
-        if (typeof data.vanityChangesRemaining === "number") {
-          setVanityChangesRemaining(data.vanityChangesRemaining);
+      } catch (err: any) {
+        setAutosaveStatus("error");
+        if (!isAutosave) {
+          toast({
+            tone: "error",
+            title: "Save Failed",
+            description: err?.message || "Failed to save profile.",
+          });
         }
-        if (typeof data.vanityChangesUsed === "number") {
-          setVanityChangesUsed(data.vanityChangesUsed);
-        }
-        if (typeof data.nextVanityCost === "number") {
-          setNextVanityCost(data.nextVanityCost);
-        }
-        toast({ tone: "success", title: "Public Profile Saved", description: "Your custom showcase changes are live immediately." });
-      } else {
-        toast({ tone: "error", title: "Save Failed", description: data.error || "Failed to save profile changes." });
+      } finally {
+        isSavingRef.current = false;
+        if (!isAutosave) setSavingProfile(false);
       }
-    } catch (err: any) {
-      toast({ tone: "error", title: "Save Failed", description: err?.message || "Failed to save profile." });
-    } finally {
-      setSavingProfile(false);
+    },
+    [buildProfilePayload, toast]
+  );
+
+  // Debounced Autosave Effect
+  useEffect(() => {
+    if (activeTab !== "profile" || !initialProfileLoadedRef.current) return;
+
+    const currentPayload = JSON.stringify(buildProfilePayload());
+    if (currentPayload === lastSavedPayloadRef.current) {
+      return;
     }
-  }
+
+    setAutosaveStatus("pending");
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current);
+    }
+
+    autosaveTimerRef.current = setTimeout(() => {
+      savePublicProfile(undefined, true);
+    }, 750);
+
+    return () => {
+      if (autosaveTimerRef.current) {
+        clearTimeout(autosaveTimerRef.current);
+      }
+    };
+  }, [activeTab, buildProfilePayload, savePublicProfile]);
+
+  // Window unload flusher for any pending changes
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (autosaveStatus === "pending") {
+        const payload = buildProfilePayload();
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(
+            "/api/profile",
+            new Blob([JSON.stringify(payload)], { type: "application/json" })
+          );
+        }
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [autosaveStatus, buildProfilePayload]);
 
   function openVanityFlow() {
     setVanityError(null);
@@ -907,10 +1095,52 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                 <span>Visit</span>
               </a>
 
+              {/* Live Autosave Status Indicator */}
+              <div
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition select-none",
+                  autosaveStatus === "saving"
+                    ? "border-sky-500/30 bg-sky-950/40 text-sky-300"
+                    : autosaveStatus === "pending"
+                    ? "border-amber-500/30 bg-amber-950/40 text-amber-300"
+                    : autosaveStatus === "error"
+                    ? "border-rose-500/40 bg-rose-950/40 text-rose-300"
+                    : "border-emerald-500/25 bg-emerald-950/30 text-emerald-400"
+                )}
+              >
+                {autosaveStatus === "saving" ? (
+                  <span className="flex items-center gap-1.5 text-sky-300">
+                    <RefreshCw className="h-3 w-3 animate-spin text-sky-400" />
+                    <span>Autosaving...</span>
+                  </span>
+                ) : autosaveStatus === "pending" ? (
+                  <span className="flex items-center gap-1.5 text-amber-300">
+                    <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span>Saving changes...</span>
+                  </span>
+                ) : autosaveStatus === "error" ? (
+                  <button
+                    type="button"
+                    onClick={() => savePublicProfile()}
+                    className="flex items-center gap-1.5 text-rose-300 hover:text-rose-200 transition cursor-pointer"
+                    title="Autosave failed. Click to retry."
+                  >
+                    <AlertTriangle className="h-3 w-3 text-rose-400" />
+                    <span>Save failed (retry)</span>
+                  </button>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-emerald-400">
+                    <Check className="h-3 w-3 text-emerald-400" />
+                    <span>Autosaved{lastSavedTime ? ` · ${lastSavedTime}` : ""}</span>
+                  </span>
+                )}
+              </div>
+
               <Button
                 onClick={() => savePublicProfile()}
                 loading={savingProfile}
                 className="text-xs px-3.5 py-1.5 shadow-sm"
+                title="Force save immediately"
               >
                 <Check className="h-3.5 w-3.5 mr-1" />
                 Save All
@@ -2152,12 +2382,12 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
 
               <div className="rounded-xl border border-slate-800/70 bg-[#070b14]/70 p-3">
                 <div className="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider">
-                  <span>Custom Host</span>
+                  <span>Hotspot Domain</span>
                   <Globe className="h-3.5 w-3.5 text-emerald-400" />
                 </div>
                 <div className="mt-1 flex items-center justify-between">
                   <p className="font-mono text-xs font-bold text-emerald-400 truncate">
-                    *.{hotspotCustomHost || "portside.test"}
+                    {hotspotCustomHost || "portside.test"}
                   </p>
                   <button
                     type="button"
@@ -2166,14 +2396,14 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                       setCopiedHost(true);
                       setTimeout(() => setCopiedHost(false), 2000);
                     }}
-                    className="text-[10px] font-mono text-emerald-400 hover:text-emerald-300 ml-1"
-                    title="Copy Custom Host"
+                    className="text-[10px] font-mono text-emerald-400 hover:text-emerald-300 ml-1 cursor-pointer"
+                    title="Copy Hotspot Domain"
                   >
                     {copiedHost ? "Copied" : "Copy"}
                   </button>
                 </div>
                 <p className="text-[10px] text-slate-500 truncate mt-0.5">
-                  Hotspot DNS Resolver
+                  Local DNS: &lt;project&gt;.{(hotspotCustomHost || "portside.test")}
                 </p>
               </div>
 
@@ -2245,7 +2475,7 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                   <Globe className="h-3.5 w-3.5 text-emerald-400" />
                   <span>Custom Host & Domains</span>
                   <span className="rounded bg-emerald-500/20 text-emerald-300 px-1 py-0.2 text-[9px] font-bold">
-                    PRO
+                    SUPPORTER
                   </span>
                 </button>
 
@@ -2398,20 +2628,20 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                 </div>
               )}
 
-              {/* TAB 2: CUSTOM HOST & DOMAIN ROUTING (PAID PRO PERK) */}
+              {/* TAB 2: CUSTOM DOMAIN (SUPPORTER PERK) */}
               {hotspotSubTab === "custom_host" && (
                 <div className="space-y-4">
                   <div className="rounded-2xl border border-slate-800 bg-[#0b0f17] p-5 shadow-lg space-y-5">
                     <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-bold text-white">Custom Hotspot Domain Suffix</h3>
+                          <h3 className="text-sm font-bold text-white">Hotspot Domain</h3>
                           <span className="rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 text-[10px] font-bold">
-                            Supporter Pro Perk
+                            Supporter Perk
                           </span>
                         </div>
                         <p className="text-xs text-slate-400 mt-0.5">
-                          Configure your own custom root host for the hotspot network. Any client connected to the hotspot can use this domain instead of IP addresses.
+                          Choose what domain name your phone and devices use while connected to this Wi-Fi.
                         </p>
                       </div>
                       <Globe className="h-5 w-5 text-emerald-400" />
@@ -2420,7 +2650,7 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                     <form onSubmit={saveCustomHostSettings} className="space-y-4">
                       <div>
                         <Label htmlFor="custom-host" className="text-xs font-semibold text-slate-200">
-                          Custom Local Root Domain
+                          Hotspot TLD (Top-Level Domain)
                         </Label>
                         <div className="mt-1.5 flex items-center gap-2">
                           <div className="relative flex-1">
@@ -2428,23 +2658,23 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                               id="custom-host"
                               type="text"
                               value={hotspotCustomHost}
-                              onChange={(e) => setHotspotCustomHost(e.target.value)}
+                              onChange={(e) => setHotspotCustomHost(e.target.value.toLowerCase().trim())}
                               maxLength={48}
                               className="w-full rounded-xl border border-slate-800 bg-[#070b14] px-3.5 py-2.5 text-xs font-mono text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                              placeholder="e.g. portside.test, mybrand.dev, dev.lan"
+                              placeholder="test"
                             />
                           </div>
                           <Button
                             type="submit"
                             size="sm"
                             loading={savingCustomHost}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shrink-0 h-9.5 px-4"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shrink-0 h-9.5 px-4 cursor-pointer"
                           >
-                            Save Custom Host
+                            Save TLD
                           </Button>
                         </div>
                         <p className="mt-1.5 text-[11px] text-slate-500">
-                          Suggested TLDs: <code className="text-emerald-400 font-mono">*.test</code>, <code className="text-emerald-400 font-mono">*.lan</code>, <code className="text-emerald-400 font-mono">*.internal</code>, <code className="text-emerald-400 font-mono">*.portside</code>
+                          Set the local domain suffix (e.g. <span className="text-slate-400 font-mono">test</span>, <span className="text-slate-400 font-mono">lan</span>, or <span className="text-slate-400 font-mono">dev</span>).
                         </p>
                       </div>
 
@@ -2453,46 +2683,38 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                       )}
                     </form>
 
-                    {/* LIVE RESOLVER PREVIEW MATRIX */}
-                    <div className="rounded-xl border border-slate-800/80 bg-[#070b14] p-4 space-y-3">
-                      <p className="text-xs font-bold text-white uppercase tracking-wider">
-                        Live Subdomain Resolution Preview
+                    {/* CLEAR VISUAL EXPLANATION */}
+                    <div className="rounded-xl border border-slate-800/80 bg-[#070b14] p-4 space-y-2.5">
+                      <p className="text-xs font-bold text-white flex items-center gap-2">
+                        <Smartphone className="h-4 w-4 text-emerald-400" />
+                        <span>How you access your work on connected devices:</span>
                       </p>
-                      <div className="grid gap-2 text-xs">
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/50 border border-slate-800">
-                          <span className="font-mono text-slate-300">
-                            http://<strong className="text-white">&lt;service&gt;</strong>.{hotspotCustomHost || "portside.test"}
+                      <div className="space-y-2 text-xs">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 gap-1.5">
+                          <span className="font-mono text-white">
+                            http://<span className="text-emerald-400 font-bold">&lt;your-service&gt;</span>.{hotspotCustomHost || "test"}
                           </span>
-                          <span className="text-[11px] font-mono text-emerald-400 font-semibold">
-                            Proxies to :&lt;port&gt; directly
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/50 border border-slate-800">
-                          <span className="font-mono text-slate-300">
-                            http://{hotspotCustomHost || "portside.test"}
-                          </span>
-                          <span className="text-[11px] font-mono text-sky-400 font-semibold">
-                            Opens PortSide Cockpit
+                          <span className="text-[11px] text-emerald-400 font-semibold">
+                            Opens that specific project (e.g. web.{hotspotCustomHost || "test"})
                           </span>
                         </div>
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900/50 border border-slate-800">
-                          <span className="font-mono text-slate-300">
-                            http://<strong className="text-white">&lt;service&gt;</strong>.192.168.137.1.nip.io
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 gap-1.5">
+                          <span className="font-mono text-white">
+                            http://router.{hotspotCustomHost || "test"}
                           </span>
-                          <span className="text-[11px] font-mono text-amber-400 font-semibold">
-                            Universal Wildcard Fallback
+                          <span className="text-[11px] text-sky-400 font-semibold">
+                            Opens the PortSide Cockpit (or router.localhost on PC)
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* HOTSPOT DNS ARCHITECTURE CALLOUT */}
-                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-4 text-xs text-emerald-200 leading-relaxed">
-                      <div className="flex items-center gap-2 font-bold text-emerald-300 mb-1">
-                        <Zap className="h-4 w-4" />
-                        <span>How Hotspot DNS Works</span>
-                      </div>
-                      When physical phones or computers connect to your Dev Wi-Fi Hotspot, Windows assigns your workstation (<code className="font-mono bg-emerald-900/40 px-1 py-0.5 rounded text-white">192.168.137.1</code>) as their Primary DNS server and default gateway. Because you control the network, PortSide catches all queries for your custom domain and routes traffic straight to your local servers with zero cloud hops.
+                    {/* SIMPLE HOW IT WORKS NOTE */}
+                    <div className="rounded-xl border border-slate-800 bg-[#070b14]/50 p-3.5 text-xs text-slate-400 flex items-start gap-2.5">
+                      <Zap className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <p className="leading-relaxed text-[11px]">
+                        PortSide runs the private DNS gateway for this Wi-Fi (<code className="font-mono text-emerald-400">192.168.137.1</code>). Any device on the hotspot automatically resolves this domain to your PC without touching the internet.
+                      </p>
                     </div>
                   </div>
                 </div>

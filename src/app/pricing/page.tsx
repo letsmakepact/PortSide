@@ -1,6 +1,7 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://portside.lol";
 
@@ -21,6 +22,12 @@ export const metadata: Metadata = {
     languages: {
       en: `${appUrl}/pricing`,
       "en-US": `${appUrl}/pricing`,
+      "en-GB": `${appUrl}/pricing?lang=en-GB`,
+      sv: `${appUrl}/pricing?lang=sv`,
+      "zh-CN": `${appUrl}/pricing?lang=zh-CN`,
+      nl: `${appUrl}/pricing?lang=nl`,
+      hi: `${appUrl}/pricing?lang=hi`,
+      "en-IN": `${appUrl}/pricing?lang=en-IN`,
       "x-default": `${appUrl}/pricing`,
     },
   },
@@ -104,6 +111,7 @@ export default function PricingPage() {
             >
               Open Dashboard
             </Link>
+            <LanguageSelector variant="header" />
           </nav>
         </div>
       </header>

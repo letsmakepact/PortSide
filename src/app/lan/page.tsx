@@ -5,17 +5,26 @@ import { AnchorLogo } from "@/components/ui/AnchorLogo";
 import { isServerSupporter } from "@/lib/server-checks";
 import { LanRemoteNav } from "@/components/lan/LanRemoteNav";
 import { LanCockpitClient } from "@/components/lan/LanCockpitClient";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
+
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://portside.lol";
 
 export const metadata: Metadata = {
   title: "Multi-Device LAN Launchpad",
   description:
     "Launch and test local development servers across iOS, Android, and Smart TV browsers with zero-config Open-Air signals and scannable QR codes.",
   alternates: {
-    canonical: "/lan",
+    canonical: `${appUrl}/lan`,
     languages: {
-      en: "/lan",
-      "en-US": "/lan",
-      "x-default": "/lan",
+      en: `${appUrl}/lan`,
+      "en-US": `${appUrl}/lan`,
+      "en-GB": `${appUrl}/lan?lang=en-GB`,
+      sv: `${appUrl}/lan?lang=sv`,
+      "zh-CN": `${appUrl}/lan?lang=zh-CN`,
+      nl: `${appUrl}/lan?lang=nl`,
+      hi: `${appUrl}/lan?lang=hi`,
+      "en-IN": `${appUrl}/lan?lang=en-IN`,
+      "x-default": `${appUrl}/lan`,
     },
   },
   openGraph: {
@@ -91,9 +100,12 @@ export default async function LanPortalPage() {
             </a>
           </div>
         </div>
-        <p className="relative z-10 mt-6 text-xs text-slate-600 font-mono">
-          Created by pact &middot; letsmakepact
-        </p>
+        <div className="relative z-10 mt-6 flex flex-col items-center gap-2">
+          <LanguageSelector variant="compact" />
+          <p className="text-xs text-slate-600 font-mono">
+            Created by pact &middot; letsmakepact
+          </p>
+        </div>
       </div>
     );
   }

@@ -8,6 +8,7 @@
  */
 
 const { execSync, spawnSync, spawn } = require('child_process');
+const path = require('path');
 
 const isDev = process.argv.includes('--dev');
 const PORT  = 80;
@@ -130,16 +131,42 @@ async function main() {
   console.log(`[Portside] Starting on port ${PORT}...`);
   await claimPort80();
 
-  // Start Next.js
+  // Start Next.js directly via Node executable (avoids Windows cmd/shell CVE-2024-27980 issues)
+  const nextBin = path.resolve(__dirname, 'node_modules', 'next', 'dist', 'bin', 'next');
   const args = isDev
-    ? ['next', 'dev', '-p', String(PORT)]
-    : ['next', 'start', '-p', String(PORT)];
+    ? [nextBin, 'dev', '-p', String(PORT)]
+    : [nextBin, 'start', '-p', String(PORT)];
 
-  const child = spawn('npx', args, { stdio: 'inherit', shell: true });
+  const child = spawn(process.execPath, args, { stdio: ['ignore', 'inherit', 'inherit'] });
 
-  child.on('exit', code => process.exit(code ?? 0));
-  process.on('SIGINT',  () => child.kill('SIGINT'));
-  process.on('SIGTERM', () => child.kill('SIGTERM'));
+  function cleanupHotspot() {
+    try {
+      // Check if background launcher is running on port 4242
+      const isBg = run(`netstat -ano -p TCP`).includes(':4242 ') && run(`netstat -ano -p TCP`).includes('LISTENING');
+      if (!isBg && process.platform === 'win32') {
+        console.log('[Portside] Stopping Wi-Fi Hosted Network on app close...');
+        run(`netsh wlan stop hostednetwork`);
+      }
+    } catch {}
+  }
+
+  child.on('error', err => {
+    console.error('[Portside] Next.js process error:', err);
+  });
+
+  child.on('exit', (code, signal) => {
+    console.log(`[Portside] Next.js child process exited with code ${code}, signal ${signal}`);
+    cleanupHotspot();
+    process.exit(code ?? 0);
+  });
+  process.on('SIGINT',  () => {
+    cleanupHotspot();
+    child.kill('SIGINT');
+  });
+  process.on('SIGTERM', () => {
+    cleanupHotspot();
+    child.kill('SIGTERM');
+  });
 }
 
 main();

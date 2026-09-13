@@ -6,6 +6,8 @@ import {
   setHotspotActive,
   configureHotspot,
   getCustomHotspotHost,
+  hotspot,
+  isBackgroundDaemonActive,
 } from "@/lib/hotspot";
 
 let hotspotActive = false;
@@ -113,17 +115,50 @@ export async function POST(req: Request) {
     }
 
     const body = (await req.json().catch(() => ({}))) as {
+      action?: "heartbeat" | "teardown";
       active?: boolean;
       ssid?: string;
       key?: string;
       customHost?: string;
     };
 
+    if (body.action === "heartbeat") {
+      hotspot.recordHeartbeat();
+      return Response.json({ ok: true, heartbeat: true });
+    }
+
+    if (body.action === "teardown") {
+      const isBg = await isBackgroundDaemonActive();
+      if (!isBg) {
+        await setHotspotActive(false);
+        hotspotActive = false;
+        return Response.json({ ok: true, teardown: true, killed: true });
+      }
+      return Response.json({ ok: true, teardown: false, backgroundKept: true });
+    }
+
+    let sanitizedCustomHost: string | undefined = undefined;
+    if (typeof body.customHost === "string") {
+      const cleanHost = body.customHost.trim().toLowerCase();
+      if (cleanHost.length > 64) {
+        return Response.json({ error: "Custom host exceeds 64 character limit." }, { status: 400 });
+      }
+      if (cleanHost) {
+        if (!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/.test(cleanHost)) {
+          return Response.json({ error: "Invalid custom host format. Use valid domain labels (e.g. kovak.lan, devnet.mybrand.dev)." }, { status: 400 });
+        }
+        if (cleanHost === "localhost" || cleanHost.endsWith(".localhost") || cleanHost === "127.0.0.1" || cleanHost === "0.0.0.0" || cleanHost.startsWith("192.168.")) {
+          return Response.json({ error: "Custom host cannot be loopback or internal subnet IP." }, { status: 400 });
+        }
+      }
+      sanitizedCustomHost = cleanHost;
+    }
+
     let updatedStatus;
     if (typeof body.active === "boolean") {
-      updatedStatus = await setHotspotActive(body.active, body.ssid, body.key, body.customHost);
+      updatedStatus = await setHotspotActive(body.active, body.ssid, body.key, sanitizedCustomHost);
     } else {
-      await configureHotspot(body.ssid, body.key, body.customHost);
+      await configureHotspot(body.ssid, body.key, sanitizedCustomHost);
       updatedStatus = await getHotspotStatus();
     }
 
@@ -131,7 +166,7 @@ export async function POST(req: Request) {
     hotspotSsid = updatedStatus.ssid;
     hotspotKey = updatedStatus.key;
 
-    await syncWithLauncher(body.active, body.ssid, body.key, user.email, body.customHost);
+    await syncWithLauncher(body.active, body.ssid, body.key, user.email, sanitizedCustomHost);
 
     return Response.json({
       ok: true,

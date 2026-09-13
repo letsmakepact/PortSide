@@ -79,6 +79,35 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
     }).then(setPortalQrUrl).catch(() => {});
   }, [open, ssid, key]);
 
+  useEffect(() => {
+    if (!active) return;
+    const interval = setInterval(() => {
+      fetch("/api/hotspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "heartbeat" }),
+      }).catch(() => {});
+    }, 12000);
+
+    const handleUnload = () => {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(
+          "/api/hotspot",
+          new Blob([JSON.stringify({ action: "teardown" })], { type: "application/json" })
+        );
+      }
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    window.addEventListener("pagehide", handleUnload);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("beforeunload", handleUnload);
+      window.removeEventListener("pagehide", handleUnload);
+    };
+  }, [active]);
+
   async function toggleHotspot() {
     setSaving(true);
     setSavedMsg("");
@@ -340,18 +369,18 @@ export function DevHotspotModal({ open, onClose }: { open: boolean; onClose: () 
 
                   <div className="sm:col-span-2">
                     <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                      Custom Local Root Domain (Pro Perk)
+                      Hotspot TLD (Top-Level Domain)
                     </label>
                     <input
                       type="text"
                       value={customHost}
-                      onChange={(e) => setCustomHost(e.target.value)}
+                      onChange={(e) => setCustomHost(e.target.value.toLowerCase().trim())}
                       maxLength={48}
                       className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-mono text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      placeholder="e.g. portside.test, dev.lan"
+                      placeholder="test"
                     />
                     <p className="mt-1 text-[10px] text-slate-400">
-                      Subdomains like <code className="text-emerald-400 font-mono">&lt;service&gt;.{customHost || "portside.test"}</code> route directly through PortSide on this hotspot.
+                      On connected devices: <code className="text-emerald-400 font-mono">http://&lt;service&gt;.{customHost || "test"}</code> opens projects, and <code className="text-sky-400 font-mono">http://router.{customHost || "test"}</code> opens PortSide Cockpit.
                     </p>
                   </div>
 

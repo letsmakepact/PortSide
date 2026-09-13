@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://portside.lol";
 
@@ -22,6 +23,12 @@ export const metadata: Metadata = {
     languages: {
       en: `${appUrl}/comparisons`,
       "en-US": `${appUrl}/comparisons`,
+      "en-GB": `${appUrl}/comparisons?lang=en-GB`,
+      sv: `${appUrl}/comparisons?lang=sv`,
+      "zh-CN": `${appUrl}/comparisons?lang=zh-CN`,
+      nl: `${appUrl}/comparisons?lang=nl`,
+      hi: `${appUrl}/comparisons?lang=hi`,
+      "en-IN": `${appUrl}/comparisons?lang=en-IN`,
       "x-default": `${appUrl}/comparisons`,
     },
   },
@@ -114,6 +121,7 @@ export default function ComparisonsPage() {
             >
               Open Dashboard
             </Link>
+            <LanguageSelector variant="header" />
           </nav>
         </div>
       </header>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://portside.lol";
 
@@ -22,6 +23,12 @@ export const metadata: Metadata = {
     languages: {
       en: `${appUrl}/ngrok-alternative`,
       "en-US": `${appUrl}/ngrok-alternative`,
+      "en-GB": `${appUrl}/ngrok-alternative?lang=en-GB`,
+      sv: `${appUrl}/ngrok-alternative?lang=sv`,
+      "zh-CN": `${appUrl}/ngrok-alternative?lang=zh-CN`,
+      nl: `${appUrl}/ngrok-alternative?lang=nl`,
+      hi: `${appUrl}/ngrok-alternative?lang=hi`,
+      "en-IN": `${appUrl}/ngrok-alternative?lang=en-IN`,
       "x-default": `${appUrl}/ngrok-alternative`,
     },
   },
@@ -108,6 +115,7 @@ export default function NgrokAlternativePage() {
             >
               Open Dashboard
             </Link>
+            <LanguageSelector variant="header" />
           </nav>
         </div>
       </header>
