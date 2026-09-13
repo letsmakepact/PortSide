@@ -37,6 +37,8 @@ import {
 } from "lucide-react";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
 import { RoutingArchitectureSimulator } from "@/components/home/RoutingArchitectureSimulator";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
+import { useI18n } from "@/lib/i18n";
 
 interface ReleaseAsset {
   name: string;
@@ -181,6 +183,7 @@ const FAQS = [
 ];
 
 export default function Home() {
+  const { t, locale } = useI18n();
   const [activeTab, setActiveTab] = useState(0);
   const [downloads, setDownloads] = useState<PlatformDownloads>(DEFAULT_DOWNLOADS);
   const [copiedCurl, setCopiedCurl] = useState(false);
@@ -277,12 +280,13 @@ export default function Home() {
 
           <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-400 absolute left-1/2 -translate-x-1/2">
             <Link href="/docs" className="text-sky-400 hover:text-sky-300 transition font-mono flex items-center gap-1">
-              <span>Docs</span>
+              <span>{t.nav.docs}</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <LanguageSelector variant="header" />
             <a
               href="https://github.com/letsmakepact/PortSide"
               target="_blank"
@@ -292,18 +296,18 @@ export default function Home() {
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
-              <span className="hidden sm:inline">GitHub</span>
+              <span className="hidden sm:inline">{t.nav.github}</span>
             </a>
             <a
               href="#downloads"
               className={`inline-flex items-center gap-1.5 rounded-md bg-sky-600 hover:bg-sky-500 text-xs font-medium text-white transition-all duration-300 ${
                 showNavDownload
-                  ? "opacity-100 scale-100 max-w-[140px] px-3 py-1.5 pointer-events-auto"
+                  ? "opacity-100 scale-100 max-w-[150px] px-3 py-1.5 pointer-events-auto"
                   : "opacity-0 scale-90 max-w-0 px-0 py-1.5 pointer-events-none overflow-hidden"
               }`}
             >
               <Download className="w-3.5 h-3.5 shrink-0" />
-              <span className="shrink-0 whitespace-nowrap">Get Portside</span>
+              <span className="shrink-0 whitespace-nowrap">{t.nav.getPortside}</span>
             </a>
           </div>
         </div>
@@ -323,15 +327,15 @@ export default function Home() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-tight">
-              Name your <span className="text-sky-400 font-mono">*.localhost</span>.
+              {t.hero.taglinePre} <span className="text-sky-400 font-mono">*.localhost</span>.
               <br />
               <span className="text-2xl sm:text-3xl lg:text-4xl font-normal text-slate-400">
-                Direct loopback routing on Port 80.
+                {t.hero.taglinePost}
               </span>
             </h1>
 
             <p className="mt-5 text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              Stop memorizing <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">:3000</code>, <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">:8080</code>, or <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">:5173</code>. Portside routes clean subdomains on HTTP port 80, broadcasts <code className="text-slate-300 font-mono bg-[#111827] px-1.5 py-0.5 rounded border border-[#1f2937]">*.local</code> to local Wi-Fi, and deploys encrypted edge tunnels.
+              {t.hero.description}
             </p>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -340,7 +344,7 @@ export default function Home() {
                 className="rounded-md bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 font-medium text-xs sm:text-sm transition flex items-center gap-2 border border-sky-500"
               >
                 <Download className="w-4 h-4 text-white" />
-                <span>Download for Windows</span>
+                <span>{t.hero.downloadWindows}</span>
                 <span className="text-[11px] font-mono text-sky-200">(.exe)</span>
               </a>
 
@@ -349,7 +353,7 @@ export default function Home() {
                 className="rounded-md bg-[#111827] hover:bg-[#161f30] text-slate-200 border border-[#1f2937] px-4 py-2.5 font-medium text-xs sm:text-sm transition flex items-center gap-2"
               >
                 <Layers className="w-4 h-4 text-slate-400" />
-                <span>All Platforms</span>
+                <span>{t.hero.allPlatforms}</span>
               </a>
             </div>
 
@@ -363,17 +367,18 @@ export default function Home() {
                 </div>
                 <button
                   onClick={handleCopyCurl}
+                  title={t.hero.copyInstall}
                   className="shrink-0 inline-flex items-center gap-1 rounded bg-[#161f30] hover:bg-[#1f2937] border border-[#27354a] px-2 py-1 text-[10px] font-medium text-slate-300 hover:text-white transition"
                 >
                   {copiedCurl ? (
                     <>
                       <Check className="w-3 h-3 text-emerald-400" />
-                      <span className="text-emerald-400">Copied</span>
+                      <span className="text-emerald-400">{t.hero.copied}</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-3 h-3" />
-                      <span>Copy</span>
+                      <span>{t.hero.copyInstall}</span>
                     </>
                   )}
                 </button>
@@ -395,13 +400,13 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                Capabilities
+                {t.nav.docs}
               </span>
               <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                Designed for local development workflows
+                {t.features.title}
               </h2>
               <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
-                Everything required to proxy local processes, verify endpoints on real devices, and run multi-project architectures.
+                {t.features.subtitle}
               </p>
             </div>
 
@@ -410,9 +415,9 @@ export default function Home() {
                 <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
                   <Server className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white text-sm">RFC 6761 Loopback Proxy</h3>
+                <h3 className="font-semibold text-white text-sm">{t.features.feature1Title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Binds HTTP port 80 on loopback. Browsers resolve all *.localhost subdomains directly to 127.0.0.1 with zero hosts file editing.
+                  {t.features.feature1Desc}
                 </p>
               </div>
 
@@ -420,9 +425,9 @@ export default function Home() {
                 <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-emerald-400">
                   <Globe className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white text-sm">Encrypted Remote Tunnels</h3>
+                <h3 className="font-semibold text-white text-sm">{t.features.feature4Title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Supporter feature powered by encrypted tunnels. Expose local services to teammates and mobile carriers without router configuration.
+                  {t.features.feature4Desc}
                 </p>
               </div>
 
@@ -430,9 +435,9 @@ export default function Home() {
                 <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
                   <Tv className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white text-sm">Mobile & Smart TV LAN Pairing</h3>
+                <h3 className="font-semibold text-white text-sm">{t.features.feature3Title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Scan a QR code on your phone or open your machine IP on a TV for an ergonomic launchpad with *.local Open-Air signals.
+                  {t.features.feature3Desc}
                 </p>
               </div>
 
@@ -440,9 +445,9 @@ export default function Home() {
                 <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-amber-400">
                   <Radio className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white text-sm">Isolated Dev Wi-Fi Hotspot</h3>
+                <h3 className="font-semibold text-white text-sm">{t.features.feature6Title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Broadcast an isolated wireless access point directly from machine hardware. Ideal for testing outside corporate network firewalls.
+                  {t.features.feature6Desc}
                 </p>
               </div>
 
@@ -450,9 +455,9 @@ export default function Home() {
                 <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-sky-400">
                   <Palette className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white text-sm">Vanity Domains & Showcase</h3>
+                <h3 className="font-semibold text-white text-sm">{t.features.feature5Title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Curate your public developer profile at <code className="text-slate-300 font-mono text-[11px]">handle.portside.lol</code> with custom bio, skills, and running project links.
+                  {t.features.feature5Desc}
                 </p>
               </div>
 
@@ -460,9 +465,9 @@ export default function Home() {
                 <div className="w-8 h-8 rounded bg-[#161f30] border border-[#27354a] flex items-center justify-center text-emerald-400">
                   <Activity className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white text-sm">Port Health Telemetry</h3>
+                <h3 className="font-semibold text-white text-sm">{t.features.feature2Title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Background worker probes registered internal ports, tracks millisecond latency, and logs route events in an audit timeline.
+                  {t.features.feature2Desc}
                 </p>
               </div>
             </div>
@@ -473,13 +478,13 @@ export default function Home() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                Plan Comparison
+                {t.supporter.badge}
               </span>
               <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                Free Forever or Supporter Supercharged
+                {t.supporter.title}
               </h2>
               <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
-                Portside is 100% open-source for core loopback workflows. Supporter tier unlocks edge tunnels and remote mobile pairing.
+                {t.supporter.subtitle}
               </p>
             </div>
 
@@ -488,53 +493,49 @@ export default function Home() {
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
-                      Open Source Core
+                      {t.supporter.freeTierHeading}
                     </span>
                     <span className="px-2.5 py-0.5 rounded bg-[#0b0f17] border border-[#1f2937] text-slate-300 text-xs font-mono">
-                      $0 Free
+                      $0
                     </span>
                   </div>
                   <h3 className="text-xl font-semibold text-white mt-2">Portside Community</h3>
                   <p className="text-xs text-slate-400 mt-1.5">
-                    Eliminate port numbers and run clean *.localhost subdomains on local machines.
+                    {t.supporter.freeTierDesc}
                   </p>
 
                   <div className="mt-6 space-y-2.5 text-xs text-slate-300 border-t border-[#1f2937] pt-5">
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>Unlimited *.localhost subdomains on Port 80</span>
+                      <span>{t.simulator.titleLocalhost}</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>RFC 6761 compliant loopback routing</span>
+                      <span>{t.simulator.protocolLocalhost}</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>Standalone Cross-Platform Desktop Binaries</span>
+                      <span>{t.downloads.subtitle}</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>Real-time background port & latency monitor</span>
+                      <span>{t.features.feature2Title}</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>Projects, service tags, and audit activity feed</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>Mobile & Smart TV Wi-Fi direct redirects with QR camera scan</span>
+                      <span>{t.features.feature3Title}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-slate-500">
                       <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span>Zero-Config *.local Open-Air Signals</span>
+                      <span>{t.supporter.perk1}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-slate-500">
                       <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span>Encrypted Global Remote Tunnels</span>
+                      <span>{t.supporter.perk2}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-slate-500">
                       <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span>Custom Branded Vanity Subdomain (username.portside.lol)</span>
+                      <span>{t.supporter.perk3}</span>
                     </div>
                   </div>
                 </div>
@@ -544,7 +545,7 @@ export default function Home() {
                     href="#downloads"
                     className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-2.5 px-4 text-center block transition border border-[#27354a] cursor-pointer"
                   >
-                    Download Free Launcher
+                    {t.downloads.downloadBtn}
                   </a>
                 </div>
               </div>
@@ -554,41 +555,41 @@ export default function Home() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold flex items-center gap-1.5">
                       <Crown className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Supporter Plan</span>
+                      <span>{t.supporter.badge}</span>
                     </span>
                     <span className="px-2.5 py-0.5 rounded bg-[#161f30] border border-[#27354a] text-sky-300 text-xs font-mono font-medium">
-                      $5.99 / mo
+                      {t.supporter.price} / {t.supporter.period}
                     </span>
                   </div>
                   <h3 className="text-xl font-semibold text-white mt-2">Portside Supporter</h3>
                   <p className="text-xs text-slate-400 mt-1.5">
-                    For developers and teams who test live builds on mobile carriers, host public showcases, and isolate dev networks.
+                    {t.supporter.description}
                   </p>
 
                   <div className="mt-6 space-y-2.5 text-xs text-slate-200 border-t border-[#1f2937] pt-5">
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>All Community Free features included</span>
+                      <span>{t.supporter.freeTierHeading}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-white">
                       <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Zero-Config *.local Open-Air Signals & Multi-Service /lan Dashboard</span>
+                      <span>{t.supporter.perk1}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-white">
                       <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Global Remote Access via Encrypted Edge Tunnels</span>
+                      <span>{t.supporter.perk2}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-white">
                       <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Custom Branded Vanity Subdomain (e.g. username.portside.lol)</span>
+                      <span>{t.supporter.perk3}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-white">
                       <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Developer Public Profile & Project Showcase</span>
+                      <span>{t.supporter.perk4}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-white">
                       <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Hardware Dev Wi-Fi Hotspot isolation network</span>
+                      <span>{t.supporter.perk5}</span>
                     </div>
                   </div>
                 </div>
@@ -600,7 +601,7 @@ export default function Home() {
                     rel="noreferrer"
                     className="w-full rounded-md bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs py-2.5 px-4 text-center block transition border border-sky-500 cursor-pointer"
                   >
-                    Unlock Supporter Plan ($5.99/mo) →
+                    {t.supporter.ctaButton} ({t.supporter.price}) →
                   </a>
                 </div>
               </div>
@@ -1146,13 +1147,13 @@ export default function Home() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
             <div className="text-center max-w-2xl mx-auto mb-10">
               <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                Releases
+                {t.downloads.title}
               </span>
               <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                Download PortSide Standalone Binaries
+                {t.downloads.title}
               </h2>
               <p className="mt-2 text-slate-400 text-xs sm:text-sm leading-relaxed">
-                Direct binary downloads from GitHub Releases. Zero external package dependencies, standalone loopback proxy.
+                {t.downloads.subtitle}
               </p>
             </div>
 
@@ -1173,10 +1174,10 @@ export default function Home() {
                       x64
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mt-2">Windows</h3>
+                  <h3 className="text-lg font-semibold text-white mt-2">{t.downloads.forWindows}</h3>
                   <p className="text-xs font-mono text-slate-400 mt-1">{downloads.windows.name}</p>
                   <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                    Standalone binary that provisions ~/Portside and checks GitHub releases automatically.
+                    {t.downloads.subtitle}
                   </p>
                 </div>
 
@@ -1186,7 +1187,7 @@ export default function Home() {
                     className="w-full rounded-md bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs py-2 px-3 text-center flex items-center justify-center gap-1.5 transition cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    <span>Download (.exe)</span>
+                    <span>{t.downloads.downloadBtn} (.exe)</span>
                   </a>
                 </div>
               </div>
@@ -1208,9 +1209,9 @@ export default function Home() {
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mt-2">macOS</h3>
-                  <p className="text-xs font-mono text-slate-400 mt-1">Apple Silicon & Intel</p>
+                  <p className="text-xs font-mono text-slate-400 mt-1">{t.downloads.forMacArm}</p>
                   <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                    Pre-compiled standalone binaries for Apple Silicon (M1-M4) and Intel machines.
+                    {t.downloads.subtitle}
                   </p>
                 </div>
 
@@ -1221,7 +1222,7 @@ export default function Home() {
                       className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#27354a] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>Apple Silicon (M1-M4)</span>
+                      <span>{t.downloads.forMacArm}</span>
                     </a>
                   )}
                   {downloads.macosIntel && (
@@ -1230,7 +1231,7 @@ export default function Home() {
                       className="w-full rounded-md bg-[#0d131f] hover:bg-[#161f30] text-slate-300 font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#1f2937] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>Intel x86_64</span>
+                      <span>{t.downloads.forMacIntel}</span>
                     </a>
                   )}
                 </div>
@@ -1253,9 +1254,9 @@ export default function Home() {
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mt-2">Linux</h3>
-                  <p className="text-xs font-mono text-slate-400 mt-1">Ubuntu, Debian, Fedora, Arch</p>
+                  <p className="text-xs font-mono text-slate-400 mt-1">{t.downloads.forLinuxAmd}</p>
                   <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                    Zero external runtime dependencies. Runs standalone or via systemd service units.
+                    {t.downloads.subtitle}
                   </p>
                 </div>
 
@@ -1266,7 +1267,7 @@ export default function Home() {
                       className="w-full rounded-md bg-[#161f30] hover:bg-[#1f2937] text-white font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#27354a] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>Linux x86_64</span>
+                      <span>{t.downloads.forLinuxAmd}</span>
                     </a>
                   )}
                   {downloads.linuxArm64 && (
@@ -1275,7 +1276,7 @@ export default function Home() {
                       className="w-full rounded-md bg-[#0d131f] hover:bg-[#161f30] text-slate-300 font-medium text-xs py-1.5 px-2.5 text-center flex items-center justify-center gap-1.5 border border-[#1f2937] transition cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>Linux ARM64</span>
+                      <span>{t.downloads.forLinuxArm}</span>
                     </a>
                   )}
                 </div>
@@ -1284,9 +1285,9 @@ export default function Home() {
 
             <div className="mt-8 p-3.5 rounded-md border border-[#1f2937] bg-[#111827] max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
               <div>
-                <p className="text-xs font-semibold text-white">Latest GitHub Release Tag</p>
+                <p className="text-xs font-semibold text-white">{t.downloads.sourceCodeBtn}</p>
                 <p className="text-[11px] text-slate-400 font-mono mt-0.5">
-                  View changelog, checksums, and source commits.
+                  {t.hero.terminalHint}
                 </p>
               </div>
               <a
@@ -1295,7 +1296,7 @@ export default function Home() {
                 rel="noreferrer"
                 className="shrink-0 text-xs font-mono text-sky-400 hover:text-sky-300 transition flex items-center gap-1"
               >
-                <span>{downloads.version} Release</span>
+                <span>{downloads.version} {t.footer.releases}</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -1309,12 +1310,21 @@ export default function Home() {
                 FAQ
               </span>
               <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                Frequently Asked Questions
+                {t.faq.title}
               </h2>
+              <p className="mt-2 text-slate-400 text-xs sm:text-sm">
+                {t.faq.subtitle}
+              </p>
             </div>
 
             <div className="space-y-2">
-              {FAQS.map((faq, idx) => {
+              {[
+                { q: t.faq.q1, a: t.faq.a1 },
+                { q: t.faq.q2, a: t.faq.a2 },
+                { q: t.faq.q3, a: t.faq.a3 },
+                { q: t.faq.q4, a: t.faq.a4 },
+                { q: t.faq.q5, a: t.faq.a5 },
+              ].map((faq, idx) => {
                 const isOpen = expandedFaq === idx;
                 return (
                   <div
@@ -1350,17 +1360,17 @@ export default function Home() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="space-y-1 text-center md:text-left">
               <h3 className="text-lg sm:text-xl font-semibold text-white">
-                Looking for architecture documentation?
+                {t.docsCta.title}
               </h3>
               <p className="text-xs text-slate-400">
-                Explore setup guides, iOS mobile instructions, RFC specifications, and launcher operations.
+                {t.docsCta.subtitle}
               </p>
             </div>
             <Link
               href="/docs"
               className="shrink-0 rounded-md bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 font-medium text-xs transition flex items-center gap-2 border border-sky-500"
             >
-              <span>View Official Docs</span>
+              <span>{t.docsCta.button}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -1376,31 +1386,31 @@ export default function Home() {
                 <span className="font-semibold text-white text-sm tracking-tight">Portside</span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Clean local development loopback proxy with direct Port 80 routing and remote mobile pairing.
+                {t.footer.tagline}
               </p>
             </div>
 
             <div>
-              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">Product</p>
+              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">{t.footer.productHeading}</p>
               <ul className="space-y-1.5 text-xs">
-                <li><a href="#features" className="hover:text-white transition">Features</a></li>
-                <li><a href="#simulator" className="hover:text-white transition">Architecture</a></li>
-                <li><a href="#supporter" className="hover:text-white transition">Supporter Plan</a></li>
-                <li><a href="#downloads" className="hover:text-white transition">Downloads</a></li>
+                <li><a href="#features" className="hover:text-white transition">{t.footer.features}</a></li>
+                <li><a href="#simulator" className="hover:text-white transition">{t.footer.architecture}</a></li>
+                <li><a href="#supporter" className="hover:text-white transition">{t.footer.supporterPlan}</a></li>
+                <li><a href="#downloads" className="hover:text-white transition">{t.footer.downloadList}</a></li>
               </ul>
             </div>
 
             <div>
-              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">Resources</p>
+              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">{t.footer.resourcesHeading}</p>
               <ul className="space-y-1.5 text-xs">
-                <li><Link href="/docs" className="text-sky-400 hover:text-sky-300 transition">Documentation</Link></li>
-                <li><a href="https://github.com/letsmakepact/PortSide/releases" target="_blank" rel="noreferrer" className="hover:text-white transition">Releases</a></li>
-                <li><a href="https://github.com/letsmakepact/PortSide" target="_blank" rel="noreferrer" className="hover:text-white transition">Source Code</a></li>
+                <li><Link href="/docs" className="text-sky-400 hover:text-sky-300 transition">{t.footer.documentation}</Link></li>
+                <li><a href="https://github.com/letsmakepact/PortSide/releases" target="_blank" rel="noreferrer" className="hover:text-white transition">{t.footer.releases}</a></li>
+                <li><a href="https://github.com/letsmakepact/PortSide" target="_blank" rel="noreferrer" className="hover:text-white transition">{t.footer.sourceCode}</a></li>
               </ul>
             </div>
 
             <div>
-              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">Creator</p>
+              <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">{t.footer.creatorHeading}</p>
               <ul className="space-y-1.5 text-xs">
                 <li>
                   <a
@@ -1409,7 +1419,7 @@ export default function Home() {
                     rel="noreferrer"
                     className="text-amber-300 hover:text-amber-200 transition flex items-center gap-1"
                   >
-                    <span>Buy Me a Coffee</span>
+                    <span>{t.footer.buyMeCoffee}</span>
                   </a>
                 </li>
                 <li>
@@ -1426,11 +1436,14 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-[#1f2937] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 font-mono">
-            <p>© {new Date().getFullYear()} PortSide. Open-source local development proxy.</p>
-            <p>
-              Loopback native · Zero telemetry
-            </p>
+          <div className="pt-6 border-t border-[#1f2937] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500 font-mono">
+            <p>© {new Date().getFullYear()} {t.footer.copyright}</p>
+            <div className="flex items-center gap-4">
+              <LanguageSelector variant="footer" />
+              <span>
+                {t.footer.loopbackNative} · {t.footer.zeroTelemetry}
+              </span>
+            </div>
           </div>
         </div>
       </footer>
