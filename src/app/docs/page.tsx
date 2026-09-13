@@ -3,6 +3,28 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Script from "next/script";
+import {
+  Sparkles,
+  Zap,
+  Globe,
+  Wifi,
+  Radio,
+  Tv,
+  Smartphone,
+  ShieldCheck,
+  Server,
+  KeyRound,
+  Check,
+  ArrowRight,
+  ExternalLink,
+  Laptop,
+  Terminal,
+  Lock,
+  Layers,
+  Palette,
+  Clock,
+  HelpCircle,
+} from "lucide-react";
 import { AnchorLogo } from "@/components/ui/AnchorLogo";
 
 interface DocItem {
@@ -23,49 +45,56 @@ const SECTIONS: DocSection[] = [
     items: [
       { id: "overview", title: "Overview" },
       { id: "quickstart", title: "Quickstart in 60s" },
-      { id: "installation", title: "Installation" },
+      { id: "installation", title: "Installation Options" },
     ],
   },
   {
     id: "core-routing",
     title: "Core Routing",
     items: [
-      { id: "localhost-subdomains", title: "Localhost Subdomains" },
+      { id: "localhost-subdomains", title: "Localhost Subdomains (RFC 6761)" },
       { id: "port-mapping", title: "Port Mapping & Proxying" },
       { id: "port-80-setup", title: "Running on Standard Port 80" },
-      { id: "docker-containers", title: "Docker & Container Support" },
+      { id: "docker-containers", title: "Docker & Container Gateway Sync" },
     ],
   },
   {
     id: "local-network",
     title: "Local Network & Mobile",
     items: [
-      { id: "mdns-discovery", title: "Zero-Config Local Access" },
-      { id: "mobile-tv-portal", title: "Mobile & Smart TV Launchpad" },
-      { id: "dev-hotspot", title: "Developer Wi-Fi Hotspot" },
+      { id: "mdns-discovery", title: "Zero-Config Local Access (Free)" },
+      { id: "lan-cockpit", title: "Interactive LAN Cockpit & TV (/lan)" },
+      { id: "dev-hotspot", title: "Developer Wi-Fi Hotspot Mode" },
+      { id: "hotspot-dns", title: "Private Hotspot DNS Gateway" },
+      { id: "custom-local-domains", title: "Custom Local Root Domains (*.test, *.lan)" },
+      { id: "open-air-mdns", title: "Zero-Config *.local Open-Air Signals" },
     ],
   },
   {
-    id: "edge-tunnels",
-    title: "Global Edge Access",
+    id: "supporter-perks",
+    title: "Supporter Tier & Perks",
     items: [
-      { id: "vanity-domains", title: "Branded Vanity Domains" },
+      { id: "perks-overview", title: "Supporter Perks Matrix" },
+      { id: "vanity-domains", title: "Dedicated *.portside.lol Subdomains" },
+      { id: "remote-tunnels", title: "Encrypted Edge Tunnels (Remote 5G)" },
       { id: "remote-subdomains", title: "Multi-Service Remote Routing" },
-      { id: "supporter-perks", title: "Supporter Licenses" },
+      { id: "custom-cname", title: "Custom Apex Domain (CNAME) Routing" },
+      { id: "offline-tickets", title: "Cryptographic Offline Tickets (PSL1)" },
+      { id: "how-to-unlock", title: "How to Unlock & Redeem Perks" },
     ],
   },
   {
     id: "showcase-profile",
     title: "Developer Showcase",
     items: [
-      { id: "about-me-page", title: "Public About Me Profile" },
+      { id: "about-me-page", title: "Public About Me Portfolio" },
       { id: "hosting-projects", title: "Publishing Local Projects" },
       { id: "customizing-themes", title: "Custom Themes & Banners" },
     ],
   },
   {
     id: "security-architecture",
-    title: "Security & Database Protection",
+    title: "Zero-Trust Security",
     items: [
       { id: "database-protection", title: "Air-Gapped Local Database" },
       { id: "registration-firewall", title: "Cloud Registration Firewall" },
@@ -136,10 +165,26 @@ export default function DocsPage() {
       },
       {
         "@type": "Question",
+        name: "What perks are included in the PortSide Supporter tier?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Supporters receive dedicated *.portside.lol vanity subdomains, encrypted remote edge tunnels for 5G & webhook testing, multi-service remote routing, interactive LAN Cockpit (/lan) with Smart TV navigation, isolated Dev Wi-Fi Hotspot with private DNS gateway (192.168.137.1), custom local root domains (*.test, *.lan), zero-config *.local mDNS routing, public developer showcase profiles with custom themes, custom apex domain CNAME delegation, and cryptographic offline activation tickets (PSL1).",
+        },
+      },
+      {
+        "@type": "Question",
         name: "How do I test localhost websites on mobile phones and tablets?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Open http://<your-local-ip>/s/<project> on your phone or scan the high-redundancy QR code from the desktop dashboard for 100% free direct project testing across any iOS or Android browser over local Wi-Fi.",
+          text: "Open http://<your-local-ip>/s/<project> on your phone or scan the high-redundancy QR code from the desktop dashboard for 100% free direct project testing across any iOS or Android browser over local Wi-Fi. Supporters can also access the full multi-service interactive LAN Cockpit at /lan.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How does the Private Hotspot DNS Gateway work?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "When physical devices connect to the PortSide Dev Wi-Fi Hotspot, Windows assigns your workstation (192.168.137.1) as their Primary DNS server and gateway. PortSide catches queries for your custom domain and routes traffic directly to local servers with zero cloud hops, even if disconnected from the internet.",
         },
       },
       {
@@ -148,14 +193,6 @@ export default function DocsPage() {
         acceptedAnswer: {
           "@type": "Answer",
           text: "PortSide's local database binds exclusively to loopback (127.0.0.1) and is never exposed through edge tunnels. Furthermore, registrations originating from public vanity links bypass local database insertion completely and are forwarded to the central cloud platform.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How does Smart TV 10-foot remote navigation work?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Open the built-in browser on your LG webOS, Samsung Tizen, or Android TV and navigate to your LAN portal. Use the physical arrow keys on your remote control to navigate between service cards with 4px focus rings.",
         },
       },
     ],
@@ -224,7 +261,17 @@ export default function DocsPage() {
             </span>
           </div>
 
-
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-400">
+            <Link href="/pricing" className="text-slate-300 hover:text-white transition">
+              Pricing
+            </Link>
+            <Link href="/redeem" className="text-slate-300 hover:text-white transition">
+              Redeem Key
+            </Link>
+            <Link href="/comparisons" className="text-slate-300 hover:text-white transition">
+              Comparisons
+            </Link>
+          </nav>
 
           <div className="flex items-center gap-3">
             <div className="flex items-center min-h-[34px]">
@@ -258,6 +305,7 @@ export default function DocsPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 w-full flex-1 flex gap-10">
+        {/* Table of Contents Sidebar */}
         <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-24 space-y-7 max-h-[calc(100vh-8rem)] overflow-y-auto pr-3 text-xs">
             {SECTIONS.map((section) => {
@@ -299,7 +347,9 @@ export default function DocsPage() {
           </div>
         </aside>
 
+        {/* Main Article Content */}
         <article className="flex-1 min-w-0 max-w-4xl space-y-16">
+          {/* SECTION 1: GETTING STARTED */}
           <section id="getting-started" className="space-y-8 scroll-mt-28">
             <div id="overview" className="border-b border-white/10 pb-6 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -320,7 +370,7 @@ export default function DocsPage() {
               </h2>
               <ol className="space-y-3 text-sm text-slate-300 list-decimal list-inside">
                 <li>
-                  <strong className="text-white">Download the launcher:</strong> Grab <code className="font-mono text-sky-300">Portside.exe</code> from the releases page or run from source.
+                  <strong className="text-white">Download the launcher:</strong> Grab <code className="font-mono text-sky-300">Portside.exe</code> from releases or clone from GitHub.
                 </li>
                 <li>
                   <strong className="text-white">Register your first service:</strong> Open the dashboard and map a hostname (e.g. <code className="font-mono text-sky-300">shop</code>) to your local server port (e.g. <code className="font-mono text-sky-300">3000</code>).
@@ -334,14 +384,16 @@ export default function DocsPage() {
             <div id="installation" className="space-y-4 scroll-mt-28">
               <h2 className="text-xl font-bold text-white">Installation Options</h2>
               <p className="text-sm text-slate-300 leading-relaxed">
-                PortSide runs as a lightweight native background daemon paired with a modern web dashboard:
+                PortSide runs as a lightweight native background daemon paired with a modern web cockpit:
               </p>
 
               <div className="space-y-3">
                 <div className="rounded-xl border border-white/10 bg-slate-900/60 p-4 font-mono text-xs text-slate-300 space-y-2">
-                  <p className="text-slate-500"># Option A: Run the compiled native launcher</p>
+                  <p className="text-slate-500"># Option A: Run the compiled native launcher (Windows, macOS, Linux)</p>
                   <p className="text-sky-300">.\Portside.exe</p>
-                  <p className="text-slate-500 pt-2"># Option B: Run via Node / source</p>
+                  <p className="text-slate-500 pt-2"># Option B: Run via one-line bash installer</p>
+                  <p className="text-sky-300">curl -fsSL https://raw.githubusercontent.com/letsmakepact/PortSide/main/install.sh | bash</p>
+                  <p className="text-slate-500 pt-2"># Option C: Run via Node from source</p>
                   <p className="text-sky-300">git clone https://github.com/letsmakepact/PortSide.git</p>
                   <p className="text-sky-300">cd PortSide &amp;&amp; npm install &amp;&amp; npm run build &amp;&amp; npm start</p>
                 </div>
@@ -349,6 +401,7 @@ export default function DocsPage() {
             </div>
           </section>
 
+          {/* SECTION 2: CORE ROUTING */}
           <section id="core-routing" className="space-y-8 scroll-mt-28">
             <div id="localhost-subdomains" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -360,9 +413,9 @@ export default function DocsPage() {
             </div>
 
             <div id="port-mapping" className="space-y-4 text-sm text-slate-300 leading-relaxed scroll-mt-28">
-              <h3 className="text-lg font-bold text-white">Port Mapping &amp; Proxying</h3>
+              <h3 className="text-lg font-bold text-white">Port Mapping &amp; Proxying (RFC 6761)</h3>
               <p>
-                All modern web browsers natively resolve any subdomain of <code className="font-mono text-sky-300">*.localhost</code> to your local machine loopback address. PortSide intercepts incoming requests on port 80, inspects the requested subdomain, and transparently proxies traffic to the assigned internal port.
+                Under RFC 6761, all standards-compliant browsers natively resolve any subdomain of <code className="font-mono text-sky-300">*.localhost</code> directly to your computer loopback address (<code className="font-mono text-slate-300">127.0.0.1</code>). PortSide intercepts incoming requests on port 80, inspects the requested subdomain, and transparently proxies traffic to the assigned internal port.
               </p>
 
               <div className="grid gap-4 sm:grid-cols-2 pt-2">
@@ -372,7 +425,7 @@ export default function DocsPage() {
                     GET http://shop.localhost/cart
                   </p>
                   <p className="text-xs text-slate-400">
-                    Browser resolves subdomain to 127.0.0.1 on port 80.
+                    Browser resolves subdomain to 127.0.0.1 on standard port 80.
                   </p>
                 </div>
 
@@ -382,7 +435,7 @@ export default function DocsPage() {
                     PROXY http://127.0.0.1:3000/cart
                   </p>
                   <p className="text-xs text-slate-400">
-                    PortSide proxies request and rewrites headers seamlessly.
+                    PortSide proxies the request and rewrites headers seamlessly with sub-millisecond overhead.
                   </p>
                 </div>
               </div>
@@ -391,22 +444,22 @@ export default function DocsPage() {
             <div id="port-80-setup" className="space-y-3 pt-2 scroll-mt-28">
               <h3 className="text-lg font-bold text-white">Running on Standard HTTP Port 80</h3>
               <p className="text-sm text-slate-300 leading-relaxed">
-                By default, PortSide binds to port 80 so URLs do not require a trailing port number. If another application occupies port 80, run the native launcher as Administrator to automatically reassign or configure an alternate application port in dashboard preferences.
+                By default, PortSide binds to port 80 so URLs never require a trailing port number like <code className="font-mono text-slate-400">:3000</code> or <code className="font-mono text-slate-400">:8080</code>. If another application occupies port 80 (such as IIS, Apache, or Skype), run the native launcher as Administrator to automatically free or reassign the port, or configure an alternate port in dashboard preferences.
               </p>
             </div>
 
-            <div id="docker-containers" className="rounded-2xl border border-sky-500/30 bg-slate-900/60 p-6 space-y-4 scroll-mt-28">
-              <div className="flex items-center justify-between">
+            <div id="docker-containers" className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 space-y-4 scroll-mt-28">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400 text-xs font-mono font-bold">D</span>
-                  Docker &amp; Container Support (All Short URLs)
+                  <Server className="h-5 w-5 text-sky-400" />
+                  Docker &amp; Container Gateway Sync
                 </h3>
                 <span className="text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">
                   Zero-Config Sync
                 </span>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Portside provides first-class support for containerized workflows, including <strong className="text-white">Docker Compose, devcontainers, Sub2API, Ollama, and microservices</strong>. When applications run inside isolated Linux container namespaces, they can dial all Portside short URLs directly without connection failures.
+                PortSide provides first-class support for containerized workflows including Docker Compose, devcontainers, Sub2API, Ollama, and microservices. When applications run inside isolated Linux container namespaces, they can dial all PortSide short URLs directly without connection failures.
               </p>
 
               <div className="space-y-3 pt-1">
@@ -415,7 +468,7 @@ export default function DocsPage() {
                 </h4>
                 <ul className="space-y-2 text-xs text-slate-300 list-disc list-inside">
                   <li>
-                    <strong className="text-white">Automatic Container Sync:</strong> The Portside launcher runs a background daemon that synchronizes all registered <code className="font-mono text-sky-300">*.localhost</code> routes to the host gateway (<code className="font-mono text-sky-300">192.168.65.254</code>) inside running Docker containers.
+                    <strong className="text-white">Automatic Container Sync:</strong> The PortSide daemon synchronizes all registered <code className="font-mono text-sky-300">*.localhost</code> routes to the host gateway (<code className="font-mono text-sky-300">192.168.65.254</code>) inside running Docker containers.
                   </li>
                   <li>
                     <strong className="text-white">Docker Gateway Bridge:</strong> Requests from <code className="font-mono text-sky-300">host.docker.internal</code> and internal container subnets are recognized as local network traffic and routed immediately.
@@ -441,117 +494,352 @@ export default function DocsPage() {
                   <p className="text-emerald-400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- &quot;api.localhost:host-gateway&quot;</p>
                 </div>
               </div>
-
-              <div className="space-y-2 pt-2">
-                <h4 className="text-xs font-mono font-semibold uppercase text-sky-400 tracking-wider">
-                  Alternative Container Routes
-                </h4>
-                <div className="grid gap-3 sm:grid-cols-2 text-xs">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-1">
-                    <p className="font-bold text-white">Path-Based Gateway</p>
-                    <p className="font-mono text-sky-300">http://host.docker.internal/s/&lt;service&gt;</p>
-                    <p className="text-slate-400">Proxies directly through Docker Desktop&#39;s built-in host bridge.</p>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-1">
-                    <p className="font-bold text-white">Wildcard IP DNS</p>
-                    <p className="font-mono text-sky-300">http://&lt;service&gt;.192.168.65.254.nip.io</p>
-                    <p className="text-slate-400">Public DNS resolution directly to your Docker gateway IP.</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </section>
 
+          {/* SECTION 3: LOCAL NETWORK & MULTI-DEVICE */}
           <section id="local-network" className="space-y-8 scroll-mt-28">
             <div id="mdns-discovery" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
-                Network Discovery
+                Multi-Device Testing
               </span>
               <h2 className="text-2xl font-bold text-white mt-1">
-                Local Network &amp; Mobile / Smart TV Access
+                Local Network, Hotspots &amp; Mobile / Smart TV Access
               </h2>
             </div>
 
-            <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
+            <div className="space-y-6 text-sm text-slate-300 leading-relaxed">
               <p>
-                Testing responsive web designs on real mobile phones, tablets, and Smart TV browsers is simplified with zero-configuration local network discovery:
+                Testing responsive web designs on real physical phones, tablets, and Smart TV browsers is built directly into PortSide. Choose between free direct project links or advanced supporter launchpads:
               </p>
 
-              <div className="space-y-3">
-                <div id="mobile-tv-portal" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
-                  <h3 className="text-base font-bold text-white flex items-center justify-between">
-                    <span>Mobile &amp; Smart TV LAN Routing</span>
-                    <span className="text-[10px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">Free Direct &middot; Supporter Dashboard</span>
-                  </h3>
+              <div className="space-y-4">
+                {/* Free direct access */}
+                <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <Smartphone className="h-4 w-4 text-emerald-400" />
+                      <span>Zero-Config Local Access &amp; QR Quick Launch</span>
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+                      100% Free Forever
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Open <code className="font-mono text-sky-300">http://&lt;your-local-ip&gt;/s/&lt;project&gt;</code> on your phone or scan the QR code from the desktop dashboard for 100% free direct project testing across any iOS, Android, or Smart TV browser. Supporter accounts unlock the full interactive multi-service launchpad (<code className="font-mono text-sky-300">/lan</code>) and zero-config wildcard <code className="font-mono text-sky-300">*.local</code> Open-Air signals.
+                    Open <code className="font-mono text-sky-300">http://&lt;your-local-ip&gt;/s/&lt;project&gt;</code> on your phone or scan the high-redundancy QR code from the desktop dashboard. Traffic is routed straight to your local server over standard Wi-Fi without third-party accounts, cookies, or cloud hops.
                   </p>
                 </div>
 
-                <div id="dev-hotspot" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
-                  <h3 className="text-base font-bold text-white">
-                    Developer Wi-Fi Hotspot Mode
-                  </h3>
+                {/* Supporter perk: LAN Cockpit */}
+                <div id="lan-cockpit" className="rounded-2xl border border-sky-500/30 bg-sky-950/20 p-5 space-y-3 scroll-mt-28">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <Tv className="h-4 w-4 text-sky-400" />
+                      <span>Interactive Multi-Device LAN Launchpad &amp; TV Cockpit (/lan)</span>
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">
+                      Supporter Perk
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    When developing on public Wi-Fi networks (coffee shops, conferences, airports) where client isolation is enabled, switch on the Developer Hotspot in dashboard settings. PortSide broadcasts an isolated local network SSID, allowing direct peer-to-peer testing between your laptop and test devices.
+                    Supporter accounts unlock the full interactive multi-service cockpit at <code className="font-mono text-sky-300">/lan</code>. Navigate between running services, monitor real-time latency, toggle port tunnels, and use full 10-foot remote D-pad navigation on LG webOS, Samsung Tizen, or Android TV browsers with high-contrast accessibility focus rings.
+                  </p>
+                </div>
+
+                {/* Supporter perk: Dev Hotspot */}
+                <div id="dev-hotspot" className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 space-y-3 scroll-mt-28">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <Radio className="h-4 w-4 text-amber-400" />
+                      <span>Developer Wi-Fi Hotspot Mode (Isolated AP)</span>
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-semibold">
+                      Supporter Perk
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    When developing on restrictive public Wi-Fi networks (coffee shops, conferences, airports, co-working spaces) where client isolation blocks peer-to-peer connections, turn on Developer Hotspot mode in PortSide settings. PortSide commands your machine's wireless hardware to broadcast an isolated WPA2-Personal (AES) network (e.g. <code className="font-mono text-amber-300">PortSide-DevNet</code>) for direct device testing.
+                  </p>
+                </div>
+
+                {/* Supporter perk: Hotspot DNS Gateway */}
+                <div id="hotspot-dns" className="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-5 space-y-3 scroll-mt-28">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <Zap className="h-4 w-4 text-emerald-400" />
+                      <span>Private Hotspot DNS Gateway (192.168.137.1)</span>
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+                      Supporter Perk
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    When physical phones connect to your Dev Wi-Fi Hotspot, Windows assigns your workstation (<code className="font-mono text-emerald-400">192.168.137.1</code>) as their Primary DNS server and default gateway. Because you control the network, PortSide catches all DNS queries and routes traffic straight to your local servers with zero cloud hops—even completely offline without internet!
+                  </p>
+                </div>
+
+                {/* Supporter perk: Custom Local Root Domains */}
+                <div id="custom-local-domains" className="rounded-2xl border border-sky-500/30 bg-slate-900/50 p-5 space-y-3 scroll-mt-28">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-sky-400" />
+                      <span>Custom Local Root Domains (*.portside, *.test, *.lan)</span>
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">
+                      Supporter Perk
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Configure any custom local root domain in Settings (such as <code className="font-mono text-sky-300">portside.test</code>, <code className="font-mono text-sky-300">mybrand.dev</code>, or <code className="font-mono text-sky-300">dev.lan</code>). Connected phones and computers can access your projects via memorable URLs like <code className="font-mono text-white">http://&lt;service&gt;.portside.test</code> instead of typing IP addresses.
+                  </p>
+                </div>
+
+                {/* Supporter perk: Open-Air mDNS */}
+                <div id="open-air-mdns" className="rounded-2xl border border-purple-500/30 bg-purple-950/20 p-5 space-y-3 scroll-mt-28">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <Radio className="h-4 w-4 text-purple-400" />
+                      <span>Zero-Config *.local Open-Air Signals</span>
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full font-semibold">
+                      Supporter Perk
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    PortSide continuously advertises multicast DNS (mDNS) signals across your physical network. Any Apple or Android device on the same Wi-Fi can resolve clean <code className="font-mono text-purple-300">*.local</code> addresses natively without manual IP configuration.
                   </p>
                 </div>
               </div>
             </div>
           </section>
 
-          <section id="edge-tunnels" className="space-y-8 scroll-mt-28">
-            <div id="vanity-domains" className="border-b border-white/10 pb-4 scroll-mt-28">
+          {/* SECTION 4: SUPPORTER TIER & PERKS */}
+          <section id="supporter-perks" className="space-y-8 scroll-mt-28">
+            <div id="perks-overview" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
-                Edge Routing
+                Premium Superpowers
               </span>
               <h2 className="text-2xl font-bold text-white mt-1">
-                Global Edge Tunnels
+                Supporter Tier &amp; Perks
               </h2>
             </div>
 
-            <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
+            <div className="space-y-6 text-sm text-slate-300 leading-relaxed">
               <p>
-                Supporters receive permanent branded subdomains under <code className="font-mono text-sky-300">*.portside.lol</code>. These tunnels connect your local development hardware to edge networks with global HTTPS encryption without opening router ports or exposing your home IP address:
+                PortSide's core local loopback proxy is 100% free and open source forever. An optional Supporter subscription ($5.99/mo) or valid promo key unlocks our global cloud infrastructure and advanced hardware networking:
               </p>
 
-              <div className="grid gap-4 sm:grid-cols-2 pt-2">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2">
-                  <h3 className="font-bold text-white text-sm">Root Vanity Domain</h3>
-                  <p className="font-mono text-xs text-sky-300">https://&lt;handle&gt;.portside.lol/</p>
-                  <p className="text-xs text-slate-400">
-                    Serves your public developer showcase and live projects portfolio.
-                  </p>
+              {/* PERKS COMPARISON TABLE */}
+              <div className="rounded-2xl border border-white/10 bg-slate-900/60 overflow-hidden">
+                <div className="p-4 border-b border-white/10 bg-slate-950/70 flex items-center justify-between">
+                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-sky-400" />
+                    Community Edition vs. Supporter Tier
+                  </h3>
+                  <span className="text-xs text-sky-400 font-semibold">$5.99 / mo</span>
                 </div>
-
-                <div id="remote-subdomains" className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2 scroll-mt-28">
-                  <h3 className="font-bold text-white text-sm">Service Routing</h3>
-                  <p className="font-mono text-xs text-emerald-300">https://&lt;service&gt;.&lt;handle&gt;.portside.lol</p>
-                  <p className="text-xs text-slate-400">
-                    Routes globally to your designated local port (or via <code className="font-mono text-slate-300">/s/&lt;service&gt;</code>).
-                  </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs text-left">
+                    <thead>
+                      <tr className="border-b border-white/10 bg-white/[0.02] text-slate-400 font-mono">
+                        <th className="py-3 px-4 font-medium">Capability / Feature</th>
+                        <th className="py-3 px-4 font-medium text-center w-36">Community ($0)</th>
+                        <th className="py-3 px-4 font-medium text-center w-40 text-sky-400">Supporter ($5.99)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      <tr>
+                        <td className="py-2.5 px-4 font-medium text-slate-200">Unlimited *.localhost subdomains (RFC 6761)</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 px-4 font-medium text-slate-200">Direct Port 80 loopback proxying</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 px-4 font-medium text-slate-200">Real-time port health &amp; latency telemetry</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 px-4 font-medium text-slate-200">Mobile Wi-Fi QR Code Quick Launch (/s/&lt;project&gt;)</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 px-4 font-medium text-slate-200">Smart TV 10-foot D-Pad remote navigation on direct links</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 px-4 font-medium text-slate-200">Docker &amp; Container Gateway Auto-Sync</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                        <td className="py-2.5 px-4 text-center text-emerald-400 font-bold">&#10003; Included</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Dedicated *.portside.lol vanity namespace</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Encrypted Cloudflare edge tunnels (Remote 5G &amp; Webhooks)</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Multi-Service Remote Subdomains (&lt;svc&gt;.&lt;handle&gt;.portside.lol)</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Interactive LAN Cockpit Launchpad (/lan)</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Isolated Dev Wi-Fi Hotspot Broadcast</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Private Hotspot DNS Gateway (192.168.137.1)</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Custom Local Root Domains (*.portside, *.test, *.lan)</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Zero-Config *.local mDNS Cross-Device Routing</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Public Developer Showcase &amp; Portfolio with Custom Themes</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Custom Apex Domain (CNAME) Delegation</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                      <tr className="bg-sky-500/[0.04]">
+                        <td className="py-2.5 px-4 font-medium text-white">Cryptographic Offline Activation Tickets (PSL1)</td>
+                        <td className="py-2.5 px-4 text-center text-slate-500">&mdash;</td>
+                        <td className="py-2.5 px-4 text-center text-sky-400 font-bold">&#10003; Unlocked</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              <div id="supporter-perks" className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 mt-4 space-y-3 scroll-mt-28">
-                <h3 className="text-sm font-bold text-amber-300">Unlocking Supporter Edge Perks</h3>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Support PortSide on Buy Me a Coffee to receive your license key. Enter your key in the desktop dashboard under <strong className="text-white">Settings &rarr; Supporter &amp; Perks</strong> to activate your permanent branded domain instantly.
-                </p>
-                <div className="pt-1">
-                  <a
-                    href="https://buymeacoffee.com/pacts"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs font-bold text-slate-950 transition"
-                  >
-                    Support on Buy Me a Coffee
-                  </a>
+              {/* DETAILED PERKS BREAKDOWN */}
+              <div className="space-y-6 pt-4">
+                <div id="vanity-domains" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-sky-400" />
+                    <span>Dedicated *.portside.lol Vanity Subdomains</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Claim a permanent branded namespace under <code className="font-mono text-sky-300">*.portside.lol</code> (e.g. <code className="font-mono text-white">https://alex.portside.lol</code>). Your vanity handle remains permanently tied to your supporter account and provisions automatic SSL/TLS certificates through Cloudflare's global edge network.
+                  </p>
+                </div>
+
+                <div id="remote-tunnels" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-emerald-400" />
+                    <span>Encrypted Cloudflare Edge Tunnels (Remote 5G / Webhooks)</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Tunnel your local development servers to the global internet without opening firewall ports, configuring port forwarding, or exposing your physical machine IP. Ideal for testing Stripe, GitHub, or Shopify webhooks, sharing live previews with clients, or testing on mobile 5G/LTE networks outside your home.
+                  </p>
+                </div>
+
+                <div id="remote-subdomains" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-indigo-400" />
+                    <span>Multi-Service Remote Routing</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Route specific mapped services over subdomains: <code className="font-mono text-emerald-300">https://&lt;service&gt;.&lt;handle&gt;.portside.lol</code> (e.g., <code className="font-mono text-white">https://api.alex.portside.lol</code> or <code className="font-mono text-white">https://docs.alex.portside.lol</code>), or via path-based routing (<code className="font-mono text-slate-300">/s/&lt;service&gt;</code>). Each service routes to its designated local port without interfering with other running apps.
+                  </p>
+                </div>
+
+                <div id="custom-cname" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Server className="h-4 w-4 text-amber-400" />
+                    <span>Custom Apex Domain (CNAME) Routing</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Attach your personal or business domain (e.g. <code className="font-mono text-amber-300">dev.yourcompany.com</code>) directly to your local development hardware. Set a CNAME record to <code className="font-mono text-white">&lt;handle&gt;.portside.lol</code> and PortSide verifies and routes queries with full automated TLS edge termination.
+                  </p>
+                </div>
+
+                <div id="offline-tickets" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-3 scroll-mt-28">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <KeyRound className="h-4 w-4 text-sky-400" />
+                    <span>Cryptographic Offline Activation Tickets (PSL1)</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    PortSide licenses use Ed25519-signed cryptographic tokens beginning with <code className="font-mono text-sky-300">PSL1.</code>. Once activated, the desktop launcher caches the verified session locally. You can code on airplanes, off-grid locations, and isolated environments without needing continuous online phone-home calls.
+                  </p>
+                </div>
+
+                <div id="how-to-unlock" className="rounded-2xl border border-sky-500/30 bg-gradient-to-r from-sky-950/40 to-slate-900 p-6 space-y-4 scroll-mt-28">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-sky-400" />
+                    <span>How to Unlock &amp; Redeem Supporter Perks</span>
+                  </h3>
+                  <div className="grid gap-4 sm:grid-cols-2 text-xs text-slate-300">
+                    <div className="rounded-xl border border-white/10 bg-black/40 p-4 space-y-2">
+                      <h4 className="font-bold text-white flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                        <span>Option 1: Buy Me a Coffee ($5.99/mo)</span>
+                      </h4>
+                      <p className="text-slate-400">
+                        Subscribe monthly at buymeacoffee.com/pacts. In the desktop application, click <strong className="text-white">Become a Supporter &rarr; Claim with Email</strong> and enter your receipt ID or email for instant activation.
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-black/40 p-4 space-y-2">
+                      <h4 className="font-bold text-white flex items-center gap-1.5">
+                        <KeyRound className="h-3.5 w-3.5 text-sky-400" />
+                        <span>Option 2: Redeem Promo or Giveaway Key</span>
+                      </h4>
+                      <p className="text-slate-400">
+                        Received a promo or giveaway key from Discord or developer events? Visit <Link href="/redeem" className="text-sky-400 underline font-mono">/redeem</Link> or paste your <code className="font-mono text-sky-300">PSL1.</code> key in desktop settings to unlock all perks without a credit card.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap gap-3">
+                    <a
+                      href="https://buymeacoffee.com/pacts/membership"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 px-4 py-2.5 text-xs font-bold text-white transition shadow-sm"
+                    >
+                      Subscribe for $5.99/mo on Buy Me a Coffee
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </a>
+                    <Link
+                      href="/redeem"
+                      className="inline-flex items-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 px-4 py-2.5 text-xs font-bold text-slate-200 border border-slate-700 transition"
+                    >
+                      Redeem License Key
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
+          {/* SECTION 5: DEVELOPER SHOWCASE */}
           <section id="showcase-profile" className="space-y-8 scroll-mt-28">
             <div id="about-me-page" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -589,6 +877,7 @@ export default function DocsPage() {
             </div>
           </section>
 
+          {/* SECTION 6: ZERO-TRUST SECURITY */}
           <section id="security-architecture" className="space-y-8 scroll-mt-28">
             <div id="database-protection" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">
@@ -601,7 +890,7 @@ export default function DocsPage() {
 
             <div className="space-y-6 text-sm text-slate-300 leading-relaxed">
               <p>
-                When you share a live project or your vanity showcase (<code className="font-mono text-sky-300">alex.portside.lol</code>), PortSide enforces strict boundaries between public internet traffic, your dev server processes, and your machine&apos;s local operating system and databases.
+                When you share a live project or your vanity showcase (<code className="font-mono text-sky-300">alex.portside.lol</code>), PortSide enforces strict boundaries between public internet traffic, your dev server processes, and your machine's local operating system and databases.
               </p>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -611,7 +900,7 @@ export default function DocsPage() {
                     <h3 className="font-bold text-white text-base">Air-Gapped Local Database</h3>
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    The desktop application&apos;s embedded database (<code className="font-mono text-emerald-300">portside_db</code> / PostgreSQL) binds strictly to <code className="font-mono text-slate-200">127.0.0.1</code>. It is never exposed over edge tunnels or LAN bridges. Remote visitors cannot query, modify, or inject data into your database.
+                    The desktop application's embedded database (<code className="font-mono text-emerald-300">portside_db</code> / PostgreSQL) binds strictly to <code className="font-mono text-slate-200">127.0.0.1</code>. It is never exposed over edge tunnels or LAN bridges. Remote visitors cannot query, modify, or inject data into your database.
                   </p>
                 </div>
 
@@ -643,6 +932,7 @@ export default function DocsPage() {
             </div>
           </section>
 
+          {/* SECTION 7: TROUBLESHOOTING */}
           <section id="troubleshooting" className="space-y-8 scroll-mt-28">
             <div id="common-questions" className="border-b border-white/10 pb-4 scroll-mt-28">
               <span className="text-xs font-mono font-semibold text-sky-400 uppercase tracking-wider">
@@ -669,16 +959,16 @@ export default function DocsPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2">
-                <h3 className="font-bold text-white text-sm">Is my source code uploaded to any third-party cloud?</h3>
+                <h3 className="font-bold text-white text-sm">Can I use PortSide and all Supporter perks offline?</h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Never. PortSide runs locally on your physical machine. Only incoming HTTP requests pass through encrypted edge proxies directly to your designated local port.
+                  Yes! PortSide's cryptographic activation tickets (<code className="font-mono text-sky-300">PSL1.</code>) verify offline without needing internet access. The Developer Wi-Fi Hotspot and private local DNS gateway (<code className="font-mono text-emerald-400">192.168.137.1</code>) also operate entirely off-grid without touching external servers.
                 </p>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2">
-                <h3 className="font-bold text-white text-sm">How does PortSide protect my local database from public visitors?</h3>
+                <h3 className="font-bold text-white text-sm">Is my source code uploaded to any third-party cloud?</h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Your local database (<code className="font-mono text-sky-300">portside_db</code>) binds strictly to <code className="font-mono text-slate-200">127.0.0.1</code> and is never routed through edge tunnels. Furthermore, when visitors sign up through your public vanity link (<code className="font-mono text-sky-300">alex.portside.lol/register</code>), PortSide intercepts the call and forwards it to the central cloud platform—completely preventing new database rows or folders from being created on your computer.
+                  Never. PortSide runs locally on your physical machine. Only incoming HTTP requests pass through encrypted edge proxies directly to your designated local port.
                 </p>
               </div>
             </div>
@@ -692,8 +982,15 @@ export default function DocsPage() {
             <AnchorLogo size={20} />
             <span className="font-semibold text-slate-400">PortSide Documentation</span>
           </div>
+          <div className="flex items-center gap-4 text-slate-400">
+            <Link href="/pricing" className="hover:text-white transition">Pricing</Link>
+            <span>&middot;</span>
+            <Link href="/redeem" className="hover:text-white transition">Redeem</Link>
+            <span>&middot;</span>
+            <Link href="/comparisons" className="hover:text-white transition">Comparisons</Link>
+          </div>
           <p>
-            Created by pact (letsmakepact · @pactwithdevil)
+            Created by pact (letsmakepact &middot; @pactwithdevil)
           </p>
         </div>
       </footer>
