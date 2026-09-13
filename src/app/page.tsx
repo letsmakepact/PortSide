@@ -194,11 +194,9 @@ export default function Home() {
   const [selectedOs, setSelectedOs] = useState<"windows" | "macos" | "linux">("windows");
   const [showcaseSubdomain, setShowcaseSubdomain] = useState("pact");
   const [showcaseBgPreset, setShowcaseBgPreset] = useState<
-    "cyber-mesh" | "matrix-emerald" | "midnight-neon" | "obsidian-glow" | "pure-carbon"
+    "cyber-mesh" | "matrix-emerald" | "midnight-neon" | "obsidian-glow" | "pure-carbon" | "custom-synthwave" | "custom-cyber" | "custom-space" | "custom"
   >("cyber-mesh");
-  const [showcaseAccent, setShowcaseAccent] = useState<
-    "sky" | "cyan" | "emerald" | "violet" | "amber" | "rose"
-  >("sky");
+  const [customBgUrl, setCustomBgUrl] = useState("https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1600&q=80");
   const [copiedCliCmd, setCopiedCliCmd] = useState<string | null>(null);
 
   useEffect(() => {
@@ -639,13 +637,13 @@ export default function Home() {
                     Branded Developer Portfolio
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
-                    Turn your vanity domain (<code className="text-purple-300 font-mono text-[11px]">handle.portside.lol</code>) into a public portfolio with bio tags, running project links, and customizable themes.
+                    Turn your vanity domain (<code className="text-purple-300 font-mono text-[11px]">handle.portside.lol</code>) into a public portfolio with bio tags, running project links, and full-canvas custom backgrounds.
                   </p>
                 </div>
 
                 <div className="mt-6 pt-5 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400">Themes Included:</span>
-                  <span className="text-purple-300 font-medium">6 Built-in Styles</span>
+                  <span className="text-slate-400">Backdrop Support:</span>
+                  <span className="text-purple-300 font-medium">GIFs &amp; Custom Art</span>
                 </div>
               </div>
             </div>
@@ -812,27 +810,27 @@ export default function Home() {
         <section id="showcase" className="relative py-20 sm:py-28 border-t border-white/5 bg-[#05080f]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
             <div className="text-center max-w-3xl mx-auto space-y-4 mb-10 sm:mb-12">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-medium tracking-wide">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono font-medium tracking-wide">
                 <Crown className="w-3.5 h-3.5 text-amber-400" />
-                <span>Supporter Superpower &middot; Full-Background Profiles</span>
+                <span>Supporter Superpower &middot; Full-Canvas Custom Backgrounds</span>
               </div>
               <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
                 Your identity on the edge. <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-sky-200 to-cyan-300">
-                  Full-background themes. Real local ports.
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-sky-200 to-cyan-300">
+                  Custom full-page wallpapers. Real local ports.
                 </span>
               </h2>
               <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                Turn your vanity domain (<span className="text-slate-200 font-mono font-medium">username.portside.lol</span>) into an immersive Steam-style developer node. Showcase your live staging builds under clean <span className="text-sky-300 font-mono font-medium">/s/&lt;project&gt;</span> paths with dynamic full-page backdrops, or use authenticated <span className="text-amber-300 font-mono font-medium">/lan</span> to inspect backend daemons straight from 5G.
+                Turn your vanity domain (<span className="text-slate-200 font-mono font-medium">username.portside.lol</span>) into an immersive Steam-style developer node. Showcase your live staging builds under clean <span className="text-sky-300 font-mono font-medium">/s/&lt;project&gt;</span> paths with animated GIFs or high-res custom artwork backdrops, or use authenticated <span className="text-amber-300 font-mono font-medium">/lan</span> to inspect backend daemons straight from 5G.
               </p>
 
-              {/* Interactive Theme Controls */}
+              {/* Interactive Background Controls */}
               <div className="pt-3 flex flex-col items-center gap-3">
                 {/* 1. Full-Page Wallpaper Presets */}
                 <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-xl shadow-2xl">
                   <span className="text-slate-500 font-mono text-[11px] px-2.5 flex items-center gap-1.5">
                     <Palette className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Backdrop:</span>
+                    <span>Backdrop Presets:</span>
                   </span>
                   {[
                     { id: "cyber-mesh", label: "Cyber Mesh", dot: "bg-sky-400" },
@@ -857,31 +855,68 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* 2. 6 Accent Color Swatches */}
-                <div className="flex items-center gap-2 p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/60">
-                  <span className="text-slate-500 font-mono text-[11px] px-2">Accent:</span>
-                  {[
-                    { id: "sky", label: "Sky", color: "bg-sky-500" },
-                    { id: "cyan", label: "Cyan", color: "bg-cyan-400" },
-                    { id: "emerald", label: "Emerald", color: "bg-emerald-400" },
-                    { id: "violet", label: "Violet", color: "bg-violet-400" },
-                    { id: "amber", label: "Amber", color: "bg-amber-400" },
-                    { id: "rose", label: "Rose", color: "bg-rose-400" },
-                  ].map((a) => (
-                    <button
-                      key={a.id}
-                      type="button"
-                      onClick={() => setShowcaseAccent(a.id as any)}
-                      title={`${a.label} Accent`}
-                      className={`h-5 w-5 rounded-full ${a.color} transition-all cursor-pointer flex items-center justify-center ${
-                        showcaseAccent === a.id
-                          ? "ring-2 ring-white scale-110 shadow-md"
-                          : "opacity-60 hover:opacity-100"
-                      }`}
-                    >
-                      {showcaseAccent === a.id && <span className="w-1.5 h-1.5 rounded-full bg-black/80" />}
-                    </button>
-                  ))}
+                {/* 2. Custom Background Wallpaper & Animated GIF Showcase */}
+                <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 rounded-2xl bg-slate-950/90 border border-amber-500/30 backdrop-blur-xl shadow-2xl">
+                  <span className="text-amber-300 font-mono text-[11px] px-2 flex items-center gap-1.5 font-semibold">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Custom Wallpapers:</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowcaseBgPreset("custom-synthwave");
+                      setCustomBgUrl("https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1600&q=80");
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer ${
+                      showcaseBgPreset === "custom-synthwave"
+                        ? "bg-amber-500 text-slate-950 font-bold shadow-xs ring-1 ring-amber-300"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                    }`}
+                  >
+                    <span>Synthwave Neon</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowcaseBgPreset("custom-cyber");
+                      setCustomBgUrl("https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80");
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer ${
+                      showcaseBgPreset === "custom-cyber"
+                        ? "bg-emerald-500 text-slate-950 font-bold shadow-xs ring-1 ring-emerald-300"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                    }`}
+                  >
+                    <span>Matrix Rain (GIF)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowcaseBgPreset("custom-space");
+                      setCustomBgUrl("https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1600&q=80");
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer ${
+                      showcaseBgPreset === "custom-space"
+                        ? "bg-purple-500 text-white font-bold shadow-xs ring-1 ring-purple-300"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                    }`}
+                  >
+                    <span>Deep Nebula</span>
+                  </button>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-white/10 text-xs font-mono">
+                    <span className="text-slate-500">Test URL / GIF:</span>
+                    <input
+                      type="text"
+                      value={customBgUrl}
+                      onChange={(e) => {
+                        setCustomBgUrl(e.target.value);
+                        setShowcaseBgPreset("custom");
+                      }}
+                      placeholder="https://.../wallpaper.gif"
+                      className="bg-transparent text-amber-300 text-xs outline-none w-36 sm:w-48 truncate"
+                      title="Paste any image or animated GIF URL to preview full-canvas wallpaper"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -905,6 +940,14 @@ export default function Home() {
                     : "from-sky-950/70 via-[#0a1020]/95 to-[#07090e]"
                 }`}
               />
+
+              {/* Custom Image / Animated GIF Wallpaper Layer */}
+              {showcaseBgPreset.startsWith("custom") && customBgUrl && (
+                <div
+                  className="absolute inset-0 z-0 pointer-events-none bg-cover bg-center transition-all duration-700 opacity-25 mix-blend-screen"
+                  style={{ backgroundImage: `url(${customBgUrl})` }}
+                />
+              )}
 
               {/* Radial Vignette Mask */}
               <div
@@ -981,21 +1024,7 @@ export default function Home() {
                         <span className="font-mono text-xs text-slate-400">
                           @{showcaseSubdomain || "pact"}
                         </span>
-                        <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
-                            showcaseAccent === "cyan"
-                              ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
-                              : showcaseAccent === "emerald"
-                              ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                              : showcaseAccent === "violet"
-                              ? "bg-violet-500/15 text-violet-300 border border-violet-500/30"
-                              : showcaseAccent === "amber"
-                              ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
-                              : showcaseAccent === "rose"
-                              ? "bg-rose-500/15 text-rose-300 border border-rose-500/30"
-                              : "bg-sky-500/15 text-sky-300 border border-sky-500/30"
-                          }`}
-                        >
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-sky-500/15 text-sky-300 border border-sky-500/30">
                           <ShieldCheck className="w-3 h-3" />
                           <span>verified supporter</span>
                         </span>
@@ -1193,10 +1222,10 @@ export default function Home() {
               <div className="p-5 rounded-2xl bg-[#070d17] border border-slate-800/80 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-wider">
                   <Palette className="w-4 h-4 text-sky-400 shrink-0" />
-                  <span>Whole Background Wallpapers</span>
+                  <span>Custom Full-Canvas Backgrounds</span>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  No boring small banners. PortSide themes the entire browser canvas with atmospheric Steam-style wallpapers, animated GIFs, or ambient dark presets.
+                  No boring small banners. PortSide themes the entire browser canvas with your own custom artwork, animated GIFs, or atmospheric ambient presets.
                 </p>
               </div>
 

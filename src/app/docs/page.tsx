@@ -167,7 +167,7 @@ export default function DocsPage() {
         name: "What perks are included in the PortSide Supporter tier?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Supporters receive dedicated *.portside.lol vanity subdomains, encrypted remote edge tunnels for 5G & webhook testing, direct project edge routing (/s/<project>), interactive LAN Cockpit (/lan) with Smart TV navigation, isolated Dev Wi-Fi Hotspot with private DNS gateway (192.168.137.1), custom local root domains (*.test, *.lan, *.portside), zero-config *.local mDNS routing, and public developer showcase profiles with custom themes.",
+          text: "Supporters receive dedicated *.portside.lol vanity subdomains, encrypted remote edge tunnels for 5G & webhook testing, direct project edge routing (/s/<project>), interactive LAN Cockpit (/lan) with Smart TV navigation, isolated Dev Wi-Fi Hotspot with private DNS gateway (192.168.137.1), custom local root domains (*.test, *.lan, *.portside), zero-config *.local mDNS routing, and public developer showcase profiles with custom full-canvas wallpapers.",
         },
       },
       {
@@ -837,10 +837,10 @@ export default function DocsPage() {
 
                 <div id="customizing-themes" className="rounded-2xl border border-white/10 bg-slate-900/40 p-5 space-y-2 scroll-mt-28">
                   <h3 className="text-base font-bold text-white">
-                    Custom Themes &amp; Banners
+                    Custom Full-Canvas Backgrounds
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Choose from six curated color palettes (Sky Blue, Matrix Emerald, Electric Violet, Golden Amber, Crimson Rose, Cyber Cyan) and five header banner presets. You can also specify custom banner URLs, social profiles, skills tags, and custom Linktree-style resource cards.
+                    Personalize your developer profile with full-canvas custom wallpapers—including animated GIFs, high-resolution artwork, or atmospheric dark presets (Cyber Mesh, Matrix Emerald, Midnight Neon, Obsidian Glow, Pure Carbon). You can also link custom social profiles, skills tags, and Linktree-style staging cards.
                   </p>
                 </div>
               </div>
