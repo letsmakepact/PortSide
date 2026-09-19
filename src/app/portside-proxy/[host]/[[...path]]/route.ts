@@ -64,6 +64,28 @@ async function handle(req: NextRequest, ctx: Ctx) {
     };
   }
 
+  if (!svc && (label === "endpoint" || label === "endpoint.portside.lol")) {
+    svc = {
+      id: 9998,
+      userId: 1,
+      projectId: null,
+      name: "Endpoint",
+      hostname: "endpoint",
+      port: 5060,
+      protocol: "http",
+      description: "PortSide Dedicated Project Endpoint Gateway",
+      icon: "globe",
+      tags: ["api", "gateway", "service"],
+      favorite: true,
+      enabled: true,
+      lastStatus: "online",
+      lastCheckedAt: new Date(),
+      lastLatencyMs: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
+
   if (!svc) {
     if (label === "router" || label === "portside") {
       const clientHost = (req.headers.get("x-portside-client-host") || req.headers.get("host") || "").toLowerCase().split(":")[0];
