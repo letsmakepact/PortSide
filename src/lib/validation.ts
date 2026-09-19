@@ -42,6 +42,15 @@ export async function validateService(
     if (port === appPort) {
       return { ok: false, error: `Port ${port} is reserved for PortSide itself and cannot be proxied.` };
     }
+    if (port === 4242) {
+      return { ok: false, error: "Port 4242 is reserved for PortSide's native launcher daemon control API and cannot be proxied." };
+    }
+    if ([2375, 2376].includes(port)) {
+      return { ok: false, error: `Port ${port} is the Docker daemon control port and cannot be mapped as an HTTP service.` };
+    }
+    if (port === 11434) {
+      return { ok: false, error: "Port 11434 is the Ollama local AI server port and cannot be publicly exposed." };
+    }
     if ([5432, 3306, 27017, 6379, 22, 23, 25].includes(port)) {
       return { ok: false, error: `Port ${port} is a reserved system or database wire port and cannot be mapped as an HTTP service.` };
     }

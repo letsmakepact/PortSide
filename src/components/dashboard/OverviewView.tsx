@@ -19,12 +19,27 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, EmptyState, StatusDot } from "@/components/ui/Primitives";
+import { DevIcon } from "@/components/ui/DevIcon";
 import { ActivityIcon } from "./ActivityFeed";
 import type { ActivityDTO } from "@/lib/types";
 import { cn, colorFor, formatRelative, serviceUrl } from "@/lib/utils";
 
 export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO[] }) {
-  const { user, services, projects, appPort, runCheck, checking, lastCheckedAt, openTutorial, openLan, openSupport } = useDashboard();
+  const {
+    user,
+    services,
+    projects,
+    appPort,
+    urlFormat,
+    setUrlFormat,
+    isHardenedBrowser,
+    runCheck,
+    checking,
+    lastCheckedAt,
+    openTutorial,
+    openLan,
+    openSupport,
+  } = useDashboard();
   const [formOpen, setFormOpen] = useState(false);
   const [activity, setActivity] = useState(initialActivity);
   const [greeting, setGreeting] = useState("");
@@ -157,9 +172,42 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
 
       <div className="grid gap-5 lg:grid-cols-5">
         <Card className="lg:col-span-3 overflow-hidden bg-[#111827] border-[#1f2937]">
-          <div className="flex items-center justify-between border-b border-[#1f2937] px-4 py-3 bg-[#0d131f]">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-300">Routing map</h2>
-            <span className="font-mono text-xs text-slate-500">{services.length} active routes</span>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1f2937] px-4 py-3 bg-[#0d131f]">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-300">Routing map</h2>
+              {isHardenedBrowser && (
+                <span className="hidden sm:inline-block rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-mono text-amber-300" title="Firefox / LibreWolf detected: Direct Path bypasses HTTPS-Only & DoH restrictions">
+                  LibreWolf / Firefox
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center rounded-md border border-slate-800 bg-[#070b14] p-0.5 text-[11px] font-mono">
+                <button
+                  type="button"
+                  onClick={() => setUrlFormat("subdomain")}
+                  className={cn(
+                    "rounded px-2 py-0.5 transition cursor-pointer",
+                    urlFormat === "subdomain" ? "bg-sky-500/20 text-sky-300 font-semibold" : "text-slate-500 hover:text-slate-300"
+                  )}
+                  title="*.localhost subdomains (RFC 6761)"
+                >
+                  Subdomain
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUrlFormat("path")}
+                  className={cn(
+                    "rounded px-2 py-0.5 transition cursor-pointer",
+                    urlFormat === "path" ? "bg-emerald-500/20 text-emerald-300 font-semibold" : "text-slate-500 hover:text-slate-300"
+                  )}
+                  title="Universal direct path /s/<service> (compatible with LibreWolf, Tor, HTTPS-Only Mode)"
+                >
+                  Direct (/s/)
+                </button>
+              </div>
+              <span className="hidden font-mono text-xs text-slate-500 sm:inline">{services.length} active routes</span>
+            </div>
           </div>
           {services.length === 0 ? (
             <div className="px-4 py-10 text-center text-xs text-slate-500 font-mono">No routing rules mapped yet.</div>
@@ -170,9 +218,11 @@ export function OverviewView({ initialActivity }: { initialActivity: ActivityDTO
                 return (
                   <li key={s.id} className="flex items-center gap-3 px-4 py-2.5 text-xs transition hover:bg-[#161f30]">
                     <StatusDot status={s.enabled ? s.lastStatus : "unknown"} />
-                    <span className="w-5 text-center text-sm leading-none">{s.icon}</span>
-                    <a href={serviceUrl(s.hostname, appPort)} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate font-mono text-xs text-slate-200 font-medium hover:text-sky-400">
-                      {s.hostname}.localhost
+                    <span className="w-5 flex items-center justify-center text-sm leading-none shrink-0">
+                      <DevIcon icon={s.icon} className="h-4 w-4 text-slate-300" fallbackClassName="text-sm" />
+                    </span>
+                    <a href={serviceUrl(s.hostname, appPort, urlFormat)} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate font-mono text-xs text-slate-200 font-medium hover:text-sky-400">
+                      {urlFormat === "path" ? `localhost/s/${s.hostname}` : `${s.hostname}.localhost`}
                     </a>
                     <span className="hidden text-slate-600 sm:inline font-mono">→</span>
                     <span className="rounded border border-[#1f2937] bg-[#0b0f17] px-2 py-0.5 font-mono text-xs text-slate-300">:{s.port}</span>

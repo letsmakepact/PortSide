@@ -15,6 +15,7 @@ import {
 import { useToast } from "@/components/ui/Toast";
 import type { ProjectDTO, ProjectInput, ServiceDTO, ServiceInput } from "@/lib/types";
 import type { SafeUser } from "@/lib/auth";
+import type { ServiceUrlFormat } from "@/lib/utils";
 
 export type ClientUser = Omit<SafeUser, "createdAt" | "supporterSince"> & {
   createdAt: string;
@@ -30,6 +31,9 @@ interface DashboardContextValue {
   services: ServiceDTO[];
   projects: ProjectDTO[];
   appPort: string;
+  urlFormat: ServiceUrlFormat;
+  setUrlFormat: (f: ServiceUrlFormat) => void;
+  isHardenedBrowser: boolean;
   checking: boolean;
   lastCheckedAt: string | null;
   autoCheck: boolean;
@@ -147,6 +151,24 @@ export function DashboardProvider({
   const autoCheck = useSyncExternalStore(subscribeAutoCheck, getAutoCheckSnapshot, () => true);
   const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, () => "dark" as ThemeMode);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [urlFormat, setUrlFormatState] = useState<ServiceUrlFormat>(() => {
+    if (typeof window === "undefined") return "subdomain";
+    try {
+      const stored = window.localStorage.getItem("portside:urlFormat");
+      if (stored === "path" || stored === "subdomain") return stored;
+    } catch {}
+    return "subdomain";
+  });
+
+  const isHardenedBrowser = typeof navigator !== "undefined" && /firefox|librewolf|waterfox/i.test(navigator.userAgent);
+
+  const setUrlFormat = useCallback((format: ServiceUrlFormat) => {
+    setUrlFormatState(format);
+    try {
+      window.localStorage.setItem("portside:urlFormat", format);
+    } catch {}
+  }, []);
+
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [lanOpen, setLanOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
@@ -522,6 +544,9 @@ export function DashboardProvider({
       services,
       projects,
       appPort,
+      urlFormat,
+      setUrlFormat,
+      isHardenedBrowser,
       checking,
       lastCheckedAt,
       autoCheck,
@@ -557,6 +582,9 @@ export function DashboardProvider({
       services,
       projects,
       appPort,
+      urlFormat,
+      setUrlFormat,
+      isHardenedBrowser,
       checking,
       lastCheckedAt,
       autoCheck,

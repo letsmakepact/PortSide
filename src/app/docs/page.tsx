@@ -105,6 +105,7 @@ const SECTIONS: DocSection[] = [
     title: "Troubleshooting",
     items: [
       { id: "common-questions", title: "Frequently Asked Questions" },
+      { id: "hardened-browsers", title: "LibreWolf, Tor & Hardened Browsers" },
       { id: "firewall-access", title: "Network Discovery & Firewalls" },
     ],
   },
@@ -192,6 +193,14 @@ export default function DocsPage() {
         acceptedAnswer: {
           "@type": "Answer",
           text: "PortSide's local database binds exclusively to loopback (127.0.0.1) and is never exposed through edge tunnels. Furthermore, registrations originating from public vanity links bypass local database insertion completely and are forwarded to the central cloud platform.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Why does LibreWolf or Tor Browser show 'Unable to connect' on *.localhost?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "LibreWolf and hardened Firefox configurations enforce HTTPS-Only Mode, which silently forces http://*.localhost to https://*.localhost:443 where no SSL daemon is listening. To fix this with zero config, PortSide includes Universal Direct Path routing: visit http://localhost/s/<project> instead. Firefox exempts the bare 'localhost' domain from HTTPS-Only enforcement.",
         },
       },
     ],
@@ -919,6 +928,29 @@ export default function DocsPage() {
                 <p className="text-xs text-slate-300 leading-relaxed">
                   No. Modern web browsers natively recognize all <code className="font-mono text-sky-300">*.localhost</code> subdomains as loopback addresses without system hosts modifications.
                 </p>
+              </div>
+
+              <div id="hardened-browsers" className="rounded-2xl border border-sky-500/20 bg-sky-500/[0.03] p-5 space-y-3 scroll-mt-28">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-sky-400 shrink-0" />
+                  <h3 className="font-bold text-white text-sm">Why does LibreWolf or Tor Browser say &ldquo;Unable to connect&rdquo; on *.localhost?</h3>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  LibreWolf, Tor Browser, and hardened Firefox profiles enable <strong>HTTPS-Only Mode</strong> by default. When you visit <code className="font-mono text-sky-300">http://router.localhost</code>, the browser silently rewrites the protocol to <code className="font-mono text-amber-300">https://router.localhost:443</code>. Because local development proxies listen on HTTP port 80, the connection is instantly refused before reaching the application.
+                </p>
+                <div className="rounded-xl border border-white/10 bg-black/40 p-3 space-y-2">
+                  <p className="text-[11px] font-semibold text-sky-400">Zero-Config Solution: Universal Direct Path</p>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Firefox and LibreWolf exempt the literal host <code className="font-mono text-emerald-400">localhost</code> from HTTPS-Only Mode. PortSide includes built-in Direct Path routing:
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 font-mono text-xs">
+                    <span className="rounded bg-white/10 px-2 py-1 text-emerald-400">http://localhost/s/&lt;service&gt;</span>
+                    <span className="text-slate-500 text-[11px]">e.g. http://localhost/s/router</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    You can switch your dashboard to Direct Path mode anytime in <strong>Settings &rarr; Proxy Routing</strong> or click the 3-dots menu on any service card and choose <strong>&ldquo;Open Direct Path&rdquo;</strong>.
+                  </p>
+                </div>
               </div>
 
               <div id="firewall-access" className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-2 scroll-mt-28">

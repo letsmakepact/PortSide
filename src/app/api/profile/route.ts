@@ -3,6 +3,7 @@ import { getProfile, saveProfile, getVanityChangeCost } from "@/lib/profile";
 import { getCurrentUser } from "@/lib/auth";
 import { isServerSupporter } from "@/lib/server-checks";
 import { listLanServices } from "@/lib/queries";
+import { sanitizeUsernameFallback } from "@/lib/username";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export async function GET() {
 
     if (!isSupporter) {
       profile.website = "";
-      profile.handle = (user?.name || user?.email?.split("@")[0] || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+      profile.handle = sanitizeUsernameFallback(user?.name || user?.email?.split("@")[0] || "");
       profile.verifiedBadgeText = "Developer";
     } else {
       profile.verifiedBadgeText = "Verified Supporter";

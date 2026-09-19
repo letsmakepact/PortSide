@@ -3,8 +3,24 @@ import { db } from "@/db";
 import { users, activityLogs } from "@/db/schema";
 import { createSession, hashPassword } from "@/lib/auth";
 import { getHardwareMachineId } from "@/lib/supporter-session";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const clientIp = getClientIp(req);
+  const regLimit = checkRateLimit(`register-ip:${clientIp}`, 20, 60 * 1000);
+  if (!regLimit.allowed) {
+    return Response.json(
+      { error: "Too many registration attempts from this network. Please wait a moment." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(regLimit.retryAfterSec),
+          "X-RateLimit-Limit": String(regLimit.limit),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
   const rawHost = (req.headers.get("x-forwarded-host") || req.headers.get("host") || "").toLowerCase();
   const host = rawHost.split(":")[0];
   const isPortsideApex = host === "portside.lol" || host === "www.portside.lol" || host === "app.portside.lol";

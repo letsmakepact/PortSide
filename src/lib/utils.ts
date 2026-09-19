@@ -285,6 +285,21 @@ export function formatRelative(date: Date | string | null | undefined): string {
   return d.toLocaleDateString();
 }
 
-export function serviceUrl(hostname: string, appPort: string): string {
-  return `http://${hostname}.localhost${appPort && appPort !== "80" ? `:${appPort}` : ""}`;
+export type ServiceUrlFormat = "subdomain" | "path";
+
+export function serviceUrl(
+  hostname: string,
+  appPort: string,
+  format: ServiceUrlFormat = "subdomain"
+): string {
+  const portSuffix = appPort && appPort !== "80" ? `:${appPort}` : "";
+  if (format === "path") {
+    return `http://localhost${portSuffix}/s/${hostname}`;
+  }
+  return `http://${hostname}.localhost${portSuffix}`;
+}
+
+export function serviceDirectPathUrl(hostname: string, appPort: string): string {
+  const portSuffix = appPort && appPort !== "80" ? `:${appPort}` : "";
+  return `http://localhost${portSuffix}/s/${hostname}`;
 }

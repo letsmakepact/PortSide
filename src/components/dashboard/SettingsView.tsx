@@ -54,6 +54,7 @@ import { Card, Input, Label, PageHeader } from "@/components/ui/Primitives";
 import { useToast } from "@/components/ui/Toast";
 import { SupporterBadge } from "@/components/ui/SupporterBadge";
 import { cn } from "@/lib/utils";
+import { validateUsername } from "@/lib/username";
 
 export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
   const {
@@ -69,6 +70,9 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
     theme,
     setTheme,
     services,
+    urlFormat,
+    setUrlFormat,
+    isHardenedBrowser,
   } = useDashboard();
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<"general" | "profile" | "supporter" | "hotspot" | "account" | "routing" | "about">(() => {
@@ -595,15 +599,13 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
 
   async function submitNewHandle(e: FormEvent) {
     e.preventDefault();
-    const clean = newHandleInput.toLowerCase().trim().replace(/[^a-z0-9-]/g, "").slice(0, 30);
-    if (!clean) {
-      setVanityError("Username cannot be empty.");
+    const isPact = profileHandle === "pact" || user?.email === "pact@virtuoushigh.com";
+    const validation = validateUsername(newHandleInput, { isPact });
+    if (!validation.valid) {
+      setVanityError(validation.error || "Invalid username.");
       return;
     }
-    if (clean.length < 3) {
-      setVanityError("Username must be at least 3 characters long.");
-      return;
-    }
+    const clean = validation.clean;
     if (clean === profileHandle) {
       setVanityModalOpen(false);
       return;
@@ -1135,16 +1137,6 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                   </span>
                 )}
               </div>
-
-              <Button
-                onClick={() => savePublicProfile()}
-                loading={savingProfile}
-                className="text-xs px-3.5 py-1.5 shadow-sm"
-                title="Force save immediately"
-              >
-                <Check className="h-3.5 w-3.5 mr-1" />
-                Save All
-              </Button>
             </div>
           </div>
 
@@ -2703,7 +2695,7 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                             http://router.{hotspotCustomHost || "test"}
                           </span>
                           <span className="text-[11px] text-sky-400 font-semibold">
-                            Opens the PortSide Cockpit (or router.localhost on PC)
+                            Opens the PortSide Cockpit on connected devices
                           </span>
                         </div>
                       </div>
@@ -3076,6 +3068,104 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
           </Card>
 
           <Card className="p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">Preferred URL Format</h2>
+                  {isHardenedBrowser && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-semibold text-amber-500 dark:text-amber-400">
+                      <Shield className="h-3 w-3" />
+                      Hardened Browser Detected (LibreWolf / Firefox)
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  Select how service links and routing endpoints are opened from PortSide.
+                </p>
+              </div>
+
+              <div className="flex items-center rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-slate-800 dark:bg-slate-900">
+                <button
+                  type="button"
+                  onClick={() => setUrlFormat("subdomain")}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all",
+                    urlFormat === "subdomain"
+                      ? "bg-white text-sky-600 shadow-sm dark:bg-slate-800 dark:text-sky-400"
+                      : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  )}
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  Subdomain (*.localhost)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUrlFormat("path")}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all",
+                    urlFormat === "path"
+                      ? "bg-white text-sky-600 shadow-sm dark:bg-slate-800 dark:text-sky-400"
+                      : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  )}
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Direct Path (/s/...)
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div
+                onClick={() => setUrlFormat("subdomain")}
+                className={cn(
+                  "cursor-pointer rounded-lg border p-3.5 transition-all",
+                  urlFormat === "subdomain"
+                    ? "border-sky-500/50 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/5"
+                    : "border-slate-200/80 bg-slate-50/50 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:border-slate-700"
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-sky-500" />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">Subdomain Routing</span>
+                  </div>
+                  {urlFormat === "subdomain" && <Check className="h-4 w-4 text-sky-500" />}
+                </div>
+                <p className="mt-1.5 font-mono text-xs text-sky-600 dark:text-sky-400">
+                  http://{example?.hostname ?? "api"}.localhost{portSuffix}/
+                </p>
+                <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+                  Standard RFC 6761 local loopback routing. Recommended for Chrome, Brave, Edge, Arc, and Safari.
+                </p>
+              </div>
+
+              <div
+                onClick={() => setUrlFormat("path")}
+                className={cn(
+                  "cursor-pointer rounded-lg border p-3.5 transition-all",
+                  urlFormat === "path"
+                    ? "border-sky-500/50 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/5"
+                    : "border-slate-200/80 bg-slate-50/50 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:border-slate-700"
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">Universal Direct Path</span>
+                  </div>
+                  {urlFormat === "path" && <Check className="h-4 w-4 text-sky-500" />}
+                </div>
+                <p className="mt-1.5 font-mono text-xs text-emerald-600 dark:text-emerald-400">
+                  http://localhost{portSuffix}/s/{example?.hostname ?? "api"}/
+                </p>
+                <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+                  Zero-config compatibility. Bypasses HTTPS-Only Mode upgrade blockers in LibreWolf, Tor Browser, and hardened Firefox profiles.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-5">
             <h2 className="text-sm font-bold text-slate-900 dark:text-white">How Reverse Proxy Routing Works</h2>
             <ol className="mt-3 space-y-3 text-xs text-slate-600 dark:text-slate-300">
               <li className="flex gap-2.5">
@@ -3222,16 +3312,30 @@ export function SettingsView({ initialTab }: { initialTab?: string } = {}) {
                   id="new-handle"
                   value={newHandleInput}
                   onChange={(e) => {
-                    setNewHandleInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""));
-                    if (vanityError) setVanityError(null);
+                    const val = e.target.value.toLowerCase().trim();
+                    setNewHandleInput(val);
+                    if (val) {
+                      const isPact = profileHandle === "pact" || user?.email === "pact@virtuoushigh.com";
+                      const live = validateUsername(val, { isPact });
+                      if (!live.valid && live.reason !== "too_short") {
+                        setVanityError(live.error || null);
+                      } else {
+                        setVanityError(null);
+                      }
+                    } else {
+                      setVanityError(null);
+                    }
                   }}
-                  placeholder="new-username"
+                  placeholder="e.g. dev-alex"
                   autoFocus
                   required
                 />
               </div>
               <p className="mt-1.5 font-mono text-[11px] text-slate-400">
                 https://{newHandleInput || "username"}.portside.lol
+              </p>
+              <p className="mt-2 text-[11px] text-slate-400 leading-normal">
+                3–30 chars using lowercase letters, numbers, and hyphens. Emojis, Kanji, non-Latin scripts, spaces, and consecutive hyphens are restricted for DNS and SSL safety.
               </p>
             </div>
 

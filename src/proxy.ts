@@ -140,11 +140,16 @@ async function verifySupporterStatus(): Promise<boolean> {
   return false;
 }
 
-function withSecurityHeaders(res: NextResponse): NextResponse {
+function withSecurityHeaders(res: NextResponse, isSecure = false): NextResponse {
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("X-Frame-Options", "SAMEORIGIN");
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("X-XSS-Protection", "1; mode=block");
+  res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+  res.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  if (isSecure) {
+    res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+  }
   return res;
 }
 
@@ -432,12 +437,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (!label || label === "www" || label === "app" || label === "router" || label === "portside") {
-    if (label === "router" || label === "portside") {
-      const destUrl = request.nextUrl.clone();
-      destUrl.pathname = (hostname.endsWith(".localhost") || hostname === "localhost") ? "/dashboard" : "/lan";
-      return withSecurityHeaders(NextResponse.rewrite(destUrl));
-    }
+  if (!label || label === "www" || label === "app") {
     return withSecurityHeaders(NextResponse.next());
   }
 
@@ -478,3 +478,6 @@ export const config = {
     "/((?!_next/static|_next/image).*)",
   ],
 };
+
+export default proxy;
+

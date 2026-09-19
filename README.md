@@ -181,6 +181,15 @@ Because Portside runs on standard HTTP port 80, modern browsers resolve any `*.l
 
 No `/etc/hosts` modifications, port suffixes, or reverse proxy certificates required.
 
+### Hardened Browsers & LibreWolf / Tor Compatibility
+
+Browsers with **HTTPS-Only Mode** enabled by default (such as **LibreWolf**, **Tor Browser**, and hardened Firefox configurations) automatically rewrite `http://*.localhost` to `https://*.localhost:443`, triggering connection errors because local dev servers run on HTTP port 80.
+
+PortSide solves this natively with **Universal Direct Path routing**:
+- **Direct Path URL:** `http://localhost/s/<service>` (e.g. `http://localhost/s/router` or `http://localhost/s/api`)
+- Firefox and LibreWolf explicitly exempt `localhost` from HTTPS-Only upgrades, enabling zero-config access.
+- In your PortSide dashboard, switch the URL format to **Direct Path (`/s/...`)** in the header or in **Settings &rarr; Proxy Routing**, or click the 3-dots menu on any service card to copy/launch direct path links instantly.
+
 ---
 
 ## AI Assistant & MCP Server (Model Context Protocol)

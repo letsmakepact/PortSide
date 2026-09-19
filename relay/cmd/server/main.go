@@ -446,6 +446,12 @@ func (s *RelayServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// api.portside.lol — PortSide health/status dashboard
+	if handle == "api" {
+		s.handleAPISubdomain(w, r)
+		return
+	}
+
 	s.clientsMu.RLock()
 	client, ok := s.clients[handle]
 	s.clientsMu.RUnlock()

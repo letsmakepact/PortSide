@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { services } from "@/db/schema";
@@ -43,6 +43,12 @@ async function handle(req: NextRequest, ctx: Ctx) {
   const [svc] = await db.select().from(services).where(eq(services.hostname, label)).limit(1);
 
   if (!svc) {
+    if (label === "router" || label === "portside") {
+      const clientHost = (req.headers.get("x-portside-client-host") || req.headers.get("host") || "").toLowerCase().split(":")[0];
+      if (!clientHost.endsWith(".localhost") && clientHost !== "localhost" && clientHost !== "127.0.0.1") {
+        return NextResponse.redirect(new URL("/lan", req.url));
+      }
+    }
     return errorPage(
       404,
       `${label}.localhost isn't registered`,

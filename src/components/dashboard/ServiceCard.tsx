@@ -6,7 +6,7 @@ import { StatusBadge } from "@/components/ui/Primitives";
 import { DevIconBadge } from "@/components/ui/DevIcon";
 import { useToast } from "@/components/ui/Toast";
 import type { ServiceDTO } from "@/lib/types";
-import { cn, colorFor, formatRelative, serviceUrl } from "@/lib/utils";
+import { cn, colorFor, formatRelative, serviceUrl, serviceDirectPathUrl } from "@/lib/utils";
 
 export function ServiceCard({
   service,
@@ -19,7 +19,7 @@ export function ServiceCard({
   onDelete?: (s: ServiceDTO) => void;
   compact?: boolean;
 }) {
-  const { projects, appPort, updateService } = useDashboard();
+  const { projects, updateService, appPort, urlFormat } = useDashboard();
   const toast = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -27,7 +27,8 @@ export function ServiceCard({
     setMounted(true);
   }, []);
   const project = projects.find((p) => p.id === service.projectId);
-  const url = serviceUrl(service.hostname, appPort);
+  const url = serviceUrl(service.hostname, appPort, urlFormat);
+  const directUrl = serviceDirectPathUrl(service.hostname, appPort);
   const pending = service.id < 0;
   const status = service.enabled ? service.lastStatus : "unknown";
 
@@ -35,6 +36,15 @@ export function ServiceCard({
     try {
       await navigator.clipboard.writeText(url);
       toast({ tone: "success", title: "Copied to clipboard", description: url });
+    } catch {
+      toast({ tone: "error", title: "Couldn't copy" });
+    }
+  }
+
+  async function copyDirect() {
+    try {
+      await navigator.clipboard.writeText(directUrl);
+      toast({ tone: "success", title: "Copied Direct Path URL", description: directUrl });
     } catch {
       toast({ tone: "error", title: "Couldn't copy" });
     }
@@ -88,7 +98,7 @@ export function ServiceCard({
             rel="noreferrer"
             className="mt-0.5 inline-flex max-w-full items-center gap-1 truncate font-mono text-xs font-medium text-sky-400 hover:text-sky-300 hover:underline"
           >
-            {service.hostname}.localhost
+            {urlFormat === "path" ? `localhost/s/${service.hostname}` : `${service.hostname}.localhost`}
             <svg viewBox="0 0 20 20" className="h-3 w-3 shrink-0 opacity-0 transition group-hover:opacity-100 text-slate-500" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 3h6v6M17 3l-8 8M14 11v5H4V6h5" /></svg>
           </a>
         </div>
@@ -105,9 +115,11 @@ export function ServiceCard({
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor"><path d="M10 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" /></svg>
               </button>
               {menuOpen && (
-                <div className="animate-fade-up absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-md border border-[#1f2937] bg-[#111827] py-1 text-xs shadow-xl">
+                <div className="animate-fade-up absolute right-0 z-20 mt-1 w-52 overflow-hidden rounded-md border border-[#1f2937] bg-[#111827] py-1 text-xs shadow-xl">
                   <MenuItem onClick={() => window.open(url, "_blank")}>Open in new tab</MenuItem>
-                  <MenuItem onClick={copy}>Copy URL</MenuItem>
+                  <MenuItem onClick={() => window.open(directUrl, "_blank")}>Open Direct Path (/s/{service.hostname})</MenuItem>
+                  <MenuItem onClick={copy}>Copy {urlFormat === "path" ? "Direct Path" : "Subdomain"} URL</MenuItem>
+                  <MenuItem onClick={copyDirect}>Copy Direct Path (LibreWolf / Tor)</MenuItem>
                   <MenuItem onClick={copyLocal}>Copy .local domain</MenuItem>
                   <MenuItem onClick={copyLan}>Copy LAN link</MenuItem>
                   <MenuItem onClick={() => updateService(service.id, { favorite: !service.favorite })}>
