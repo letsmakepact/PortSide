@@ -40,7 +40,29 @@ async function handle(req: NextRequest, ctx: Ctx) {
     }
   }
 
-  const [svc] = await db.select().from(services).where(eq(services.hostname, label)).limit(1);
+  let [svc] = await db.select().from(services).where(eq(services.hostname, label)).limit(1);
+
+  if (!svc && (label === "keytrace" || label === "keytrace.portside.lol")) {
+    svc = {
+      id: 9999,
+      userId: 1,
+      projectId: null,
+      name: "KeyTrace",
+      hostname: "keytrace",
+      port: 5050,
+      protocol: "http",
+      description: "KeyTrace Security Auditing Engine",
+      icon: "shield",
+      tags: ["security", "audit", "engine"],
+      favorite: true,
+      enabled: true,
+      lastStatus: "online",
+      lastCheckedAt: new Date(),
+      lastLatencyMs: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 
   if (!svc) {
     if (label === "router" || label === "portside") {

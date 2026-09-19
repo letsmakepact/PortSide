@@ -14,6 +14,7 @@ import {
   Compass,
   LogOut,
   Menu,
+  Shield,
 } from "lucide-react";
 import { useDashboard } from "./DashboardProvider";
 import { TutorialModal } from "./TutorialModal";
@@ -143,6 +144,19 @@ export function Sidebar() {
             Wi-Fi
           </span>
         </button>
+
+        <a
+          href="https://keytrace.portside.lol"
+          target="_blank"
+          rel="noreferrer"
+          className="group flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-300 transition-colors hover:bg-[#111827] hover:text-sky-300 border border-transparent"
+        >
+          <Shield className="h-4 w-4 shrink-0 text-sky-400" />
+          KeyTrace
+          <span className="ml-auto rounded bg-[#111827] border border-[#1f2937] px-1.5 py-0.5 text-[9px] font-mono text-sky-400 uppercase">
+            Audit
+          </span>
+        </a>
 
         {services.length === 0 && (
           <button

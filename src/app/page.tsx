@@ -286,6 +286,15 @@ export default function Home() {
               <span>{t.nav.docs}</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
+            <a
+              href="https://keytrace.portside.lol"
+              target="_blank"
+              rel="noreferrer"
+              className="text-slate-300 hover:text-sky-300 transition font-mono flex items-center gap-1"
+            >
+              <span>KeyTrace</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-2.5">
@@ -1512,6 +1521,7 @@ export default function Home() {
               <p className="font-mono text-[11px] uppercase text-slate-300 font-semibold mb-2.5">{t.footer.resourcesHeading}</p>
               <ul className="space-y-1.5 text-xs">
                 <li><Link href="/docs" className="text-sky-400 hover:text-sky-300 transition">{t.footer.documentation}</Link></li>
+                <li><a href="https://keytrace.portside.lol" target="_blank" rel="noreferrer" className="text-sky-400 hover:text-sky-300 transition">KeyTrace Audit</a></li>
                 <li><a href="https://github.com/letsmakepact/PortSide/releases" target="_blank" rel="noreferrer" className="hover:text-white transition">{t.footer.releases}</a></li>
                 <li><a href="https://github.com/letsmakepact/PortSide" target="_blank" rel="noreferrer" className="hover:text-white transition">{t.footer.sourceCode}</a></li>
               </ul>
