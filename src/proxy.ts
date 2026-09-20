@@ -61,6 +61,8 @@ async function verifyHostWithServer(hostname: string): Promise<boolean> {
     hostname.endsWith(".keytrace.portside.lol") ||
     hostname === "endpoint.portside.lol" ||
     hostname.endsWith(".endpoint.portside.lol") ||
+    hostname === "ai.portside.lol" ||
+    hostname.endsWith(".ai.portside.lol") ||
     hostname.endsWith(".vercel.app")
   ) {
     clientHostCache.set(hostname, {

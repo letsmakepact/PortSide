@@ -86,6 +86,28 @@ async function handle(req: NextRequest, ctx: Ctx) {
     };
   }
 
+  if (!svc && (label === "ai" || label === "ai.portside.lol")) {
+    svc = {
+      id: 9997,
+      userId: 1,
+      projectId: null,
+      name: "PortSide AI",
+      hostname: "ai",
+      port: 5070,
+      protocol: "http",
+      description: "PortSide Neural Intelligence Engine",
+      icon: "bot",
+      tags: ["ai", "llm", "neural", "streaming"],
+      favorite: true,
+      enabled: true,
+      lastStatus: "online",
+      lastCheckedAt: new Date(),
+      lastLatencyMs: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
+
   if (!svc) {
     if (label === "router" || label === "portside") {
       const clientHost = (req.headers.get("x-portside-client-host") || req.headers.get("host") || "").toLowerCase().split(":")[0];
