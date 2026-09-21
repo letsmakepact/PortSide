@@ -94,12 +94,12 @@ func (s *RelayServer) apiDashboard(w http.ResponseWriter, r *http.Request) {
 	// Build node rows
 	nodeRows := ""
 	if len(nodes) == 0 {
-		nodeRows = `<tr><td colspan="3" style="text-align:center;color:#475569;padding:24px">No active nodes connected right now</td></tr>`
+		nodeRows = `<tr><td colspan="2" style="text-align:center;color:#475569;padding:24px">No active nodes connected right now</td></tr>`
 	} else {
 		for _, n := range nodes {
 			nodeRows += fmt.Sprintf(
-				`<tr><td><code class="pill">%s.portside.lol</code></td><td style="font-family:monospace;color:#94a3b8">%s</td><td><span class="badge-green"><span class="dot-green"></span> LIVE</span></td></tr>`,
-				n["handle"], n["machine_id"],
+				`<tr><td><code class="pill">%s.portside.lol</code></td><td><span class="badge-green"><span class="dot-green"></span> LIVE</span></td></tr>`,
+				n["handle"],
 			)
 		}
 	}
@@ -143,9 +143,8 @@ func (s *RelayServer) liveNodes() []nodeInfo {
 			continue
 		}
 		out = append(out, nodeInfo{
-			"handle":     handle,
-			"machine_id": sess.machineId,
-			"email":      sess.email,
+			"handle": handle,
+			"status": "live",
 		})
 	}
 	return out
@@ -386,7 +385,7 @@ const healthHTML = `<!DOCTYPE html>
   <div class="table-wrap">
     <table>
       <thead>
-        <tr><th>Domain</th><th>Machine ID</th><th>Status</th></tr>
+        <tr><th>Domain</th><th>Status</th></tr>
       </thead>
       <tbody>%s</tbody>
     </table>
